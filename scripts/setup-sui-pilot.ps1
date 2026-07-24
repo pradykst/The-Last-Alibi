@@ -62,6 +62,35 @@ function Invoke-Checked {
     }
 }
 
+function Test-GitPatch {
+    param(
+        [Parameter(Mandatory)][string]$GitPath,
+        [Parameter(Mandatory)][string]$RepositoryPath,
+        [Parameter(Mandatory)][string]$PatchPath,
+        [switch]$Reverse
+    )
+
+    $arguments = @(
+        "-C",
+        $RepositoryPath,
+        "apply",
+        "--ignore-space-change",
+        "--unidiff-zero",
+        "--recount"
+    )
+    if ($Reverse) {
+        $arguments += "--reverse"
+    }
+    $arguments += @("--check", $PatchPath)
+
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "SilentlyContinue"
+    & $GitPath @arguments 2>$null
+    $succeeded = $LASTEXITCODE -eq 0
+    $ErrorActionPreference = $previousErrorActionPreference
+    return $succeeded
+}
+
 function Get-SemVer {
     param(
         [Parameter(Mandatory)][string]$Name,
@@ -79,6 +108,11 @@ function Get-SemVer {
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $toolingRoot = Join-Path $repositoryRoot ".tools"
 $suiPilotRoot = Join-Path $toolingRoot "sui-pilot"
+$compatibilityPatch = Join-Path $repositoryRoot "scripts\patches\sui-pilot-windows-file-uri.patch"
+
+if (-not (Test-Path $compatibilityPatch -PathType Leaf)) {
+    Stop-Setup "Required compatibility patch is missing: $compatibilityPatch"
+}
 
 $git = Get-RequiredCommand "git" "Install Git and make it available on PATH."
 $node = Get-RequiredCommand "node" "Install Node.js $MinimumNodeMajor or newer and make it available on PATH."
@@ -115,12 +149,62 @@ if (Test-Path $suiPilotRoot) {
         Stop-Setup "Existing clone origin is '$($origin.Trim())'; expected '$SuiPilotRepository'."
     }
 
-    $dirtyState = (& $git -C $suiPilotRoot status --porcelain 2>&1) -join [Environment]::NewLine
+    $dirtyLines = @(& $git -C $suiPilotRoot status --porcelain 2>&1)
     if ($LASTEXITCODE -ne 0) {
         Stop-Setup "Could not inspect the existing sui-pilot clone."
     }
-    if (-not [string]::IsNullOrWhiteSpace($dirtyState)) {
-        Stop-Setup "The existing sui-pilot clone has local changes. Preserve or discard them explicitly before rerunning."
+    $allowedBuildOutputs = @(
+        "mcp/move-lsp-mcp/dist/index.js",
+        "mcp/move-lsp-mcp/dist/index.js.map",
+        "mcp/sui-prover-mcp/dist/index.js",
+        "mcp/sui-prover-mcp/dist/index.js.map"
+    )
+    $compatibilitySources = @(
+        "mcp/move-lsp-mcp/src/lsp-client.ts",
+        "mcp/move-lsp-mcp/src/server.ts"
+    )
+    $allowedDirtyPaths = @($allowedBuildOutputs + $compatibilitySources)
+    $dirtyPaths = @($dirtyLines | ForEach-Object {
+        if ($_.Length -lt 4) {
+            return ""
+        }
+        return $_.Substring(3).Replace("\", "/")
+    })
+    $unexpectedChanges = @($dirtyPaths | Where-Object {
+        [string]::IsNullOrWhiteSpace($_) -or $_ -notin $allowedDirtyPaths
+    })
+    if ($unexpectedChanges.Count -gt 0) {
+        Stop-Setup "The existing sui-pilot clone has unexpected local changes. Preserve or discard them explicitly before rerunning:`n$($unexpectedChanges -join [Environment]::NewLine)"
+    }
+
+    $dirtyCompatibilitySources = @($dirtyPaths | Where-Object { $_ -in $compatibilitySources })
+    if ($dirtyCompatibilitySources.Count -gt 0) {
+        if ($dirtyCompatibilitySources.Count -ne $compatibilitySources.Count) {
+            Stop-Setup "The existing sui-pilot clone contains only part of the expected Windows file-URI patch."
+        }
+
+        if (-not (Test-GitPatch $git $suiPilotRoot $compatibilityPatch -Reverse)) {
+            Stop-Setup "The existing sui-pilot compatibility-source changes do not match the expected reversible patch."
+        }
+
+        $actualPatchLines = @(& $git -C $suiPilotRoot diff --no-ext-diff --no-color --unified=0 -- @compatibilitySources)
+        if ($LASTEXITCODE -ne 0) {
+            Stop-Setup "Could not verify the applied sui-pilot compatibility patch."
+        }
+        $actualPatch = (($actualPatchLines | Where-Object { $_ -notmatch '^index ' -and -not [string]::IsNullOrWhiteSpace($_) }) -join "`n").Trim()
+        $expectedPatchLines = @((Get-Content $compatibilityPatch) | Where-Object { $_ -notmatch '^index ' -and -not [string]::IsNullOrWhiteSpace($_) })
+        $expectedPatch = ($expectedPatchLines -join "`n").Trim()
+        if ($actualPatch -ne $expectedPatch) {
+            Stop-Setup "The existing compatibility-source changes include edits beyond the reviewed Windows file-URI patch."
+        }
+    }
+
+    if ($dirtyLines.Count -gt 0) {
+        $currentCommit = ((& $git -C $suiPilotRoot rev-parse HEAD 2>&1) -join " ").Trim()
+        if ($LASTEXITCODE -ne 0 -or $currentCommit -ne $SuiPilotCommit) {
+            Stop-Setup "Managed compatibility and build outputs may be dirty only when the clone is already at the pinned commit $SuiPilotCommit."
+        }
+        Write-Host "Existing changes are limited to the reviewed compatibility patch and generated MCP bundle outputs."
     }
 } else {
     New-Item -ItemType Directory -Force -Path $toolingRoot | Out-Null
@@ -157,6 +241,24 @@ Invoke-Checked $git @(
 $checkedOutCommit = ((& $git -C $suiPilotRoot rev-parse HEAD 2>&1) -join " ").Trim()
 if ($LASTEXITCODE -ne 0 -or $checkedOutCommit -ne $SuiPilotCommit) {
     Stop-Setup "Expected sui-pilot commit $SuiPilotCommit but found '$checkedOutCommit'."
+}
+
+if (Test-GitPatch $git $suiPilotRoot $compatibilityPatch -Reverse) {
+    Write-Host "Windows file-URI compatibility patch is already applied."
+} else {
+    if (-not (Test-GitPatch $git $suiPilotRoot $compatibilityPatch)) {
+        Stop-Setup "The reviewed Windows file-URI compatibility patch cannot be applied cleanly to pinned commit $SuiPilotCommit."
+    }
+
+    Invoke-Checked $git @(
+        "-C",
+        $suiPilotRoot,
+        "apply",
+        "--ignore-space-change",
+        "--unidiff-zero",
+        "--recount",
+        $compatibilityPatch
+    ) "Applying Windows file-URI compatibility patch"
 }
 
 $moveLspRoot = Join-Path $suiPilotRoot "mcp\move-lsp-mcp"

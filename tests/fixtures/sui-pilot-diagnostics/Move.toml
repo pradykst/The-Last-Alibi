@@ -1,0 +1,6 @@
+[package]
+name = "sui_pilot_diagnostics"
+edition = "2024"
+
+[addresses]
+sui_pilot_diagnostics = "0x0"

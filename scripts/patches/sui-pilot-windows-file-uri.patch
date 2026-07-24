@@ -1,0 +1,17 @@
+diff --git a/mcp/move-lsp-mcp/src/lsp-client.ts b/mcp/move-lsp-mcp/src/lsp-client.ts
+--- a/mcp/move-lsp-mcp/src/lsp-client.ts
++++ b/mcp/move-lsp-mcp/src/lsp-client.ts
+@@ -6 +6 @@ import { spawn, ChildProcess } from 'child_process';
+-import { fileURLToPath } from 'url';
++import { fileURLToPath, pathToFileURL } from 'url';
+@@ -474 +474 @@ export class MoveLspClient {
+-      rootUri: `file://${workspaceRoot}`,
++      rootUri: pathToFileURL(workspaceRoot).href,
+diff --git a/mcp/move-lsp-mcp/src/server.ts b/mcp/move-lsp-mcp/src/server.ts
+--- a/mcp/move-lsp-mcp/src/server.ts
++++ b/mcp/move-lsp-mcp/src/server.ts
+@@ -11,0 +12 @@ import { resolve } from 'path';
++import { pathToFileURL } from 'url';
+@@ -615 +616 @@ export function createServer(): Server {
+-    const fileUri = `file://${resolvedPath}`;
++    const fileUri = pathToFileURL(resolvedPath).href;

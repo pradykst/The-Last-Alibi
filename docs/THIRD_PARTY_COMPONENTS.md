@@ -21,6 +21,7 @@ The full sui-pilot repository is not vendored into this repository's Git history
 - Converted upstream skill metadata to Codex `SKILL.md` metadata and optional `agents/openai.yaml` UI metadata.
 - Removed Claude-specific slash-command routing, model selection, agent declarations, and tool allowlists.
 - Replaced Claude-specific command assumptions with ordinary Codex skill workflows and project-scoped MCP configuration.
+- Apply the reviewed patch in `scripts/patches/sui-pilot-windows-file-uri.patch` so the Move MCP bridge emits standards-compliant LSP file URLs on Windows.
 - Kept the Sui Prover MCP server disabled until a compatible `sui-prover` binary is independently verified.
 
 sui-pilot is third-party development tooling. It is not shipped product code and is not part of this project's hackathon originality claim.
