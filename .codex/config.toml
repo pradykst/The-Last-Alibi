@@ -1,0 +1,19 @@
+[mcp_servers.move-lsp]
+command = "node"
+args = [".tools/sui-pilot/mcp/move-lsp-mcp/dist/index.js"]
+cwd = ".."
+enabled = true
+required = false
+startup_timeout_sec = 20
+tool_timeout_sec = 90
+
+[mcp_servers.sui-prover]
+command = "node"
+args = [".tools/sui-pilot/mcp/sui-prover-mcp/dist/index.js"]
+cwd = ".."
+enabled = false
+required = false
+startup_timeout_sec = 20
+tool_timeout_sec = 300
+
+# Enable sui-prover only after a compatible `sui-prover` binary is verified on PATH.

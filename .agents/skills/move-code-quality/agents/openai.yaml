@@ -1,0 +1,4 @@
+interface:
+  display_name: "Move Code Quality"
+  short_description: "Check modern Move code quality and idioms"
+  default_prompt: "Use $move-code-quality to review this Move package for current, documented quality issues."

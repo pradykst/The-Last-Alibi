@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sui Doc First"
+  short_description: "Ground Sui ecosystem work in bundled docs"
+  default_prompt: "Use $sui-doc-first to research the bundled Sui documentation before proposing code."

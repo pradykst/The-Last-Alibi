@@ -1,0 +1,4 @@
+interface:
+  display_name: "Move Code Review"
+  short_description: "Review Sui Move security and architecture"
+  default_prompt: "Use $move-code-review to audit this Sui Move package for security and architecture risks."
