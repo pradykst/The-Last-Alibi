@@ -1,0 +1,4984 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "scripts/process-game-assets.mjs",
+  "tooling": {
+    "sharp": "0.35.0",
+    "libvips": "8.18.3"
+  },
+  "summary": {
+    "expectedSourceCount": 68,
+    "receivedSourceCount": 68,
+    "mappedSourceCount": 68,
+    "canonicalRuntimeAssetCount": 64,
+    "developmentReferenceCount": 5,
+    "derivedMarketingCompositionCount": 0,
+    "missingCount": 0,
+    "unexpectedCount": 0,
+    "duplicateGroupCount": 0,
+    "rejectedCount": 0,
+    "corruptCount": 0,
+    "sourceFindingCount": 9,
+    "runtimeErrorCount": 0,
+    "status": "passed-with-documented-source-normalization"
+  },
+  "expectedSources": [
+    "alibi-logo-mark.png",
+    "the-last-alibi-wordmark.png",
+    "museum-map-base.png",
+    "grand-gallery-bg.png",
+    "grand-gallery-fg.png",
+    "thumb-grand-gallery.png",
+    "restoration-lab-bg.png",
+    "restoration-lab-fg.png",
+    "thumb-restoration-lab.png",
+    "archive-vault-bg.png",
+    "archive-vault-fg.png",
+    "thumb-archive-vault.png",
+    "rooftop-conservatory-bg.png",
+    "rooftop-conservatory-fg.png",
+    "thumb-rooftop-conservatory.png",
+    "characters/ada-vale-neutral-fullbody.png",
+    "characters/ada-vale-reference.png",
+    "characters/ada-vale-portrait.png",
+    "sprites/ada-vale-guarded-master.png",
+    "sprites/ada-vale-anxious-master.png",
+    "sprites/ada-vale-angry-master.png",
+    "sprites/ada-vale-relieved-master.png",
+    "characters/marcus-reed-neutral-fullbody.png",
+    "characters/marcus-reed-reference.png",
+    "characters/marcus-reed-portrait.png",
+    "sprites/marcus-reed-guarded-master.png",
+    "sprites/marcus-reed-anxious-master.png",
+    "sprites/marcus-reed-angry-master.png",
+    "sprites/marcus-reed-relieved-master.png",
+    "characters/celeste-moreau-neutral-fullbody.png",
+    "characters/celeste-moreau-reference.png",
+    "characters/celeste-moreau-portrait.png",
+    "sprites/celeste-moreau-guarded-master.png",
+    "sprites/celeste-moreau-anxious-master.png",
+    "sprites/celeste-moreau-angry-master.png",
+    "sprites/celeste-moreau-relieved-master.png",
+    "characters/theo-lin-neutral-fullbody.png",
+    "characters/theo-lin-reference.png",
+    "characters/theo-lin-portrait.png",
+    "sprites/theo-lin-guarded-master.png",
+    "sprites/theo-lin-anxious-master.png",
+    "sprites/theo-lin-angry-master.png",
+    "sprites/theo-lin-relieved-master.png",
+    "weapon-ceremonial-dagger.png",
+    "weapon-bronze-bust.png",
+    "time-before-blackout.png",
+    "time-after-blackout.png",
+    "public-observation.png",
+    "unverified-testimony.png",
+    "certified-disclosure.png",
+    "player-hypothesis.png",
+    "warrant-request.png",
+    "proof-pending.png",
+    "proof-verified.png",
+    "proof-failed.png",
+    "verdict-sealed.png",
+    "seal-access-approved.png",
+    "seal-access-denied.png",
+    "verdict-yes.png",
+    "verdict-no.png",
+    "ranked-agent-mark.png",
+    "technical-drawer-mark.png",
+    "landing-key-art.png",
+    "case-introduction-art.png",
+    "verdict-yes-background.png",
+    "verdict-no-background.png",
+    "ethglobal-cover-background.png",
+    "styleboard.png"
+  ],
+  "receivedSources": [
+    "ada-vale-angry-master.png",
+    "ada-vale-anxious-master.png",
+    "ada-vale-guarded-master.png",
+    "ada-vale-neutral-fullbody.PNG",
+    "ada-vale-portrait.png",
+    "ada-vale-reference.png",
+    "ada-vale-relieved-master.png",
+    "alibilogo.png",
+    "alibitext.png",
+    "archive-vault-bg.png",
+    "archive-vault-fg.png",
+    "basemap.png",
+    "case-introduction-art.png",
+    "celeste-moreau-angry-master.png",
+    "celeste-moreau-anxious-master.png",
+    "celeste-moreau-guarded-master.png",
+    "celeste-moreau-neutral-fullbody.png",
+    "celeste-moreau-portrait.png",
+    "celeste-moreau-reference.png",
+    "celeste-moreau-relieved-master.png",
+    "certified-disclosure.png",
+    "detectiveicons.png",
+    "ethglobal-cover-background.png",
+    "grand-gallery-bg.png",
+    "grand-gallery-fg.png",
+    "landing-key-art.png",
+    "marcus-reed-angry-master.png",
+    "marcus-reed-anxious-master.png",
+    "marcus-reed-guarded-master.png",
+    "marcus-reed-neutral-fullbody.png",
+    "marcus-reed-portrait.png",
+    "marcus-reed-reference.png",
+    "marcus-reed-relieved-master.png",
+    "player-hypothesis.png",
+    "proof-failed.png",
+    "proof-pending.png",
+    "proof-verified.png",
+    "public-observation.png",
+    "ranked-agent-mark.png",
+    "restoration-lab-bg.png",
+    "restoration-lab-fg.png",
+    "rooftop-conservatory-bg.png",
+    "rooftop-conservatory-fg.png",
+    "seal-access-approved.png",
+    "seal-access-denied.png",
+    "technical-drawer-mark.png",
+    "theo-lin-angry-master.png",
+    "theo-lin-anxious-master.png",
+    "theo-lin-guarded-master.png",
+    "theo-lin-neutral-fullbody.png",
+    "theo-lin-portrait.png",
+    "theo-lin-reference.png",
+    "theo-lin-relieved-master.png",
+    "thumb-archive-vault.png",
+    "thumb-grand-gallery.png",
+    "thumb-restoration-lab.png",
+    "thumb-rooftop-conservatory.png",
+    "time-after-blackout.png",
+    "time-before-blackout.png",
+    "unverified-testimony.png",
+    "verdict-no-background.png",
+    "verdict-no.png",
+    "verdict-sealed.png",
+    "verdict-yes-background.png",
+    "verdict-yes.png",
+    "warrant-request.png",
+    "weapon-bronze-bust.png",
+    "weapon-ceremonial-dagger.png"
+  ],
+  "missing": [],
+  "unexpected": [],
+  "duplicates": [],
+  "rejectedFound": [],
+  "corrupt": [],
+  "sourceNamingAliases": [
+    {
+      "expected": "alibi-logo-mark.png",
+      "received": "alibilogo.png"
+    },
+    {
+      "expected": "the-last-alibi-wordmark.png",
+      "received": "alibitext.png"
+    },
+    {
+      "expected": "museum-map-base.png",
+      "received": "basemap.png"
+    },
+    {
+      "expected": "characters/ada-vale-neutral-fullbody.png",
+      "received": "ada-vale-neutral-fullbody.PNG"
+    },
+    {
+      "expected": "characters/ada-vale-reference.png",
+      "received": "ada-vale-reference.png"
+    },
+    {
+      "expected": "characters/ada-vale-portrait.png",
+      "received": "ada-vale-portrait.png"
+    },
+    {
+      "expected": "sprites/ada-vale-guarded-master.png",
+      "received": "ada-vale-guarded-master.png"
+    },
+    {
+      "expected": "sprites/ada-vale-anxious-master.png",
+      "received": "ada-vale-anxious-master.png"
+    },
+    {
+      "expected": "sprites/ada-vale-angry-master.png",
+      "received": "ada-vale-angry-master.png"
+    },
+    {
+      "expected": "sprites/ada-vale-relieved-master.png",
+      "received": "ada-vale-relieved-master.png"
+    },
+    {
+      "expected": "characters/marcus-reed-neutral-fullbody.png",
+      "received": "marcus-reed-neutral-fullbody.png"
+    },
+    {
+      "expected": "characters/marcus-reed-reference.png",
+      "received": "marcus-reed-reference.png"
+    },
+    {
+      "expected": "characters/marcus-reed-portrait.png",
+      "received": "marcus-reed-portrait.png"
+    },
+    {
+      "expected": "sprites/marcus-reed-guarded-master.png",
+      "received": "marcus-reed-guarded-master.png"
+    },
+    {
+      "expected": "sprites/marcus-reed-anxious-master.png",
+      "received": "marcus-reed-anxious-master.png"
+    },
+    {
+      "expected": "sprites/marcus-reed-angry-master.png",
+      "received": "marcus-reed-angry-master.png"
+    },
+    {
+      "expected": "sprites/marcus-reed-relieved-master.png",
+      "received": "marcus-reed-relieved-master.png"
+    },
+    {
+      "expected": "characters/celeste-moreau-neutral-fullbody.png",
+      "received": "celeste-moreau-neutral-fullbody.png"
+    },
+    {
+      "expected": "characters/celeste-moreau-reference.png",
+      "received": "celeste-moreau-reference.png"
+    },
+    {
+      "expected": "characters/celeste-moreau-portrait.png",
+      "received": "celeste-moreau-portrait.png"
+    },
+    {
+      "expected": "sprites/celeste-moreau-guarded-master.png",
+      "received": "celeste-moreau-guarded-master.png"
+    },
+    {
+      "expected": "sprites/celeste-moreau-anxious-master.png",
+      "received": "celeste-moreau-anxious-master.png"
+    },
+    {
+      "expected": "sprites/celeste-moreau-angry-master.png",
+      "received": "celeste-moreau-angry-master.png"
+    },
+    {
+      "expected": "sprites/celeste-moreau-relieved-master.png",
+      "received": "celeste-moreau-relieved-master.png"
+    },
+    {
+      "expected": "characters/theo-lin-neutral-fullbody.png",
+      "received": "theo-lin-neutral-fullbody.png"
+    },
+    {
+      "expected": "characters/theo-lin-reference.png",
+      "received": "theo-lin-reference.png"
+    },
+    {
+      "expected": "characters/theo-lin-portrait.png",
+      "received": "theo-lin-portrait.png"
+    },
+    {
+      "expected": "sprites/theo-lin-guarded-master.png",
+      "received": "theo-lin-guarded-master.png"
+    },
+    {
+      "expected": "sprites/theo-lin-anxious-master.png",
+      "received": "theo-lin-anxious-master.png"
+    },
+    {
+      "expected": "sprites/theo-lin-angry-master.png",
+      "received": "theo-lin-angry-master.png"
+    },
+    {
+      "expected": "sprites/theo-lin-relieved-master.png",
+      "received": "theo-lin-relieved-master.png"
+    },
+    {
+      "expected": "styleboard.png",
+      "received": "detectiveicons.png"
+    }
+  ],
+  "sourceFindings": [
+    {
+      "severity": "source-requires-normalization",
+      "file": "thumb-grand-gallery.png",
+      "issue": "Thumbnail 1448×1086 is not the canonical 16:9 runtime size; it is proportionally cover-normalized to 960×540."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "thumb-restoration-lab.png",
+      "issue": "Thumbnail 1672×941 is not the canonical 16:9 runtime size; it is proportionally cover-normalized to 960×540."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "thumb-archive-vault.png",
+      "issue": "Thumbnail 1536×1024 is not the canonical 16:9 runtime size; it is proportionally cover-normalized to 960×540."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "thumb-rooftop-conservatory.png",
+      "issue": "Thumbnail 1448×1086 is not the canonical 16:9 runtime size; it is proportionally cover-normalized to 960×540."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "weapon-ceremonial-dagger.png",
+      "issue": "Evidence artwork 1536×1024 is not the canonical square runtime size; it is proportionally contained on a transparent 1024×1024 canvas."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "grand-gallery-fg.png",
+      "issue": "Foreground 1536×1024 differs from background 1672×941; direct runtime use rejected. Both layers are independently cover-normalized to 1920×1080."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "restoration-lab-fg.png",
+      "issue": "Foreground 1536×1024 differs from background 1672×941; direct runtime use rejected. Both layers are independently cover-normalized to 1920×1080."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "archive-vault-fg.png",
+      "issue": "Foreground 1536×1024 differs from background 1672×941; direct runtime use rejected. Both layers are independently cover-normalized to 1920×1080."
+    },
+    {
+      "severity": "source-requires-normalization",
+      "file": "rooftop-conservatory-fg.png",
+      "issue": "Foreground 1536×1024 differs from background 1672×941; direct runtime use rejected. Both layers are independently cover-normalized to 1920×1080."
+    }
+  ],
+  "runtimeFindings": [],
+  "normalization": {
+    "alphaThreshold": 8,
+    "targetCanvas": {
+      "width": 1024,
+      "height": 1024
+    },
+    "anchor": {
+      "x": 0.5,
+      "y": 1,
+      "origin": "bottom center"
+    },
+    "heightTolerancePercent": 2,
+    "baselineTolerancePixels": 2,
+    "horizontalCenterTolerancePixels": 2,
+    "records": [
+      {
+        "character": "ada-vale",
+        "emotion": "guarded",
+        "source": "ada-vale-guarded-master.png",
+        "scale": 0.994343891402715,
+        "scaledCanvas": {
+          "width": 1018,
+          "height": 1018
+        },
+        "placement": {
+          "left": -18,
+          "top": 5
+        },
+        "sourceVisibleBounds": {
+          "left": 414,
+          "top": 54,
+          "right": 632,
+          "bottom": 937,
+          "width": 219,
+          "height": 884,
+          "centerX": 523,
+          "baseline": 937
+        },
+        "targetNeutralBounds": {
+          "left": 360,
+          "top": 58,
+          "right": 643,
+          "bottom": 936,
+          "width": 284,
+          "height": 879,
+          "centerX": 501.5,
+          "baseline": 936
+        }
+      },
+      {
+        "character": "ada-vale",
+        "emotion": "anxious",
+        "source": "ada-vale-anxious-master.png",
+        "scale": 0.9723451327433629,
+        "scaledCanvas": {
+          "width": 996,
+          "height": 996
+        },
+        "placement": {
+          "left": 1,
+          "top": 26
+        },
+        "sourceVisibleBounds": {
+          "left": 410,
+          "top": 32,
+          "right": 620,
+          "bottom": 935,
+          "width": 211,
+          "height": 904,
+          "centerX": 515,
+          "baseline": 935
+        },
+        "targetNeutralBounds": {
+          "left": 360,
+          "top": 58,
+          "right": 643,
+          "bottom": 936,
+          "width": 284,
+          "height": 879,
+          "centerX": 501.5,
+          "baseline": 936
+        }
+      },
+      {
+        "character": "ada-vale",
+        "emotion": "angry",
+        "source": "ada-vale-angry-master.png",
+        "scale": 0.982122905027933,
+        "scaledCanvas": {
+          "width": 1006,
+          "height": 1006
+        },
+        "placement": {
+          "left": 9,
+          "top": 12
+        },
+        "sourceVisibleBounds": {
+          "left": 355,
+          "top": 47,
+          "right": 648,
+          "bottom": 941,
+          "width": 294,
+          "height": 895,
+          "centerX": 501.5,
+          "baseline": 941
+        },
+        "targetNeutralBounds": {
+          "left": 360,
+          "top": 58,
+          "right": 643,
+          "bottom": 936,
+          "width": 284,
+          "height": 879,
+          "centerX": 501.5,
+          "baseline": 936
+        }
+      },
+      {
+        "character": "ada-vale",
+        "emotion": "relieved",
+        "source": "ada-vale-relieved-master.png",
+        "scale": 0.9361022364217252,
+        "scaledCanvas": {
+          "width": 959,
+          "height": 959
+        },
+        "placement": {
+          "left": 23,
+          "top": 29
+        },
+        "sourceVisibleBounds": {
+          "left": 371,
+          "top": 30,
+          "right": 651,
+          "bottom": 968,
+          "width": 281,
+          "height": 939,
+          "centerX": 511,
+          "baseline": 968
+        },
+        "targetNeutralBounds": {
+          "left": 360,
+          "top": 58,
+          "right": 643,
+          "bottom": 936,
+          "width": 284,
+          "height": 879,
+          "centerX": 501.5,
+          "baseline": 936
+        }
+      },
+      {
+        "character": "marcus-reed",
+        "emotion": "guarded",
+        "source": "marcus-reed-guarded-master.png",
+        "scale": 0.9636163175303197,
+        "scaledCanvas": {
+          "width": 987,
+          "height": 987
+        },
+        "placement": {
+          "left": 25,
+          "top": 9
+        },
+        "sourceVisibleBounds": {
+          "left": 335,
+          "top": 41,
+          "right": 676,
+          "bottom": 947,
+          "width": 342,
+          "height": 907,
+          "centerX": 505.5,
+          "baseline": 947
+        },
+        "targetNeutralBounds": {
+          "left": 350,
+          "top": 49,
+          "right": 673,
+          "bottom": 922,
+          "width": 324,
+          "height": 874,
+          "centerX": 511.5,
+          "baseline": 922
+        }
+      },
+      {
+        "character": "marcus-reed",
+        "emotion": "anxious",
+        "source": "marcus-reed-anxious-master.png",
+        "scale": 0.9347593582887701,
+        "scaledCanvas": {
+          "width": 957,
+          "height": 957
+        },
+        "placement": {
+          "left": 40,
+          "top": 17
+        },
+        "sourceVisibleBounds": {
+          "left": 345,
+          "top": 34,
+          "right": 665,
+          "bottom": 968,
+          "width": 321,
+          "height": 935,
+          "centerX": 505,
+          "baseline": 968
+        },
+        "targetNeutralBounds": {
+          "left": 350,
+          "top": 49,
+          "right": 673,
+          "bottom": 922,
+          "width": 324,
+          "height": 874,
+          "centerX": 511.5,
+          "baseline": 922
+        }
+      },
+      {
+        "character": "marcus-reed",
+        "emotion": "angry",
+        "source": "marcus-reed-angry-master.png",
+        "scale": 0.9407965554359526,
+        "scaledCanvas": {
+          "width": 963,
+          "height": 963
+        },
+        "placement": {
+          "left": 34,
+          "top": 16
+        },
+        "sourceVisibleBounds": {
+          "left": 316,
+          "top": 35,
+          "right": 700,
+          "bottom": 963,
+          "width": 385,
+          "height": 929,
+          "centerX": 508,
+          "baseline": 963
+        },
+        "targetNeutralBounds": {
+          "left": 350,
+          "top": 49,
+          "right": 673,
+          "bottom": 922,
+          "width": 324,
+          "height": 874,
+          "centerX": 511.5,
+          "baseline": 922
+        }
+      },
+      {
+        "character": "marcus-reed",
+        "emotion": "relieved",
+        "source": "marcus-reed-relieved-master.png",
+        "scale": 0.9531079607415486,
+        "scaledCanvas": {
+          "width": 976,
+          "height": 976
+        },
+        "placement": {
+          "left": 31,
+          "top": 9
+        },
+        "sourceVisibleBounds": {
+          "left": 331,
+          "top": 41,
+          "right": 678,
+          "bottom": 957,
+          "width": 348,
+          "height": 917,
+          "centerX": 504.5,
+          "baseline": 957
+        },
+        "targetNeutralBounds": {
+          "left": 350,
+          "top": 49,
+          "right": 673,
+          "bottom": 922,
+          "width": 324,
+          "height": 874,
+          "centerX": 511.5,
+          "baseline": 922
+        }
+      },
+      {
+        "character": "celeste-moreau",
+        "emotion": "guarded",
+        "source": "celeste-moreau-guarded-master.png",
+        "scale": 0.9555084745762712,
+        "scaledCanvas": {
+          "width": 978,
+          "height": 978
+        },
+        "placement": {
+          "left": 19,
+          "top": 8
+        },
+        "sourceVisibleBounds": {
+          "left": 414,
+          "top": 40,
+          "right": 626,
+          "bottom": 983,
+          "width": 213,
+          "height": 944,
+          "centerX": 520,
+          "baseline": 983
+        },
+        "targetNeutralBounds": {
+          "left": 389,
+          "top": 46,
+          "right": 643,
+          "bottom": 947,
+          "width": 255,
+          "height": 902,
+          "centerX": 516,
+          "baseline": 947
+        }
+      },
+      {
+        "character": "celeste-moreau",
+        "emotion": "anxious",
+        "source": "celeste-moreau-anxious-master.png",
+        "scale": 0.9395833333333333,
+        "scaledCanvas": {
+          "width": 962,
+          "height": 962
+        },
+        "placement": {
+          "left": 33,
+          "top": 21
+        },
+        "sourceVisibleBounds": {
+          "left": 405,
+          "top": 27,
+          "right": 623,
+          "bottom": 986,
+          "width": 219,
+          "height": 960,
+          "centerX": 514,
+          "baseline": 986
+        },
+        "targetNeutralBounds": {
+          "left": 389,
+          "top": 46,
+          "right": 643,
+          "bottom": 947,
+          "width": 255,
+          "height": 902,
+          "centerX": 516,
+          "baseline": 947
+        }
+      },
+      {
+        "character": "celeste-moreau",
+        "emotion": "angry",
+        "source": "celeste-moreau-angry-master.png",
+        "scale": 0.9327817993795243,
+        "scaledCanvas": {
+          "width": 955,
+          "height": 955
+        },
+        "placement": {
+          "left": 27,
+          "top": 27
+        },
+        "sourceVisibleBounds": {
+          "left": 386,
+          "top": 20,
+          "right": 662,
+          "bottom": 986,
+          "width": 277,
+          "height": 967,
+          "centerX": 524,
+          "baseline": 986
+        },
+        "targetNeutralBounds": {
+          "left": 389,
+          "top": 46,
+          "right": 643,
+          "bottom": 947,
+          "width": 255,
+          "height": 902,
+          "centerX": 516,
+          "baseline": 947
+        }
+      },
+      {
+        "character": "celeste-moreau",
+        "emotion": "relieved",
+        "source": "celeste-moreau-relieved-master.png",
+        "scale": 0.9454926624737946,
+        "scaledCanvas": {
+          "width": 968,
+          "height": 968
+        },
+        "placement": {
+          "left": 28,
+          "top": 17
+        },
+        "sourceVisibleBounds": {
+          "left": 378,
+          "top": 30,
+          "right": 656,
+          "bottom": 983,
+          "width": 279,
+          "height": 954,
+          "centerX": 517,
+          "baseline": 983
+        },
+        "targetNeutralBounds": {
+          "left": 389,
+          "top": 46,
+          "right": 643,
+          "bottom": 947,
+          "width": 255,
+          "height": 902,
+          "centerX": 516,
+          "baseline": 947
+        }
+      },
+      {
+        "character": "theo-lin",
+        "emotion": "guarded",
+        "source": "theo-lin-guarded-master.png",
+        "scale": 0.9343379978471474,
+        "scaledCanvas": {
+          "width": 957,
+          "height": 957
+        },
+        "placement": {
+          "left": 32,
+          "top": 24
+        },
+        "sourceVisibleBounds": {
+          "left": 336,
+          "top": 27,
+          "right": 682,
+          "bottom": 955,
+          "width": 347,
+          "height": 929,
+          "centerX": 509,
+          "baseline": 955
+        },
+        "targetNeutralBounds": {
+          "left": 356,
+          "top": 49,
+          "right": 660,
+          "bottom": 916,
+          "width": 305,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        }
+      },
+      {
+        "character": "theo-lin",
+        "emotion": "anxious",
+        "source": "theo-lin-anxious-master.png",
+        "scale": 0.9559471365638766,
+        "scaledCanvas": {
+          "width": 979,
+          "height": 979
+        },
+        "placement": {
+          "left": 21,
+          "top": 22
+        },
+        "sourceVisibleBounds": {
+          "left": 350,
+          "top": 28,
+          "right": 671,
+          "bottom": 935,
+          "width": 322,
+          "height": 908,
+          "centerX": 510.5,
+          "baseline": 935
+        },
+        "targetNeutralBounds": {
+          "left": 356,
+          "top": 49,
+          "right": 660,
+          "bottom": 916,
+          "width": 305,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        }
+      },
+      {
+        "character": "theo-lin",
+        "emotion": "angry",
+        "source": "theo-lin-angry-master.png",
+        "scale": 0.9591160220994475,
+        "scaledCanvas": {
+          "width": 982,
+          "height": 982
+        },
+        "placement": {
+          "left": 16,
+          "top": 26
+        },
+        "sourceVisibleBounds": {
+          "left": 345,
+          "top": 24,
+          "right": 681,
+          "bottom": 928,
+          "width": 337,
+          "height": 905,
+          "centerX": 513,
+          "baseline": 928
+        },
+        "targetNeutralBounds": {
+          "left": 356,
+          "top": 49,
+          "right": 660,
+          "bottom": 916,
+          "width": 305,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        }
+      },
+      {
+        "character": "theo-lin",
+        "emotion": "relieved",
+        "source": "theo-lin-relieved-master.png",
+        "scale": 0.9720044792833147,
+        "scaledCanvas": {
+          "width": 995,
+          "height": 995
+        },
+        "placement": {
+          "left": 14,
+          "top": 9
+        },
+        "sourceVisibleBounds": {
+          "left": 351,
+          "top": 41,
+          "right": 665,
+          "bottom": 933,
+          "width": 315,
+          "height": 893,
+          "centerX": 508,
+          "baseline": 933
+        },
+        "targetNeutralBounds": {
+          "left": 356,
+          "top": 49,
+          "right": 660,
+          "bottom": 916,
+          "width": 305,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        }
+      }
+    ],
+    "validation": [
+      {
+        "character": "ada-vale",
+        "neutralBounds": {
+          "left": 360,
+          "top": 58,
+          "right": 643,
+          "bottom": 936,
+          "width": 284,
+          "height": 879,
+          "centerX": 501.5,
+          "baseline": 936
+        },
+        "states": [
+          {
+            "emotion": "neutral",
+            "visibleBounds": {
+              "left": 360,
+              "top": 58,
+              "right": 643,
+              "bottom": 936,
+              "width": 284,
+              "height": 879,
+              "centerX": 501.5,
+              "baseline": 936
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "guarded",
+            "visibleBounds": {
+              "left": 393,
+              "top": 58,
+              "right": 611,
+              "bottom": 936,
+              "width": 219,
+              "height": 879,
+              "centerX": 502,
+              "baseline": 936
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0.5,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "anxious",
+            "visibleBounds": {
+              "left": 400,
+              "top": 57,
+              "right": 604,
+              "bottom": 936,
+              "width": 205,
+              "height": 880,
+              "centerX": 502,
+              "baseline": 936
+            },
+            "heightDeltaPercent": 0.11376564277588168,
+            "baselineDelta": 0,
+            "centerDelta": 0.5,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "angry",
+            "visibleBounds": {
+              "left": 358,
+              "top": 58,
+              "right": 645,
+              "bottom": 936,
+              "width": 288,
+              "height": 879,
+              "centerX": 501.5,
+              "baseline": 936
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "relieved",
+            "visibleBounds": {
+              "left": 371,
+              "top": 57,
+              "right": 633,
+              "bottom": 936,
+              "width": 263,
+              "height": 880,
+              "centerX": 502,
+              "baseline": 936
+            },
+            "heightDeltaPercent": 0.11376564277588168,
+            "baselineDelta": 0,
+            "centerDelta": 0.5,
+            "cropped": false,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "character": "marcus-reed",
+        "neutralBounds": {
+          "left": 350,
+          "top": 49,
+          "right": 673,
+          "bottom": 922,
+          "width": 324,
+          "height": 874,
+          "centerX": 511.5,
+          "baseline": 922
+        },
+        "states": [
+          {
+            "emotion": "neutral",
+            "visibleBounds": {
+              "left": 350,
+              "top": 49,
+              "right": 673,
+              "bottom": 922,
+              "width": 324,
+              "height": 874,
+              "centerX": 511.5,
+              "baseline": 922
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "guarded",
+            "visibleBounds": {
+              "left": 347,
+              "top": 49,
+              "right": 676,
+              "bottom": 922,
+              "width": 330,
+              "height": 874,
+              "centerX": 511.5,
+              "baseline": 922
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "anxious",
+            "visibleBounds": {
+              "left": 363,
+              "top": 48,
+              "right": 661,
+              "bottom": 922,
+              "width": 299,
+              "height": 875,
+              "centerX": 512,
+              "baseline": 922
+            },
+            "heightDeltaPercent": 0.11441647597254005,
+            "baselineDelta": 0,
+            "centerDelta": 0.5,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "angry",
+            "visibleBounds": {
+              "left": 332,
+              "top": 49,
+              "right": 692,
+              "bottom": 922,
+              "width": 361,
+              "height": 874,
+              "centerX": 512,
+              "baseline": 922
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0.5,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "relieved",
+            "visibleBounds": {
+              "left": 346,
+              "top": 48,
+              "right": 677,
+              "bottom": 922,
+              "width": 332,
+              "height": 875,
+              "centerX": 511.5,
+              "baseline": 922
+            },
+            "heightDeltaPercent": 0.11441647597254005,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "character": "celeste-moreau",
+        "neutralBounds": {
+          "left": 389,
+          "top": 46,
+          "right": 643,
+          "bottom": 947,
+          "width": 255,
+          "height": 902,
+          "centerX": 516,
+          "baseline": 947
+        },
+        "states": [
+          {
+            "emotion": "neutral",
+            "visibleBounds": {
+              "left": 389,
+              "top": 46,
+              "right": 643,
+              "bottom": 947,
+              "width": 255,
+              "height": 902,
+              "centerX": 516,
+              "baseline": 947
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "guarded",
+            "visibleBounds": {
+              "left": 415,
+              "top": 46,
+              "right": 617,
+              "bottom": 947,
+              "width": 203,
+              "height": 902,
+              "centerX": 516,
+              "baseline": 947
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "anxious",
+            "visibleBounds": {
+              "left": 413,
+              "top": 47,
+              "right": 619,
+              "bottom": 947,
+              "width": 207,
+              "height": 901,
+              "centerX": 516,
+              "baseline": 947
+            },
+            "heightDeltaPercent": -0.11086474501108648,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "angry",
+            "visibleBounds": {
+              "left": 387,
+              "top": 45,
+              "right": 645,
+              "bottom": 947,
+              "width": 259,
+              "height": 903,
+              "centerX": 516,
+              "baseline": 947
+            },
+            "heightDeltaPercent": 0.11086474501108648,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "relieved",
+            "visibleBounds": {
+              "left": 385,
+              "top": 46,
+              "right": 648,
+              "bottom": 947,
+              "width": 264,
+              "height": 902,
+              "centerX": 516.5,
+              "baseline": 947
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0.5,
+            "cropped": false,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "character": "theo-lin",
+        "neutralBounds": {
+          "left": 356,
+          "top": 49,
+          "right": 660,
+          "bottom": 916,
+          "width": 305,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        },
+        "states": [
+          {
+            "emotion": "neutral",
+            "visibleBounds": {
+              "left": 356,
+              "top": 49,
+              "right": 660,
+              "bottom": 916,
+              "width": 305,
+              "height": 868,
+              "centerX": 508,
+              "baseline": 916
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "guarded",
+            "visibleBounds": {
+              "left": 346,
+              "top": 49,
+              "right": 670,
+              "bottom": 916,
+              "width": 325,
+              "height": 868,
+              "centerX": 508,
+              "baseline": 916
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "anxious",
+            "visibleBounds": {
+              "left": 355,
+              "top": 48,
+              "right": 662,
+              "bottom": 916,
+              "width": 308,
+              "height": 869,
+              "centerX": 508.5,
+              "baseline": 916
+            },
+            "heightDeltaPercent": 0.1152073732718894,
+            "baselineDelta": 0,
+            "centerDelta": 0.5,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "angry",
+            "visibleBounds": {
+              "left": 347,
+              "top": 49,
+              "right": 669,
+              "bottom": 916,
+              "width": 323,
+              "height": 868,
+              "centerX": 508,
+              "baseline": 916
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          },
+          {
+            "emotion": "relieved",
+            "visibleBounds": {
+              "left": 355,
+              "top": 49,
+              "right": 661,
+              "bottom": 916,
+              "width": 307,
+              "height": 868,
+              "centerX": 508,
+              "baseline": 916
+            },
+            "heightDeltaPercent": 0,
+            "baselineDelta": 0,
+            "centerDelta": 0,
+            "cropped": false,
+            "passed": true
+          }
+        ]
+      }
+    ]
+  },
+  "conversions": {
+    "roomLayers": "Backgrounds and foregrounds independently use proportional Lanczos3 cover normalization to a shared 1920×1080 runtime canvas; source foreground/background dimension mismatches are retained as source findings.",
+    "map": "Proportional Lanczos3 cover normalization to 1920×1080.",
+    "thumbnails": "Proportional Lanczos3 cover normalization to 960×540.",
+    "screens": "Proportional Lanczos3 cover normalization to 1920×1080 WebP, quality 90, effort 6.",
+    "icons": "Exact 1024×1024 PNGs are copied byte-for-byte; non-square masters are proportionally contained on a transparent 1024×1024 canvas.",
+    "favicon": "Approved logo mark proportionally contained on a transparent 256×256 PNG canvas."
+  },
+  "sourceFiles": [
+    {
+      "expectedFilename": "alibi-logo-mark.png",
+      "sourceFilename": "alibilogo.png",
+      "sourcePath": "_asset-drop/alibilogo.png",
+      "destinationPath": "apps/web/public/assets/brand/alibi-logo-mark.png",
+      "intendedFamily": "brand",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 131,
+        "top": 61,
+        "right": 946,
+        "bottom": 894,
+        "width": 816,
+        "height": 834,
+        "centerX": 538.5,
+        "baseline": 894
+      },
+      "visiblePixelRatio": 0.32895374298095703,
+      "sha256": "bf23fc5bc03bc97cb9f642a14ea3ffd07945efbc377ab5e34a1a258a94b069d8",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "the-last-alibi-wordmark.png",
+      "sourceFilename": "alibitext.png",
+      "sourcePath": "_asset-drop/alibitext.png",
+      "destinationPath": "apps/web/public/assets/brand/the-last-alibi-wordmark.png",
+      "intendedFamily": "brand",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 745,
+      "height": 142,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 10,
+        "top": 9,
+        "right": 733,
+        "bottom": 130,
+        "width": 724,
+        "height": 122,
+        "centerX": 371.5,
+        "baseline": 130
+      },
+      "visiblePixelRatio": 0.559268361848946,
+      "sha256": "3d0b57693482b19b6599dbc3f9c146c737b096b0448517f789d0364ba8739f25",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "museum-map-base.png",
+      "sourceFilename": "basemap.png",
+      "sourcePath": "_asset-drop/basemap.png",
+      "destinationPath": "apps/web/public/assets/map/museum-map-base.png",
+      "intendedFamily": "map",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "f009f4a0e627d6609c2df1e000c1d551e7c2788c11d956b67683a84d8e459596",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "grand-gallery-bg.png",
+      "sourceFilename": "grand-gallery-bg.png",
+      "sourcePath": "_asset-drop/grand-gallery-bg.png",
+      "destinationPath": "apps/web/public/assets/rooms/grand-gallery/background.png",
+      "intendedFamily": "room-background",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "ed807ff49a052afad23a6d87712bd1a7c7e5bca1abc24253d56eb91d4c5890e3",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "grand-gallery-fg.png",
+      "sourceFilename": "grand-gallery-fg.png",
+      "sourcePath": "_asset-drop/grand-gallery-fg.png",
+      "destinationPath": "apps/web/public/assets/rooms/grand-gallery/foreground.png",
+      "intendedFamily": "room-foreground",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 0,
+        "top": 559,
+        "right": 1535,
+        "bottom": 936,
+        "width": 1536,
+        "height": 378,
+        "centerX": 767.5,
+        "baseline": 936
+      },
+      "visiblePixelRatio": 0.13679377237955728,
+      "sha256": "0095e1349a22f93771f1b123204940de77f625a30ff2dba32f11a5d484b96811",
+      "directRuntimeEligible": false
+    },
+    {
+      "expectedFilename": "thumb-grand-gallery.png",
+      "sourceFilename": "thumb-grand-gallery.png",
+      "sourcePath": "_asset-drop/thumb-grand-gallery.png",
+      "destinationPath": "apps/web/public/assets/rooms/grand-gallery/thumbnail.png",
+      "intendedFamily": "room-thumbnail",
+      "operation": "cover-960x540",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "2202dc921716567e4d95f58268ef5614547d51738b62b0f225cd37b350896123",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "restoration-lab-bg.png",
+      "sourceFilename": "restoration-lab-bg.png",
+      "sourcePath": "_asset-drop/restoration-lab-bg.png",
+      "destinationPath": "apps/web/public/assets/rooms/restoration-lab/background.png",
+      "intendedFamily": "room-background",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "6975e7993cf1a0c2b29e62acb69c352d614705b2648f049147f36cf51c6e4eb4",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "restoration-lab-fg.png",
+      "sourceFilename": "restoration-lab-fg.png",
+      "sourcePath": "_asset-drop/restoration-lab-fg.png",
+      "destinationPath": "apps/web/public/assets/rooms/restoration-lab/foreground.png",
+      "intendedFamily": "room-foreground",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 0,
+        "top": 693,
+        "right": 1535,
+        "bottom": 1023,
+        "width": 1536,
+        "height": 331,
+        "centerX": 767.5,
+        "baseline": 1023
+      },
+      "visiblePixelRatio": 0.08981895446777344,
+      "sha256": "5dc0dc3b396e45be12c82adef42376e1503dca06f4c7f727bbf706e657470580",
+      "directRuntimeEligible": false
+    },
+    {
+      "expectedFilename": "thumb-restoration-lab.png",
+      "sourceFilename": "thumb-restoration-lab.png",
+      "sourcePath": "_asset-drop/thumb-restoration-lab.png",
+      "destinationPath": "apps/web/public/assets/rooms/restoration-lab/thumbnail.png",
+      "intendedFamily": "room-thumbnail",
+      "operation": "cover-960x540",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "8ff9a71fa4ec0d8b6e4a5dbf492940513aaef9370ee5d989c56573e7ef1ff94a",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "archive-vault-bg.png",
+      "sourceFilename": "archive-vault-bg.png",
+      "sourcePath": "_asset-drop/archive-vault-bg.png",
+      "destinationPath": "apps/web/public/assets/rooms/archive-vault/background.png",
+      "intendedFamily": "room-background",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "18fc95207b854607845ba2f9d90773e7d56b06e665f28b518fb1a85e966f0890",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "archive-vault-fg.png",
+      "sourceFilename": "archive-vault-fg.png",
+      "sourcePath": "_asset-drop/archive-vault-fg.png",
+      "destinationPath": "apps/web/public/assets/rooms/archive-vault/foreground.png",
+      "intendedFamily": "room-foreground",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 0,
+        "top": 593,
+        "right": 1535,
+        "bottom": 946,
+        "width": 1536,
+        "height": 354,
+        "centerX": 767.5,
+        "baseline": 946
+      },
+      "visiblePixelRatio": 0.08229827880859375,
+      "sha256": "1c83da6023c37878f1fab8fc867115ab5f7e79bf570caf6133cdb5709113ba5a",
+      "directRuntimeEligible": false
+    },
+    {
+      "expectedFilename": "thumb-archive-vault.png",
+      "sourceFilename": "thumb-archive-vault.png",
+      "sourcePath": "_asset-drop/thumb-archive-vault.png",
+      "destinationPath": "apps/web/public/assets/rooms/archive-vault/thumbnail.png",
+      "intendedFamily": "room-thumbnail",
+      "operation": "cover-960x540",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "86ef8f5966359b4eecc9968804be96acda566527baba1a5d27f4661f9294e4c4",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "rooftop-conservatory-bg.png",
+      "sourceFilename": "rooftop-conservatory-bg.png",
+      "sourcePath": "_asset-drop/rooftop-conservatory-bg.png",
+      "destinationPath": "apps/web/public/assets/rooms/rooftop-conservatory/background.png",
+      "intendedFamily": "room-background",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "fd78fdc570b7e8d1a7e8810cfc2b4b718e77ba4b217c30b9a4a9e17144b268c6",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "rooftop-conservatory-fg.png",
+      "sourceFilename": "rooftop-conservatory-fg.png",
+      "sourcePath": "_asset-drop/rooftop-conservatory-fg.png",
+      "destinationPath": "apps/web/public/assets/rooms/rooftop-conservatory/foreground.png",
+      "intendedFamily": "room-foreground",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 0,
+        "top": 564,
+        "right": 1535,
+        "bottom": 1023,
+        "width": 1536,
+        "height": 460,
+        "centerX": 767.5,
+        "baseline": 1023
+      },
+      "visiblePixelRatio": 0.11106109619140625,
+      "sha256": "047ed14a9c07e18719622feb2bfa6c611da82d267949a7c85e88002d5f5d7929",
+      "directRuntimeEligible": false
+    },
+    {
+      "expectedFilename": "thumb-rooftop-conservatory.png",
+      "sourceFilename": "thumb-rooftop-conservatory.png",
+      "sourcePath": "_asset-drop/thumb-rooftop-conservatory.png",
+      "destinationPath": "apps/web/public/assets/rooms/rooftop-conservatory/thumbnail.png",
+      "intendedFamily": "room-thumbnail",
+      "operation": "cover-960x540",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "8485ee43ec3c231eca7578148464d8e20f6d23eadba599be927433c2f9a25f55",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/ada-vale-neutral-fullbody.png",
+      "sourceFilename": "ada-vale-neutral-fullbody.PNG",
+      "sourcePath": "_asset-drop/ada-vale-neutral-fullbody.PNG",
+      "destinationPath": "apps/web/public/assets/characters/ada-vale/sprites/neutral.png",
+      "intendedFamily": "character-neutral",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 360,
+        "top": 58,
+        "right": 643,
+        "bottom": 936,
+        "width": 284,
+        "height": 879,
+        "centerX": 501.5,
+        "baseline": 936
+      },
+      "visiblePixelRatio": 0.1345653533935547,
+      "sha256": "99df384269982c7d882c793112562ebc183fbe14fc58e17dd4b2158f7c71582f",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/ada-vale-reference.png",
+      "sourceFilename": "ada-vale-reference.png",
+      "sourcePath": "_asset-drop/ada-vale-reference.png",
+      "destinationPath": "design/assets-source/characters/ada-vale/reference.png",
+      "intendedFamily": "character-reference",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "464738efce9d02f75e302024a4d5b7a32d4a0ac53b4ecfd8dcfbbc06a56bfbee",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/ada-vale-portrait.png",
+      "sourceFilename": "ada-vale-portrait.png",
+      "sourcePath": "_asset-drop/ada-vale-portrait.png",
+      "destinationPath": "apps/web/public/assets/characters/ada-vale/portrait.png",
+      "intendedFamily": "character-portrait",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 240,
+        "top": 66,
+        "right": 790,
+        "bottom": 939,
+        "width": 551,
+        "height": 874,
+        "centerX": 515,
+        "baseline": 939
+      },
+      "visiblePixelRatio": 0.3345966339111328,
+      "sha256": "f318670bd4c64ac38195ee53b73789af1e7cfda2078305db68a752a84d95ef16",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/ada-vale-guarded-master.png",
+      "sourceFilename": "ada-vale-guarded-master.png",
+      "sourcePath": "_asset-drop/ada-vale-guarded-master.png",
+      "destinationPath": "apps/web/public/assets/characters/ada-vale/sprites/guarded.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 414,
+        "top": 54,
+        "right": 632,
+        "bottom": 937,
+        "width": 219,
+        "height": 884,
+        "centerX": 523,
+        "baseline": 937
+      },
+      "visiblePixelRatio": 0.12365436553955078,
+      "sha256": "b0a89b3ba521d2bb8f79ab2b26f2eea7898f2d9f900f2fb2815a478bd9d8360d",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/ada-vale-anxious-master.png",
+      "sourceFilename": "ada-vale-anxious-master.png",
+      "sourcePath": "_asset-drop/ada-vale-anxious-master.png",
+      "destinationPath": "apps/web/public/assets/characters/ada-vale/sprites/anxious.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 410,
+        "top": 32,
+        "right": 620,
+        "bottom": 935,
+        "width": 211,
+        "height": 904,
+        "centerX": 515,
+        "baseline": 935
+      },
+      "visiblePixelRatio": 0.1257610321044922,
+      "sha256": "9902d6bb488285cca1517ba7ea5fd6d5a9ac289c330b047de87417929b5cad0a",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/ada-vale-angry-master.png",
+      "sourceFilename": "ada-vale-angry-master.png",
+      "sourcePath": "_asset-drop/ada-vale-angry-master.png",
+      "destinationPath": "apps/web/public/assets/characters/ada-vale/sprites/angry.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 355,
+        "top": 47,
+        "right": 648,
+        "bottom": 941,
+        "width": 294,
+        "height": 895,
+        "centerX": 501.5,
+        "baseline": 941
+      },
+      "visiblePixelRatio": 0.14569664001464844,
+      "sha256": "d62af1962db438d8e1193799291bf5941e1384312525947ead83416da304bcf2",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/ada-vale-relieved-master.png",
+      "sourceFilename": "ada-vale-relieved-master.png",
+      "sourcePath": "_asset-drop/ada-vale-relieved-master.png",
+      "destinationPath": "apps/web/public/assets/characters/ada-vale/sprites/relieved.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 371,
+        "top": 30,
+        "right": 651,
+        "bottom": 968,
+        "width": 281,
+        "height": 939,
+        "centerX": 511,
+        "baseline": 968
+      },
+      "visiblePixelRatio": 0.14362049102783203,
+      "sha256": "58f26a3d7cef817b99dba7c5b0c5f0562738690fa26df64c55db11367f2dd024",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/marcus-reed-neutral-fullbody.png",
+      "sourceFilename": "marcus-reed-neutral-fullbody.png",
+      "sourcePath": "_asset-drop/marcus-reed-neutral-fullbody.png",
+      "destinationPath": "apps/web/public/assets/characters/marcus-reed/sprites/neutral.png",
+      "intendedFamily": "character-neutral",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 350,
+        "top": 49,
+        "right": 673,
+        "bottom": 922,
+        "width": 324,
+        "height": 874,
+        "centerX": 511.5,
+        "baseline": 922
+      },
+      "visiblePixelRatio": 0.16812896728515625,
+      "sha256": "8396c72436faf6b0d02889ebcb6de583272e3b74ce577902c70703fdc810185f",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/marcus-reed-reference.png",
+      "sourceFilename": "marcus-reed-reference.png",
+      "sourcePath": "_asset-drop/marcus-reed-reference.png",
+      "destinationPath": "design/assets-source/characters/marcus-reed/reference.png",
+      "intendedFamily": "character-reference",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "0b20314a454bdc6f3fe95dc7c21c3e7c10c1d4ac3875a7d7429c675cd6385781",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/marcus-reed-portrait.png",
+      "sourceFilename": "marcus-reed-portrait.png",
+      "sourcePath": "_asset-drop/marcus-reed-portrait.png",
+      "destinationPath": "apps/web/public/assets/characters/marcus-reed/portrait.png",
+      "intendedFamily": "character-portrait",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 93,
+        "top": 39,
+        "right": 908,
+        "bottom": 1023,
+        "width": 816,
+        "height": 985,
+        "centerX": 500.5,
+        "baseline": 1023
+      },
+      "visiblePixelRatio": 0.5030698776245117,
+      "sha256": "47042b58857581cab3ac9bc7f944d605de07aaa254ad28bb1764654d8d661c44",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/marcus-reed-guarded-master.png",
+      "sourceFilename": "marcus-reed-guarded-master.png",
+      "sourcePath": "_asset-drop/marcus-reed-guarded-master.png",
+      "destinationPath": "apps/web/public/assets/characters/marcus-reed/sprites/guarded.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 335,
+        "top": 41,
+        "right": 676,
+        "bottom": 947,
+        "width": 342,
+        "height": 907,
+        "centerX": 505.5,
+        "baseline": 947
+      },
+      "visiblePixelRatio": 0.16762161254882812,
+      "sha256": "a2102417314300e809a24b363ed2f85c1bbff059922ab884b8f4ca1cc7054e11",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/marcus-reed-anxious-master.png",
+      "sourceFilename": "marcus-reed-anxious-master.png",
+      "sourcePath": "_asset-drop/marcus-reed-anxious-master.png",
+      "destinationPath": "apps/web/public/assets/characters/marcus-reed/sprites/anxious.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 345,
+        "top": 34,
+        "right": 665,
+        "bottom": 968,
+        "width": 321,
+        "height": 935,
+        "centerX": 505,
+        "baseline": 968
+      },
+      "visiblePixelRatio": 0.17116069793701172,
+      "sha256": "2a511e03552f7b36302d55242130e5ecba969b41bc891aabce3d6beb04ae039e",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/marcus-reed-angry-master.png",
+      "sourceFilename": "marcus-reed-angry-master.png",
+      "sourcePath": "_asset-drop/marcus-reed-angry-master.png",
+      "destinationPath": "apps/web/public/assets/characters/marcus-reed/sprites/angry.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 316,
+        "top": 35,
+        "right": 700,
+        "bottom": 963,
+        "width": 385,
+        "height": 929,
+        "centerX": 508,
+        "baseline": 963
+      },
+      "visiblePixelRatio": 0.21065044403076172,
+      "sha256": "44c4167bc4a2875966c11d168bf7736ded738216f867c1cf5ed00125dbfff028",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/marcus-reed-relieved-master.png",
+      "sourceFilename": "marcus-reed-relieved-master.png",
+      "sourcePath": "_asset-drop/marcus-reed-relieved-master.png",
+      "destinationPath": "apps/web/public/assets/characters/marcus-reed/sprites/relieved.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 331,
+        "top": 41,
+        "right": 678,
+        "bottom": 957,
+        "width": 348,
+        "height": 917,
+        "centerX": 504.5,
+        "baseline": 957
+      },
+      "visiblePixelRatio": 0.1884288787841797,
+      "sha256": "5870e008437e7a72256dabd9872f7eff89c37fa8e5f7ee845bbb685c372d718b",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/celeste-moreau-neutral-fullbody.png",
+      "sourceFilename": "celeste-moreau-neutral-fullbody.png",
+      "sourcePath": "_asset-drop/celeste-moreau-neutral-fullbody.png",
+      "destinationPath": "apps/web/public/assets/characters/celeste-moreau/sprites/neutral.png",
+      "intendedFamily": "character-neutral",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 389,
+        "top": 46,
+        "right": 643,
+        "bottom": 947,
+        "width": 255,
+        "height": 902,
+        "centerX": 516,
+        "baseline": 947
+      },
+      "visiblePixelRatio": 0.11902904510498047,
+      "sha256": "830a2e2b9d322116b285ed8c688bd3b662f80b9c10d2592c0cedbe782a014fa6",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/celeste-moreau-reference.png",
+      "sourceFilename": "celeste-moreau-reference.png",
+      "sourcePath": "_asset-drop/celeste-moreau-reference.png",
+      "destinationPath": "design/assets-source/characters/celeste-moreau/reference.png",
+      "intendedFamily": "character-reference",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "268a64eb925eafe6ad37033026c7ab77694083bd82274e36a5ea0e4d7d078659",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/celeste-moreau-portrait.png",
+      "sourceFilename": "celeste-moreau-portrait.png",
+      "sourcePath": "_asset-drop/celeste-moreau-portrait.png",
+      "destinationPath": "apps/web/public/assets/characters/celeste-moreau/portrait.png",
+      "intendedFamily": "character-portrait",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 184,
+        "top": 38,
+        "right": 798,
+        "bottom": 1023,
+        "width": 615,
+        "height": 986,
+        "centerX": 491,
+        "baseline": 1023
+      },
+      "visiblePixelRatio": 0.41445446014404297,
+      "sha256": "92cb296041b757196ad8cfa02c49ff61d09294247fbfffa717f04fd113496a54",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/celeste-moreau-guarded-master.png",
+      "sourceFilename": "celeste-moreau-guarded-master.png",
+      "sourcePath": "_asset-drop/celeste-moreau-guarded-master.png",
+      "destinationPath": "apps/web/public/assets/characters/celeste-moreau/sprites/guarded.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 414,
+        "top": 40,
+        "right": 626,
+        "bottom": 983,
+        "width": 213,
+        "height": 944,
+        "centerX": 520,
+        "baseline": 983
+      },
+      "visiblePixelRatio": 0.11680412292480469,
+      "sha256": "e2db213d8f7d07eeaeeb14e0d55ca2a7a268dda3c054a644bb580e52ac5b25d8",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/celeste-moreau-anxious-master.png",
+      "sourceFilename": "celeste-moreau-anxious-master.png",
+      "sourcePath": "_asset-drop/celeste-moreau-anxious-master.png",
+      "destinationPath": "apps/web/public/assets/characters/celeste-moreau/sprites/anxious.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 405,
+        "top": 27,
+        "right": 623,
+        "bottom": 986,
+        "width": 219,
+        "height": 960,
+        "centerX": 514,
+        "baseline": 986
+      },
+      "visiblePixelRatio": 0.12312126159667969,
+      "sha256": "a51bcccd76679f9889467957ccd83fc0d2904777140998f0165bc5e13e2738b1",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/celeste-moreau-angry-master.png",
+      "sourceFilename": "celeste-moreau-angry-master.png",
+      "sourcePath": "_asset-drop/celeste-moreau-angry-master.png",
+      "destinationPath": "apps/web/public/assets/characters/celeste-moreau/sprites/angry.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 386,
+        "top": 20,
+        "right": 662,
+        "bottom": 986,
+        "width": 277,
+        "height": 967,
+        "centerX": 524,
+        "baseline": 986
+      },
+      "visiblePixelRatio": 0.1507883071899414,
+      "sha256": "0a03a14af9ccdc0efe34506772a1fcaa5aff07f968bf7c5ef139dce75ed3daae",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/celeste-moreau-relieved-master.png",
+      "sourceFilename": "celeste-moreau-relieved-master.png",
+      "sourcePath": "_asset-drop/celeste-moreau-relieved-master.png",
+      "destinationPath": "apps/web/public/assets/characters/celeste-moreau/sprites/relieved.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 378,
+        "top": 30,
+        "right": 656,
+        "bottom": 983,
+        "width": 279,
+        "height": 954,
+        "centerX": 517,
+        "baseline": 983
+      },
+      "visiblePixelRatio": 0.1270284652709961,
+      "sha256": "e95fb4fe77e1a7899be546951a5baf39d8e795ef95ca8ec336cfa01112e342cb",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/theo-lin-neutral-fullbody.png",
+      "sourceFilename": "theo-lin-neutral-fullbody.png",
+      "sourcePath": "_asset-drop/theo-lin-neutral-fullbody.png",
+      "destinationPath": "apps/web/public/assets/characters/theo-lin/sprites/neutral.png",
+      "intendedFamily": "character-neutral",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 356,
+        "top": 49,
+        "right": 660,
+        "bottom": 916,
+        "width": 305,
+        "height": 868,
+        "centerX": 508,
+        "baseline": 916
+      },
+      "visiblePixelRatio": 0.16396236419677734,
+      "sha256": "fa0b04ba1905a4f3b9538e2b584e7934f86d1bf6b2233ced68730e697dc1197e",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/theo-lin-reference.png",
+      "sourceFilename": "theo-lin-reference.png",
+      "sourcePath": "_asset-drop/theo-lin-reference.png",
+      "destinationPath": "design/assets-source/characters/theo-lin/reference.png",
+      "intendedFamily": "character-reference",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "95e19cefcd25ac14cd5d4bfd1cde2e483c5f5a1d9449bd0991d34de8abde25c2",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "characters/theo-lin-portrait.png",
+      "sourceFilename": "theo-lin-portrait.png",
+      "sourcePath": "_asset-drop/theo-lin-portrait.png",
+      "destinationPath": "apps/web/public/assets/characters/theo-lin/portrait.png",
+      "intendedFamily": "character-portrait",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 184,
+        "top": 44,
+        "right": 882,
+        "bottom": 1023,
+        "width": 699,
+        "height": 980,
+        "centerX": 533,
+        "baseline": 1023
+      },
+      "visiblePixelRatio": 0.43601417541503906,
+      "sha256": "75ba0a22a897bfed76f9c84089e326856786c0773405308bf108307c447824b2",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/theo-lin-guarded-master.png",
+      "sourceFilename": "theo-lin-guarded-master.png",
+      "sourcePath": "_asset-drop/theo-lin-guarded-master.png",
+      "destinationPath": "apps/web/public/assets/characters/theo-lin/sprites/guarded.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 336,
+        "top": 27,
+        "right": 682,
+        "bottom": 955,
+        "width": 347,
+        "height": 929,
+        "centerX": 509,
+        "baseline": 955
+      },
+      "visiblePixelRatio": 0.19310760498046875,
+      "sha256": "de74a4b53d162ddf0f4acf8a52f6921d12e01276a49721b29bcf57be1ff2aecb",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/theo-lin-anxious-master.png",
+      "sourceFilename": "theo-lin-anxious-master.png",
+      "sourcePath": "_asset-drop/theo-lin-anxious-master.png",
+      "destinationPath": "apps/web/public/assets/characters/theo-lin/sprites/anxious.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 350,
+        "top": 28,
+        "right": 671,
+        "bottom": 935,
+        "width": 322,
+        "height": 908,
+        "centerX": 510.5,
+        "baseline": 935
+      },
+      "visiblePixelRatio": 0.18066883087158203,
+      "sha256": "07e5f3f11e3f22fd6aa93604c536e3a16dae23dbbf1c0eac1491c0f80c9ee1ba",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/theo-lin-angry-master.png",
+      "sourceFilename": "theo-lin-angry-master.png",
+      "sourcePath": "_asset-drop/theo-lin-angry-master.png",
+      "destinationPath": "apps/web/public/assets/characters/theo-lin/sprites/angry.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 345,
+        "top": 24,
+        "right": 681,
+        "bottom": 928,
+        "width": 337,
+        "height": 905,
+        "centerX": 513,
+        "baseline": 928
+      },
+      "visiblePixelRatio": 0.19108295440673828,
+      "sha256": "710baa06beb1591e16d710eb5a3f53380d03d454fc6e308c701bd219545d140d",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "sprites/theo-lin-relieved-master.png",
+      "sourceFilename": "theo-lin-relieved-master.png",
+      "sourcePath": "_asset-drop/theo-lin-relieved-master.png",
+      "destinationPath": "apps/web/public/assets/characters/theo-lin/sprites/relieved.png",
+      "intendedFamily": "character-emotion",
+      "operation": "normalize-to-neutral",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 351,
+        "top": 41,
+        "right": 665,
+        "bottom": 933,
+        "width": 315,
+        "height": 893,
+        "centerX": 508,
+        "baseline": 933
+      },
+      "visiblePixelRatio": 0.17410945892333984,
+      "sha256": "14fc7fddecb62707fd6482c104b25156cb10a3b114862420d3dc3aae6cae6f3f",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "weapon-ceremonial-dagger.png",
+      "sourceFilename": "weapon-ceremonial-dagger.png",
+      "sourcePath": "_asset-drop/weapon-ceremonial-dagger.png",
+      "destinationPath": "apps/web/public/assets/evidence/weapon-ceremonial-dagger.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 449,
+        "top": 137,
+        "right": 1170,
+        "bottom": 841,
+        "width": 722,
+        "height": 705,
+        "centerX": 809.5,
+        "baseline": 841
+      },
+      "visiblePixelRatio": 0.07783762613932292,
+      "sha256": "38cf25e2b7d03dd84adb4ae503463add541e7e0c519b1ebbadf8b291818d66e0",
+      "directRuntimeEligible": false
+    },
+    {
+      "expectedFilename": "weapon-bronze-bust.png",
+      "sourceFilename": "weapon-bronze-bust.png",
+      "sourcePath": "_asset-drop/weapon-bronze-bust.png",
+      "destinationPath": "apps/web/public/assets/evidence/weapon-bronze-bust.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 234,
+        "top": 103,
+        "right": 748,
+        "bottom": 923,
+        "width": 515,
+        "height": 821,
+        "centerX": 491,
+        "baseline": 923
+      },
+      "visiblePixelRatio": 0.25700855255126953,
+      "sha256": "3fce511bed5114bf480774a49c068e3a19b5b28342ebe0dcb31baf19905d5e8c",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "time-before-blackout.png",
+      "sourceFilename": "time-before-blackout.png",
+      "sourcePath": "_asset-drop/time-before-blackout.png",
+      "destinationPath": "apps/web/public/assets/evidence/time-before-blackout.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 243,
+        "top": 197,
+        "right": 836,
+        "bottom": 743,
+        "width": 594,
+        "height": 547,
+        "centerX": 539.5,
+        "baseline": 743
+      },
+      "visiblePixelRatio": 0.20757675170898438,
+      "sha256": "f5945bb11942fa5fb50534914b553e4f800a854fc38ed14bbb296502cc2ad4ce",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "time-after-blackout.png",
+      "sourceFilename": "time-after-blackout.png",
+      "sourcePath": "_asset-drop/time-after-blackout.png",
+      "destinationPath": "apps/web/public/assets/evidence/time-after-blackout.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 248,
+        "top": 196,
+        "right": 850,
+        "bottom": 743,
+        "width": 603,
+        "height": 548,
+        "centerX": 549,
+        "baseline": 743
+      },
+      "visiblePixelRatio": 0.20912647247314453,
+      "sha256": "0828a2ebb4212ecb8e504539a6810672f8341ce7eca534e96c28b2cf3a05dfce",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "public-observation.png",
+      "sourceFilename": "public-observation.png",
+      "sourcePath": "_asset-drop/public-observation.png",
+      "destinationPath": "apps/web/public/assets/evidence/public-observation.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 218,
+        "top": 234,
+        "right": 806,
+        "bottom": 753,
+        "width": 589,
+        "height": 520,
+        "centerX": 512,
+        "baseline": 753
+      },
+      "visiblePixelRatio": 0.20753860473632812,
+      "sha256": "bd346abd67a9441f04a7d0d2c1c184378cce1260564386a099d8b8b76b499e14",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "unverified-testimony.png",
+      "sourceFilename": "unverified-testimony.png",
+      "sourcePath": "_asset-drop/unverified-testimony.png",
+      "destinationPath": "apps/web/public/assets/evidence/unverified-testimony.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 273,
+        "top": 300,
+        "right": 783,
+        "bottom": 677,
+        "width": 511,
+        "height": 378,
+        "centerX": 528,
+        "baseline": 677
+      },
+      "visiblePixelRatio": 0.14081954956054688,
+      "sha256": "2eebe754a7374824ed0d589a7fd2b5f7baf871b31e4e0427a3f07c4b3917a128",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "certified-disclosure.png",
+      "sourceFilename": "certified-disclosure.png",
+      "sourcePath": "_asset-drop/certified-disclosure.png",
+      "destinationPath": "apps/web/public/assets/evidence/certified-disclosure.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 330,
+        "top": 274,
+        "right": 723,
+        "bottom": 676,
+        "width": 394,
+        "height": 403,
+        "centerX": 526.5,
+        "baseline": 676
+      },
+      "visiblePixelRatio": 0.13052082061767578,
+      "sha256": "5b24af2943f87b66383ff18dc5f3c5c8969a2b45dc7769a42f0848d02c6c72aa",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "player-hypothesis.png",
+      "sourceFilename": "player-hypothesis.png",
+      "sourcePath": "_asset-drop/player-hypothesis.png",
+      "destinationPath": "apps/web/public/assets/evidence/player-hypothesis.png",
+      "intendedFamily": "evidence",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 280,
+        "top": 208,
+        "right": 778,
+        "bottom": 699,
+        "width": 499,
+        "height": 492,
+        "centerX": 529,
+        "baseline": 699
+      },
+      "visiblePixelRatio": 0.16872024536132812,
+      "sha256": "8fc2f3a9ced800bf9b42d7001df1efe8a61164e948a9b96dc1c8d5bc4cef55a8",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "warrant-request.png",
+      "sourceFilename": "warrant-request.png",
+      "sourcePath": "_asset-drop/warrant-request.png",
+      "destinationPath": "apps/web/public/assets/ui/warrant-request.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 268,
+        "top": 218,
+        "right": 821,
+        "bottom": 759,
+        "width": 554,
+        "height": 542,
+        "centerX": 544.5,
+        "baseline": 759
+      },
+      "visiblePixelRatio": 0.19064044952392578,
+      "sha256": "84c07d72d98d08af75ed1ca93583983c29b4c41782f76314fdd78c92b60d7ba7",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "proof-pending.png",
+      "sourceFilename": "proof-pending.png",
+      "sourcePath": "_asset-drop/proof-pending.png",
+      "destinationPath": "apps/web/public/assets/ui/proof-pending.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 268,
+        "top": 267,
+        "right": 741,
+        "bottom": 709,
+        "width": 474,
+        "height": 443,
+        "centerX": 504.5,
+        "baseline": 709
+      },
+      "visiblePixelRatio": 0.16245269775390625,
+      "sha256": "c81c55ae05170c1497fce4c128467485bd0e704413ef4380be3164e4e78ee562",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "proof-verified.png",
+      "sourceFilename": "proof-verified.png",
+      "sourcePath": "_asset-drop/proof-verified.png",
+      "destinationPath": "apps/web/public/assets/ui/proof-verified.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 291,
+        "top": 260,
+        "right": 732,
+        "bottom": 692,
+        "width": 442,
+        "height": 433,
+        "centerX": 511.5,
+        "baseline": 692
+      },
+      "visiblePixelRatio": 0.14683914184570312,
+      "sha256": "6b0de47155687a2c13b04cc5c258e7424345d5572495167d5e3f825a775c4cb4",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "proof-failed.png",
+      "sourceFilename": "proof-failed.png",
+      "sourcePath": "_asset-drop/proof-failed.png",
+      "destinationPath": "apps/web/public/assets/ui/proof-failed.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 289,
+        "top": 259,
+        "right": 731,
+        "bottom": 699,
+        "width": 443,
+        "height": 441,
+        "centerX": 510,
+        "baseline": 699
+      },
+      "visiblePixelRatio": 0.1497488021850586,
+      "sha256": "cb5201e9a7652bbcde3d846714091c2b4b499ad8ccdc397ab1d642d50b6d1ef0",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "verdict-sealed.png",
+      "sourceFilename": "verdict-sealed.png",
+      "sourcePath": "_asset-drop/verdict-sealed.png",
+      "destinationPath": "apps/web/public/assets/ui/verdict-sealed.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 261,
+        "top": 254,
+        "right": 763,
+        "bottom": 720,
+        "width": 503,
+        "height": 467,
+        "centerX": 512,
+        "baseline": 720
+      },
+      "visiblePixelRatio": 0.17866802215576172,
+      "sha256": "715ab8fb6ee9d60a27091566196183a3822e5d7cf56def89ce488dead4b8c66b",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "seal-access-approved.png",
+      "sourceFilename": "seal-access-approved.png",
+      "sourcePath": "_asset-drop/seal-access-approved.png",
+      "destinationPath": "apps/web/public/assets/ui/seal-access-approved.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 268,
+        "top": 267,
+        "right": 741,
+        "bottom": 709,
+        "width": 474,
+        "height": 443,
+        "centerX": 504.5,
+        "baseline": 709
+      },
+      "visiblePixelRatio": 0.16164588928222656,
+      "sha256": "14b749e01cbafb1d86963356810584453780319ac3b42bb5827c86aa261b5cd2",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "seal-access-denied.png",
+      "sourceFilename": "seal-access-denied.png",
+      "sourcePath": "_asset-drop/seal-access-denied.png",
+      "destinationPath": "apps/web/public/assets/ui/seal-access-denied.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 286,
+        "top": 243,
+        "right": 741,
+        "bottom": 696,
+        "width": 456,
+        "height": 454,
+        "centerX": 513.5,
+        "baseline": 696
+      },
+      "visiblePixelRatio": 0.15903663635253906,
+      "sha256": "f75c3dd58b430988681f579676139582cddb1aef751d6d7d063adae355868544",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "verdict-yes.png",
+      "sourceFilename": "verdict-yes.png",
+      "sourcePath": "_asset-drop/verdict-yes.png",
+      "destinationPath": "apps/web/public/assets/ui/verdict-yes.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 274,
+        "top": 256,
+        "right": 750,
+        "bottom": 720,
+        "width": 477,
+        "height": 465,
+        "centerX": 512,
+        "baseline": 720
+      },
+      "visiblePixelRatio": 0.16707897186279297,
+      "sha256": "aaa370bee57335dadf006921cf79336fab15c74a45692f7dbaa5f904709b4e5f",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "verdict-no.png",
+      "sourceFilename": "verdict-no.png",
+      "sourcePath": "_asset-drop/verdict-no.png",
+      "destinationPath": "apps/web/public/assets/ui/verdict-no.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 274,
+        "top": 254,
+        "right": 750,
+        "bottom": 719,
+        "width": 477,
+        "height": 466,
+        "centerX": 512,
+        "baseline": 719
+      },
+      "visiblePixelRatio": 0.16786956787109375,
+      "sha256": "877e991e88e2d2bfc08e5eb695ef5db5b0944163e5c87cb99c08e53ae44dbf6d",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "ranked-agent-mark.png",
+      "sourceFilename": "ranked-agent-mark.png",
+      "sourcePath": "_asset-drop/ranked-agent-mark.png",
+      "destinationPath": "apps/web/public/assets/ui/ranked-agent-mark.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 237,
+        "top": 207,
+        "right": 786,
+        "bottom": 739,
+        "width": 550,
+        "height": 533,
+        "centerX": 511.5,
+        "baseline": 739
+      },
+      "visiblePixelRatio": 0.22068214416503906,
+      "sha256": "201f483973dd12c978184751c9060c88332d974499409d69e4a769672a7e7914",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "technical-drawer-mark.png",
+      "sourceFilename": "technical-drawer-mark.png",
+      "sourcePath": "_asset-drop/technical-drawer-mark.png",
+      "destinationPath": "apps/web/public/assets/ui/technical-drawer-mark.png",
+      "intendedFamily": "ui",
+      "operation": "contain-1024x1024",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 208,
+        "top": 272,
+        "right": 815,
+        "bottom": 654,
+        "width": 608,
+        "height": 383,
+        "centerX": 511.5,
+        "baseline": 654
+      },
+      "visiblePixelRatio": 0.2021465301513672,
+      "sha256": "1b0675b1e91c6cb594f6c4a11a727508e6b5b70b07f543e16e2133382de29eba",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "landing-key-art.png",
+      "sourceFilename": "landing-key-art.png",
+      "sourcePath": "_asset-drop/landing-key-art.png",
+      "destinationPath": "apps/web/public/assets/screens/landing-key-art.webp",
+      "intendedFamily": "screen",
+      "operation": "cover-1920x1080-webp",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "6972ac8bdfc5f1097406f7d6dcfb4b59c6cd0184e34e45d49b54edaa176f8a2f",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "case-introduction-art.png",
+      "sourceFilename": "case-introduction-art.png",
+      "sourcePath": "_asset-drop/case-introduction-art.png",
+      "destinationPath": "apps/web/public/assets/screens/case-introduction-art.webp",
+      "intendedFamily": "screen",
+      "operation": "cover-1920x1080-webp",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "55584b3c4d91d66012c2bebe9854020d8536207087e07dd87e0c4ccea1f1e404",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "verdict-yes-background.png",
+      "sourceFilename": "verdict-yes-background.png",
+      "sourcePath": "_asset-drop/verdict-yes-background.png",
+      "destinationPath": "apps/web/public/assets/screens/verdict-yes-background.webp",
+      "intendedFamily": "screen",
+      "operation": "cover-1920x1080-webp",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "5807fb17580a3f7e71544b24e9f3da5a5ba8bff4ecc002c089889423cb851fef",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "verdict-no-background.png",
+      "sourceFilename": "verdict-no-background.png",
+      "sourcePath": "_asset-drop/verdict-no-background.png",
+      "destinationPath": "apps/web/public/assets/screens/verdict-no-background.webp",
+      "intendedFamily": "screen",
+      "operation": "cover-1920x1080-webp",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "aacb3a704ee5c984f373ad6abae248be0a51a16d1bc175803a65a991a7343368",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "ethglobal-cover-background.png",
+      "sourceFilename": "ethglobal-cover-background.png",
+      "sourcePath": "_asset-drop/ethglobal-cover-background.png",
+      "destinationPath": "apps/web/public/assets/marketing/ethglobal-cover-background.png",
+      "intendedFamily": "marketing-background",
+      "operation": "cover-1920x1080",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1672,
+      "height": 941,
+      "hasAlpha": false,
+      "visibleAlphaBounds": null,
+      "visiblePixelRatio": null,
+      "sha256": "ea9e34edc80766c66257871563e7678e631f87e3d6a1c0a4722c85c2d58fd043",
+      "directRuntimeEligible": true
+    },
+    {
+      "expectedFilename": "styleboard.png",
+      "sourceFilename": "detectiveicons.png",
+      "sourcePath": "_asset-drop/detectiveicons.png",
+      "destinationPath": "design/assets-source/style/styleboard.png",
+      "intendedFamily": "style-reference",
+      "operation": "copy",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "visibleAlphaBounds": {
+        "left": 310,
+        "top": 127,
+        "right": 1277,
+        "bottom": 887,
+        "width": 968,
+        "height": 761,
+        "centerX": 793.5,
+        "baseline": 887
+      },
+      "visiblePixelRatio": 0.21213404337565103,
+      "sha256": "fee763c09732ea94292f37e3eb5b15c41c25aa74a65c9edbda08386a00a4df3a",
+      "directRuntimeEligible": true
+    }
+  ],
+  "runtimeFiles": [
+    {
+      "path": "apps/web/public/assets/brand/alibi-logo-mark.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 131,
+          "top": 61,
+          "right": 946,
+          "bottom": 894,
+          "width": 816,
+          "height": 834,
+          "centerX": 538.5,
+          "baseline": 894
+        },
+        "nonzeroBounds": {
+          "left": 128,
+          "top": 61,
+          "right": 1020,
+          "bottom": 934,
+          "width": 893,
+          "height": 874,
+          "centerX": 574,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.32895374298095703,
+        "nonzeroPixelRatio": 0.3297767639160156,
+        "transparentPixelRatio": 0.6702232360839844
+      },
+      "sha256": "bf23fc5bc03bc97cb9f642a14ea3ffd07945efbc377ab5e34a1a258a94b069d8"
+    },
+    {
+      "path": "apps/web/public/assets/brand/favicon.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 256,
+      "height": 256,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 32,
+          "top": 15,
+          "right": 236,
+          "bottom": 223,
+          "width": 205,
+          "height": 209,
+          "centerX": 134,
+          "baseline": 223
+        },
+        "nonzeroBounds": {
+          "left": 30,
+          "top": 13,
+          "right": 238,
+          "bottom": 225,
+          "width": 209,
+          "height": 213,
+          "centerX": 134,
+          "baseline": 225
+        },
+        "visiblePixelRatio": 0.3335418701171875,
+        "nonzeroPixelRatio": 0.3446807861328125,
+        "transparentPixelRatio": 0.6553192138671875
+      },
+      "sha256": "6fc91875cf1cf3603e1e83b852b23d9701ef8263a773ba7bb7414055e7367b63"
+    },
+    {
+      "path": "apps/web/public/assets/brand/the-last-alibi-wordmark.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 745,
+      "height": 142,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 10,
+          "top": 9,
+          "right": 733,
+          "bottom": 130,
+          "width": 724,
+          "height": 122,
+          "centerX": 371.5,
+          "baseline": 130
+        },
+        "nonzeroBounds": {
+          "left": 8,
+          "top": 8,
+          "right": 735,
+          "bottom": 132,
+          "width": 728,
+          "height": 125,
+          "centerX": 371.5,
+          "baseline": 132
+        },
+        "visiblePixelRatio": 0.559268361848946,
+        "nonzeroPixelRatio": 0.6185178183193119,
+        "transparentPixelRatio": 0.38148218168068815
+      },
+      "sha256": "3d0b57693482b19b6599dbc3f9c146c737b096b0448517f789d0364ba8739f25"
+    },
+    {
+      "path": "apps/web/public/assets/characters/ada-vale/portrait.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 240,
+          "top": 66,
+          "right": 790,
+          "bottom": 939,
+          "width": 551,
+          "height": 874,
+          "centerX": 515,
+          "baseline": 939
+        },
+        "nonzeroBounds": {
+          "left": 44,
+          "top": 6,
+          "right": 1020,
+          "bottom": 965,
+          "width": 977,
+          "height": 960,
+          "centerX": 532,
+          "baseline": 965
+        },
+        "visiblePixelRatio": 0.3345966339111328,
+        "nonzeroPixelRatio": 0.3359851837158203,
+        "transparentPixelRatio": 0.6640148162841797
+      },
+      "sha256": "f318670bd4c64ac38195ee53b73789af1e7cfda2078305db68a752a84d95ef16"
+    },
+    {
+      "path": "apps/web/public/assets/characters/ada-vale/sprites/angry.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 358,
+          "top": 58,
+          "right": 645,
+          "bottom": 936,
+          "width": 288,
+          "height": 879,
+          "centerX": 501.5,
+          "baseline": 936
+        },
+        "nonzeroBounds": {
+          "left": 280,
+          "top": 56,
+          "right": 648,
+          "bottom": 939,
+          "width": 369,
+          "height": 884,
+          "centerX": 464,
+          "baseline": 939
+        },
+        "visiblePixelRatio": 0.141357421875,
+        "nonzeroPixelRatio": 0.14462947845458984,
+        "transparentPixelRatio": 0.8553705215454102
+      },
+      "sha256": "a610e0bcac131aec99f397b1c4bc0c0071da0e5841d2d79685c8474daa7f176c"
+    },
+    {
+      "path": "apps/web/public/assets/characters/ada-vale/sprites/anxious.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 400,
+          "top": 57,
+          "right": 604,
+          "bottom": 936,
+          "width": 205,
+          "height": 880,
+          "centerX": 502,
+          "baseline": 936
+        },
+        "nonzeroBounds": {
+          "left": 254,
+          "top": 55,
+          "right": 861,
+          "bottom": 965,
+          "width": 608,
+          "height": 911,
+          "centerX": 557.5,
+          "baseline": 965
+        },
+        "visiblePixelRatio": 0.11951828002929688,
+        "nonzeroPixelRatio": 0.12189197540283203,
+        "transparentPixelRatio": 0.878108024597168
+      },
+      "sha256": "47088d2f9ac0394387ae093818ce432bee575c03603bde9693f3b423d4e9a1ed"
+    },
+    {
+      "path": "apps/web/public/assets/characters/ada-vale/sprites/guarded.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 393,
+          "top": 58,
+          "right": 611,
+          "bottom": 936,
+          "width": 219,
+          "height": 879,
+          "centerX": 502,
+          "baseline": 936
+        },
+        "nonzeroBounds": {
+          "left": 256,
+          "top": 54,
+          "right": 613,
+          "bottom": 938,
+          "width": 358,
+          "height": 885,
+          "centerX": 434.5,
+          "baseline": 938
+        },
+        "visiblePixelRatio": 0.12276649475097656,
+        "nonzeroPixelRatio": 0.1254711151123047,
+        "transparentPixelRatio": 0.8745288848876953
+      },
+      "sha256": "b2b26581263cca10395a53aad0593a35ef422eafe8e730d9d53295a451087f10"
+    },
+    {
+      "path": "apps/web/public/assets/characters/ada-vale/sprites/neutral.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 360,
+          "top": 58,
+          "right": 643,
+          "bottom": 936,
+          "width": 284,
+          "height": 879,
+          "centerX": 501.5,
+          "baseline": 936
+        },
+        "nonzeroBounds": {
+          "left": 108,
+          "top": 6,
+          "right": 1020,
+          "bottom": 936,
+          "width": 913,
+          "height": 931,
+          "centerX": 564,
+          "baseline": 936
+        },
+        "visiblePixelRatio": 0.1345653533935547,
+        "nonzeroPixelRatio": 0.1352100372314453,
+        "transparentPixelRatio": 0.8647899627685547
+      },
+      "sha256": "99df384269982c7d882c793112562ebc183fbe14fc58e17dd4b2158f7c71582f"
+    },
+    {
+      "path": "apps/web/public/assets/characters/ada-vale/sprites/relieved.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 371,
+          "top": 57,
+          "right": 633,
+          "bottom": 936,
+          "width": 263,
+          "height": 880,
+          "centerX": 502,
+          "baseline": 936
+        },
+        "nonzeroBounds": {
+          "left": 281,
+          "top": 55,
+          "right": 851,
+          "bottom": 938,
+          "width": 571,
+          "height": 884,
+          "centerX": 566,
+          "baseline": 938
+        },
+        "visiblePixelRatio": 0.1265392303466797,
+        "nonzeroPixelRatio": 0.12879085540771484,
+        "transparentPixelRatio": 0.8712091445922852
+      },
+      "sha256": "55f3cd349ef9ea2c3415421146483a7b084b9cfbad92dfed28e2b14d8b2ae411"
+    },
+    {
+      "path": "apps/web/public/assets/characters/celeste-moreau/portrait.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 184,
+          "top": 38,
+          "right": 798,
+          "bottom": 1023,
+          "width": 615,
+          "height": 986,
+          "centerX": 491,
+          "baseline": 1023
+        },
+        "nonzeroBounds": {
+          "left": 108,
+          "top": 6,
+          "right": 1020,
+          "bottom": 1023,
+          "width": 913,
+          "height": 1018,
+          "centerX": 564,
+          "baseline": 1023
+        },
+        "visiblePixelRatio": 0.41445446014404297,
+        "nonzeroPixelRatio": 0.4156198501586914,
+        "transparentPixelRatio": 0.5843801498413086
+      },
+      "sha256": "92cb296041b757196ad8cfa02c49ff61d09294247fbfffa717f04fd113496a54"
+    },
+    {
+      "path": "apps/web/public/assets/characters/celeste-moreau/sprites/angry.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 387,
+          "top": 45,
+          "right": 645,
+          "bottom": 947,
+          "width": 259,
+          "height": 903,
+          "centerX": 516,
+          "baseline": 947
+        },
+        "nonzeroBounds": {
+          "left": 269,
+          "top": 43,
+          "right": 647,
+          "bottom": 949,
+          "width": 379,
+          "height": 907,
+          "centerX": 458,
+          "baseline": 949
+        },
+        "visiblePixelRatio": 0.13184070587158203,
+        "nonzeroPixelRatio": 0.1347208023071289,
+        "transparentPixelRatio": 0.8652791976928711
+      },
+      "sha256": "bf80f2c0db0577289ebc1f82e3e4b88ec9f8b2a433273755acabe8705f6310e1"
+    },
+    {
+      "path": "apps/web/public/assets/characters/celeste-moreau/sprites/anxious.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 413,
+          "top": 47,
+          "right": 619,
+          "bottom": 947,
+          "width": 207,
+          "height": 901,
+          "centerX": 516,
+          "baseline": 947
+        },
+        "nonzeroBounds": {
+          "left": 277,
+          "top": 43,
+          "right": 863,
+          "bottom": 950,
+          "width": 587,
+          "height": 908,
+          "centerX": 570,
+          "baseline": 950
+        },
+        "visiblePixelRatio": 0.10906696319580078,
+        "nonzeroPixelRatio": 0.11131858825683594,
+        "transparentPixelRatio": 0.8886814117431641
+      },
+      "sha256": "57b614af54cafbfb8087f9748fc9f16f184f5fcf1d53a8ca05273c0d39ab11ae"
+    },
+    {
+      "path": "apps/web/public/assets/characters/celeste-moreau/sprites/guarded.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 415,
+          "top": 46,
+          "right": 617,
+          "bottom": 947,
+          "width": 203,
+          "height": 902,
+          "centerX": 516,
+          "baseline": 947
+        },
+        "nonzeroBounds": {
+          "left": 267,
+          "top": 44,
+          "right": 863,
+          "bottom": 949,
+          "width": 597,
+          "height": 906,
+          "centerX": 565,
+          "baseline": 949
+        },
+        "visiblePixelRatio": 0.1069650650024414,
+        "nonzeroPixelRatio": 0.10915660858154297,
+        "transparentPixelRatio": 0.890843391418457
+      },
+      "sha256": "a2c148669f5f81c1c65a00408e66d72ca06e32085a8f5814c6997ae109e7c0ff"
+    },
+    {
+      "path": "apps/web/public/assets/characters/celeste-moreau/sprites/neutral.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 389,
+          "top": 46,
+          "right": 643,
+          "bottom": 947,
+          "width": 255,
+          "height": 902,
+          "centerX": 516,
+          "baseline": 947
+        },
+        "nonzeroBounds": {
+          "left": 260,
+          "top": 41,
+          "right": 645,
+          "bottom": 950,
+          "width": 386,
+          "height": 910,
+          "centerX": 452.5,
+          "baseline": 950
+        },
+        "visiblePixelRatio": 0.11902904510498047,
+        "nonzeroPixelRatio": 0.11978721618652344,
+        "transparentPixelRatio": 0.8802127838134766
+      },
+      "sha256": "830a2e2b9d322116b285ed8c688bd3b662f80b9c10d2592c0cedbe782a014fa6"
+    },
+    {
+      "path": "apps/web/public/assets/characters/celeste-moreau/sprites/relieved.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 385,
+          "top": 46,
+          "right": 648,
+          "bottom": 947,
+          "width": 264,
+          "height": 902,
+          "centerX": 516.5,
+          "baseline": 947
+        },
+        "nonzeroBounds": {
+          "left": 319,
+          "top": 43,
+          "right": 650,
+          "bottom": 949,
+          "width": 332,
+          "height": 907,
+          "centerX": 484.5,
+          "baseline": 949
+        },
+        "visiblePixelRatio": 0.113983154296875,
+        "nonzeroPixelRatio": 0.11664676666259766,
+        "transparentPixelRatio": 0.8833532333374023
+      },
+      "sha256": "f9dcbbbaf1460cc7a85445495b19ce6c9bee120b96b3492c11efb6a8b64ad2d6"
+    },
+    {
+      "path": "apps/web/public/assets/characters/marcus-reed/portrait.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 93,
+          "top": 39,
+          "right": 908,
+          "bottom": 1023,
+          "width": 816,
+          "height": 985,
+          "centerX": 500.5,
+          "baseline": 1023
+        },
+        "nonzeroBounds": {
+          "left": 89,
+          "top": 39,
+          "right": 910,
+          "bottom": 1023,
+          "width": 822,
+          "height": 985,
+          "centerX": 499.5,
+          "baseline": 1023
+        },
+        "visiblePixelRatio": 0.5030698776245117,
+        "nonzeroPixelRatio": 0.5038356781005859,
+        "transparentPixelRatio": 0.49616432189941406
+      },
+      "sha256": "47042b58857581cab3ac9bc7f944d605de07aaa254ad28bb1764654d8d661c44"
+    },
+    {
+      "path": "apps/web/public/assets/characters/marcus-reed/sprites/angry.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 332,
+          "top": 49,
+          "right": 692,
+          "bottom": 922,
+          "width": 361,
+          "height": 874,
+          "centerX": 512,
+          "baseline": 922
+        },
+        "nonzeroBounds": {
+          "left": 278,
+          "top": 46,
+          "right": 865,
+          "bottom": 924,
+          "width": 588,
+          "height": 879,
+          "centerX": 571.5,
+          "baseline": 924
+        },
+        "visiblePixelRatio": 0.18696308135986328,
+        "nonzeroPixelRatio": 0.19030380249023438,
+        "transparentPixelRatio": 0.8096961975097656
+      },
+      "sha256": "02ddb268c8da20b63255f1ae6509a7765466a030dc311350079d59f00a373d94"
+    },
+    {
+      "path": "apps/web/public/assets/characters/marcus-reed/sprites/anxious.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 363,
+          "top": 48,
+          "right": 661,
+          "bottom": 922,
+          "width": 299,
+          "height": 875,
+          "centerX": 512,
+          "baseline": 922
+        },
+        "nonzeroBounds": {
+          "left": 298,
+          "top": 46,
+          "right": 663,
+          "bottom": 924,
+          "width": 366,
+          "height": 879,
+          "centerX": 480.5,
+          "baseline": 924
+        },
+        "visiblePixelRatio": 0.15015220642089844,
+        "nonzeroPixelRatio": 0.15289688110351562,
+        "transparentPixelRatio": 0.8471031188964844
+      },
+      "sha256": "09955aa27c5e0ade525ffc9228f5b846228ec74084bc63a807557736d32175ca"
+    },
+    {
+      "path": "apps/web/public/assets/characters/marcus-reed/sprites/guarded.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 347,
+          "top": 49,
+          "right": 676,
+          "bottom": 922,
+          "width": 330,
+          "height": 874,
+          "centerX": 511.5,
+          "baseline": 922
+        },
+        "nonzeroBounds": {
+          "left": 291,
+          "top": 47,
+          "right": 679,
+          "bottom": 924,
+          "width": 389,
+          "height": 878,
+          "centerX": 485,
+          "baseline": 924
+        },
+        "visiblePixelRatio": 0.15619468688964844,
+        "nonzeroPixelRatio": 0.15898799896240234,
+        "transparentPixelRatio": 0.8410120010375977
+      },
+      "sha256": "d111f0105e0919de909898701279374bb467f75c4fd64aa8d3e1e37ad0dc12a1"
+    },
+    {
+      "path": "apps/web/public/assets/characters/marcus-reed/sprites/neutral.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 350,
+          "top": 49,
+          "right": 673,
+          "bottom": 922,
+          "width": 324,
+          "height": 874,
+          "centerX": 511.5,
+          "baseline": 922
+        },
+        "nonzeroBounds": {
+          "left": 276,
+          "top": 48,
+          "right": 673,
+          "bottom": 934,
+          "width": 398,
+          "height": 887,
+          "centerX": 474.5,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.16812896728515625,
+        "nonzeroPixelRatio": 0.16884613037109375,
+        "transparentPixelRatio": 0.8311538696289062
+      },
+      "sha256": "8396c72436faf6b0d02889ebcb6de583272e3b74ce577902c70703fdc810185f"
+    },
+    {
+      "path": "apps/web/public/assets/characters/marcus-reed/sprites/relieved.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 346,
+          "top": 48,
+          "right": 677,
+          "bottom": 922,
+          "width": 332,
+          "height": 875,
+          "centerX": 511.5,
+          "baseline": 922
+        },
+        "nonzeroBounds": {
+          "left": 294,
+          "top": 47,
+          "right": 950,
+          "bottom": 923,
+          "width": 657,
+          "height": 877,
+          "centerX": 622,
+          "baseline": 923
+        },
+        "visiblePixelRatio": 0.17191028594970703,
+        "nonzeroPixelRatio": 0.1748943328857422,
+        "transparentPixelRatio": 0.8251056671142578
+      },
+      "sha256": "921bcf52ea679688a84fbf1856e39f0bddfcef980e1e70b024337f55fe2f9dee"
+    },
+    {
+      "path": "apps/web/public/assets/characters/theo-lin/portrait.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 184,
+          "top": 44,
+          "right": 882,
+          "bottom": 1023,
+          "width": 699,
+          "height": 980,
+          "centerX": 533,
+          "baseline": 1023
+        },
+        "nonzeroBounds": {
+          "left": 4,
+          "top": 6,
+          "right": 1020,
+          "bottom": 1023,
+          "width": 1017,
+          "height": 1018,
+          "centerX": 512,
+          "baseline": 1023
+        },
+        "visiblePixelRatio": 0.43601417541503906,
+        "nonzeroPixelRatio": 0.43741607666015625,
+        "transparentPixelRatio": 0.5625839233398438
+      },
+      "sha256": "75ba0a22a897bfed76f9c84089e326856786c0773405308bf108307c447824b2"
+    },
+    {
+      "path": "apps/web/public/assets/characters/theo-lin/sprites/angry.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 347,
+          "top": 49,
+          "right": 669,
+          "bottom": 916,
+          "width": 323,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        },
+        "nonzeroBounds": {
+          "left": 281,
+          "top": 49,
+          "right": 669,
+          "bottom": 922,
+          "width": 389,
+          "height": 874,
+          "centerX": 475,
+          "baseline": 922
+        },
+        "visiblePixelRatio": 0.17630386352539062,
+        "nonzeroPixelRatio": 0.17932605743408203,
+        "transparentPixelRatio": 0.820673942565918
+      },
+      "sha256": "5489f98013babce6f141cf3fccd3d04302f0aa13ca9c50061ec1e4043b3e03e5"
+    },
+    {
+      "path": "apps/web/public/assets/characters/theo-lin/sprites/anxious.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 355,
+          "top": 48,
+          "right": 662,
+          "bottom": 916,
+          "width": 308,
+          "height": 869,
+          "centerX": 508.5,
+          "baseline": 916
+        },
+        "nonzeroBounds": {
+          "left": 269,
+          "top": 45,
+          "right": 665,
+          "bottom": 918,
+          "width": 397,
+          "height": 874,
+          "centerX": 467,
+          "baseline": 918
+        },
+        "visiblePixelRatio": 0.16578197479248047,
+        "nonzeroPixelRatio": 0.16843414306640625,
+        "transparentPixelRatio": 0.8315658569335938
+      },
+      "sha256": "953db25f3098434844e68447037f274ddd668846ffc0a4d3a9cc7eb8502e8488"
+    },
+    {
+      "path": "apps/web/public/assets/characters/theo-lin/sprites/guarded.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 346,
+          "top": 49,
+          "right": 670,
+          "bottom": 916,
+          "width": 325,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        },
+        "nonzeroBounds": {
+          "left": 36,
+          "top": 30,
+          "right": 985,
+          "bottom": 934,
+          "width": 950,
+          "height": 905,
+          "centerX": 510.5,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.16928672790527344,
+        "nonzeroPixelRatio": 0.17218494415283203,
+        "transparentPixelRatio": 0.827815055847168
+      },
+      "sha256": "3a2e8238b40d35813add7c77d5db77a00d0bfb6eefcb4419842760cc7f5222db"
+    },
+    {
+      "path": "apps/web/public/assets/characters/theo-lin/sprites/neutral.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 356,
+          "top": 49,
+          "right": 660,
+          "bottom": 916,
+          "width": 305,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        },
+        "nonzeroBounds": {
+          "left": 108,
+          "top": 14,
+          "right": 884,
+          "bottom": 934,
+          "width": 777,
+          "height": 921,
+          "centerX": 496,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.16396236419677734,
+        "nonzeroPixelRatio": 0.16483116149902344,
+        "transparentPixelRatio": 0.8351688385009766
+      },
+      "sha256": "fa0b04ba1905a4f3b9538e2b584e7934f86d1bf6b2233ced68730e697dc1197e"
+    },
+    {
+      "path": "apps/web/public/assets/characters/theo-lin/sprites/relieved.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 355,
+          "top": 49,
+          "right": 661,
+          "bottom": 916,
+          "width": 307,
+          "height": 868,
+          "centerX": 508,
+          "baseline": 916
+        },
+        "nonzeroBounds": {
+          "left": 57,
+          "top": 15,
+          "right": 1005,
+          "bottom": 947,
+          "width": 949,
+          "height": 933,
+          "centerX": 531,
+          "baseline": 947
+        },
+        "visiblePixelRatio": 0.16497039794921875,
+        "nonzeroPixelRatio": 0.16817760467529297,
+        "transparentPixelRatio": 0.831822395324707
+      },
+      "sha256": "f2d920e8437c0d85679d94c0a4bd7c3f13c4cb38bff1e33100a97ff5fd9ed897"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/certified-disclosure.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 330,
+          "top": 274,
+          "right": 723,
+          "bottom": 676,
+          "width": 394,
+          "height": 403,
+          "centerX": 526.5,
+          "baseline": 676
+        },
+        "nonzeroBounds": {
+          "left": 4,
+          "top": 6,
+          "right": 1020,
+          "bottom": 1022,
+          "width": 1017,
+          "height": 1017,
+          "centerX": 512,
+          "baseline": 1022
+        },
+        "visiblePixelRatio": 0.13052082061767578,
+        "nonzeroPixelRatio": 0.1311788558959961,
+        "transparentPixelRatio": 0.8688211441040039
+      },
+      "sha256": "5b24af2943f87b66383ff18dc5f3c5c8969a2b45dc7769a42f0848d02c6c72aa"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/player-hypothesis.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 280,
+          "top": 208,
+          "right": 778,
+          "bottom": 699,
+          "width": 499,
+          "height": 492,
+          "centerX": 529,
+          "baseline": 699
+        },
+        "nonzeroBounds": {
+          "left": 260,
+          "top": 142,
+          "right": 780,
+          "bottom": 934,
+          "width": 521,
+          "height": 793,
+          "centerX": 520,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.16872024536132812,
+        "nonzeroPixelRatio": 0.1691722869873047,
+        "transparentPixelRatio": 0.8308277130126953
+      },
+      "sha256": "8fc2f3a9ced800bf9b42d7001df1efe8a61164e948a9b96dc1c8d5bc4cef55a8"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/public-observation.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 218,
+          "top": 234,
+          "right": 806,
+          "bottom": 753,
+          "width": 589,
+          "height": 520,
+          "centerX": 512,
+          "baseline": 753
+        },
+        "nonzeroBounds": {
+          "left": 216,
+          "top": 6,
+          "right": 1020,
+          "bottom": 990,
+          "width": 805,
+          "height": 985,
+          "centerX": 618,
+          "baseline": 990
+        },
+        "visiblePixelRatio": 0.20753860473632812,
+        "nonzeroPixelRatio": 0.20834064483642578,
+        "transparentPixelRatio": 0.7916593551635742
+      },
+      "sha256": "bd346abd67a9441f04a7d0d2c1c184378cce1260564386a099d8b8b76b499e14"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/time-after-blackout.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 248,
+          "top": 196,
+          "right": 850,
+          "bottom": 743,
+          "width": 603,
+          "height": 548,
+          "centerX": 549,
+          "baseline": 743
+        },
+        "nonzeroBounds": {
+          "left": 4,
+          "top": 6,
+          "right": 1020,
+          "bottom": 1022,
+          "width": 1017,
+          "height": 1017,
+          "centerX": 512,
+          "baseline": 1022
+        },
+        "visiblePixelRatio": 0.20912647247314453,
+        "nonzeroPixelRatio": 0.21006488800048828,
+        "transparentPixelRatio": 0.7899351119995117
+      },
+      "sha256": "0828a2ebb4212ecb8e504539a6810672f8341ce7eca534e96c28b2cf3a05dfce"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/time-before-blackout.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 243,
+          "top": 197,
+          "right": 836,
+          "bottom": 743,
+          "width": 594,
+          "height": 547,
+          "centerX": 539.5,
+          "baseline": 743
+        },
+        "nonzeroBounds": {
+          "left": 4,
+          "top": 6,
+          "right": 1020,
+          "bottom": 1022,
+          "width": 1017,
+          "height": 1017,
+          "centerX": 512,
+          "baseline": 1022
+        },
+        "visiblePixelRatio": 0.20757675170898438,
+        "nonzeroPixelRatio": 0.2087240219116211,
+        "transparentPixelRatio": 0.7912759780883789
+      },
+      "sha256": "f5945bb11942fa5fb50534914b553e4f800a854fc38ed14bbb296502cc2ad4ce"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/unverified-testimony.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 273,
+          "top": 300,
+          "right": 783,
+          "bottom": 677,
+          "width": 511,
+          "height": 378,
+          "centerX": 528,
+          "baseline": 677
+        },
+        "nonzeroBounds": {
+          "left": 4,
+          "top": 6,
+          "right": 1020,
+          "bottom": 1022,
+          "width": 1017,
+          "height": 1017,
+          "centerX": 512,
+          "baseline": 1022
+        },
+        "visiblePixelRatio": 0.14081954956054688,
+        "nonzeroPixelRatio": 0.141571044921875,
+        "transparentPixelRatio": 0.858428955078125
+      },
+      "sha256": "2eebe754a7374824ed0d589a7fd2b5f7baf871b31e4e0427a3f07c4b3917a128"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/weapon-bronze-bust.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 234,
+          "top": 103,
+          "right": 748,
+          "bottom": 923,
+          "width": 515,
+          "height": 821,
+          "centerX": 491,
+          "baseline": 923
+        },
+        "nonzeroBounds": {
+          "left": 44,
+          "top": 6,
+          "right": 1020,
+          "bottom": 965,
+          "width": 977,
+          "height": 960,
+          "centerX": 532,
+          "baseline": 965
+        },
+        "visiblePixelRatio": 0.25700855255126953,
+        "nonzeroPixelRatio": 0.25844860076904297,
+        "transparentPixelRatio": 0.741551399230957
+      },
+      "sha256": "3fce511bed5114bf480774a49c068e3a19b5b28342ebe0dcb31baf19905d5e8c"
+    },
+    {
+      "path": "apps/web/public/assets/evidence/weapon-ceremonial-dagger.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 299,
+          "top": 262,
+          "right": 780,
+          "bottom": 731,
+          "width": 482,
+          "height": 470,
+          "centerX": 539.5,
+          "baseline": 731
+        },
+        "nonzeroBounds": {
+          "left": 8,
+          "top": 170,
+          "right": 1002,
+          "bottom": 851,
+          "width": 995,
+          "height": 682,
+          "centerX": 505,
+          "baseline": 851
+        },
+        "visiblePixelRatio": 0.05234050750732422,
+        "nonzeroPixelRatio": 0.055052757263183594,
+        "transparentPixelRatio": 0.9449472427368164
+      },
+      "sha256": "3c23c22f8e3a5702e7c59899463e251c236cc6e7f68585e7fc35ac4c443306df"
+    },
+    {
+      "path": "apps/web/public/assets/map/museum-map-base.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "2164ec465d13e86b9e8feecf8065ebc4b31b31826db10c1b2d15554615628730"
+    },
+    {
+      "path": "apps/web/public/assets/marketing/ethglobal-cover-background.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "56a9ea8373140689ab2096c3a7acf8d2b65aef412ab55a1a04b6e281eb7d7640"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/archive-vault/background.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "6a1aa81bc1d132c9f538a34646385bac0b3c165d6446b39c2c877f50ad13f43a"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/archive-vault/foreground.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 0,
+          "top": 641,
+          "right": 1919,
+          "bottom": 1079,
+          "width": 1920,
+          "height": 439,
+          "centerX": 959.5,
+          "baseline": 1079
+        },
+        "nonzeroBounds": {
+          "left": 0,
+          "top": 2,
+          "right": 1919,
+          "bottom": 1079,
+          "width": 1920,
+          "height": 1078,
+          "centerX": 959.5,
+          "baseline": 1079
+        },
+        "visiblePixelRatio": 0.09783130787037037,
+        "nonzeroPixelRatio": 0.10115885416666667,
+        "transparentPixelRatio": 0.8988411458333333
+      },
+      "sha256": "493695c991b013a6f12749f20cc3d506c4f66d66ada265941469582b3518f7d8"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/archive-vault/thumbnail.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 960,
+      "height": 540,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "f2c4a45f102125f4e7a9d9e3d20c628dc29928653857a41ed9c0da9863fbdea6"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/grand-gallery/background.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "89d3f3fa127497212f1ce1d6f7744f5bc3fea231b89cbc911595106e328ae882"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/grand-gallery/foreground.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 0,
+          "top": 599,
+          "right": 1919,
+          "bottom": 1064,
+          "width": 1920,
+          "height": 466,
+          "centerX": 959.5,
+          "baseline": 1064
+        },
+        "nonzeroBounds": {
+          "left": 0,
+          "top": 0,
+          "right": 1919,
+          "bottom": 1079,
+          "width": 1920,
+          "height": 1080,
+          "centerX": 959.5,
+          "baseline": 1079
+        },
+        "visiblePixelRatio": 0.1626639660493827,
+        "nonzeroPixelRatio": 0.2054586226851852,
+        "transparentPixelRatio": 0.7945413773148148
+      },
+      "sha256": "2f4db0b2da7a0a37c439d7c72944b1bdb613d503a90c97e9479cf040eaef30ef"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/grand-gallery/thumbnail.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 960,
+      "height": 540,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "26a4dafd586d226340acf15359d7a05392afd1f4a76f9e94af554027eb0de449"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/restoration-lab/background.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "9da43ed8ef9074734e0fcfd7aa73536fef84796bd2c7b0f449782a76dd7750af"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/restoration-lab/foreground.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 0,
+          "top": 766,
+          "right": 1919,
+          "bottom": 1079,
+          "width": 1920,
+          "height": 314,
+          "centerX": 959.5,
+          "baseline": 1079
+        },
+        "nonzeroBounds": {
+          "left": 0,
+          "top": 0,
+          "right": 1919,
+          "bottom": 1079,
+          "width": 1920,
+          "height": 1080,
+          "centerX": 959.5,
+          "baseline": 1079
+        },
+        "visiblePixelRatio": 0.07723234953703703,
+        "nonzeroPixelRatio": 0.0813353587962963,
+        "transparentPixelRatio": 0.9186646412037037
+      },
+      "sha256": "b445c57fcbfbd6b2c2babd1d5bd6d1fc562cabc97a4a88e3014a2cf368b5b1d9"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/restoration-lab/thumbnail.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 960,
+      "height": 540,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "ad44c7c1ad19a99d1fc55d5bffa40aa551830c031283a00c4df3d8581e719cab"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/rooftop-conservatory/background.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "38463d95b2dfd202f3c13a68d378c61bbd6a43ab8dbeb58200acf7cc2968c9be"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/rooftop-conservatory/foreground.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1920,
+      "height": 1080,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 0,
+          "top": 605,
+          "right": 1919,
+          "bottom": 1079,
+          "width": 1920,
+          "height": 475,
+          "centerX": 959.5,
+          "baseline": 1079
+        },
+        "nonzeroBounds": {
+          "left": 0,
+          "top": 2,
+          "right": 1919,
+          "bottom": 1079,
+          "width": 1920,
+          "height": 1078,
+          "centerX": 959.5,
+          "baseline": 1079
+        },
+        "visiblePixelRatio": 0.10697289737654321,
+        "nonzeroPixelRatio": 0.11060570987654321,
+        "transparentPixelRatio": 0.8893942901234568
+      },
+      "sha256": "c8df3ad650c68f2d60602ebeff2aa0b7d8836045b9d0f011e9c04eee5f7e81f5"
+    },
+    {
+      "path": "apps/web/public/assets/rooms/rooftop-conservatory/thumbnail.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 960,
+      "height": 540,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "55e738d9a22e817d5663cedf875d13a4c0e81e38e4698a357fc320a4f2539de0"
+    },
+    {
+      "path": "apps/web/public/assets/screens/case-introduction-art.webp",
+      "actualFormat": "webp",
+      "extension": ".webp",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "124f50cc0256c5f339a2eeb721a44167199cb99e470827f939ee0a2c1b63425f"
+    },
+    {
+      "path": "apps/web/public/assets/screens/landing-key-art.webp",
+      "actualFormat": "webp",
+      "extension": ".webp",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "3ebab82292423a43dd7155a8b148f1f4649f333d80111b6a36f4deaf969aa10f"
+    },
+    {
+      "path": "apps/web/public/assets/screens/verdict-no-background.webp",
+      "actualFormat": "webp",
+      "extension": ".webp",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "a172328acda67897a24a2f537864015523c17f2c5dee61e5a7e6233515465371"
+    },
+    {
+      "path": "apps/web/public/assets/screens/verdict-yes-background.webp",
+      "actualFormat": "webp",
+      "extension": ".webp",
+      "width": 1920,
+      "height": 1080,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "84425073d9690986b29e500b8711c4e2f541330016bbc616376152f3c7893ad1"
+    },
+    {
+      "path": "apps/web/public/assets/ui/proof-failed.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 289,
+          "top": 259,
+          "right": 731,
+          "bottom": 699,
+          "width": 443,
+          "height": 441,
+          "centerX": 510,
+          "baseline": 699
+        },
+        "nonzeroBounds": {
+          "left": 260,
+          "top": 142,
+          "right": 733,
+          "bottom": 934,
+          "width": 474,
+          "height": 793,
+          "centerX": 496.5,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.1497488021850586,
+        "nonzeroPixelRatio": 0.15057086944580078,
+        "transparentPixelRatio": 0.8494291305541992
+      },
+      "sha256": "cb5201e9a7652bbcde3d846714091c2b4b499ad8ccdc397ab1d642d50b6d1ef0"
+    },
+    {
+      "path": "apps/web/public/assets/ui/proof-pending.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 268,
+          "top": 267,
+          "right": 741,
+          "bottom": 709,
+          "width": 474,
+          "height": 443,
+          "centerX": 504.5,
+          "baseline": 709
+        },
+        "nonzeroBounds": {
+          "left": 264,
+          "top": 264,
+          "right": 743,
+          "bottom": 934,
+          "width": 480,
+          "height": 671,
+          "centerX": 503.5,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.16245269775390625,
+        "nonzeroPixelRatio": 0.16306209564208984,
+        "transparentPixelRatio": 0.8369379043579102
+      },
+      "sha256": "c81c55ae05170c1497fce4c128467485bd0e704413ef4380be3164e4e78ee562"
+    },
+    {
+      "path": "apps/web/public/assets/ui/proof-verified.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 291,
+          "top": 260,
+          "right": 732,
+          "bottom": 692,
+          "width": 442,
+          "height": 433,
+          "centerX": 511.5,
+          "baseline": 692
+        },
+        "nonzeroBounds": {
+          "left": 260,
+          "top": 142,
+          "right": 884,
+          "bottom": 934,
+          "width": 625,
+          "height": 793,
+          "centerX": 572,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.14683914184570312,
+        "nonzeroPixelRatio": 0.14751625061035156,
+        "transparentPixelRatio": 0.8524837493896484
+      },
+      "sha256": "6b0de47155687a2c13b04cc5c258e7424345d5572495167d5e3f825a775c4cb4"
+    },
+    {
+      "path": "apps/web/public/assets/ui/ranked-agent-mark.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 237,
+          "top": 207,
+          "right": 786,
+          "bottom": 739,
+          "width": 550,
+          "height": 533,
+          "centerX": 511.5,
+          "baseline": 739
+        },
+        "nonzeroBounds": {
+          "left": 232,
+          "top": 206,
+          "right": 843,
+          "bottom": 965,
+          "width": 612,
+          "height": 760,
+          "centerX": 537.5,
+          "baseline": 965
+        },
+        "visiblePixelRatio": 0.22068214416503906,
+        "nonzeroPixelRatio": 0.22135639190673828,
+        "transparentPixelRatio": 0.7786436080932617
+      },
+      "sha256": "201f483973dd12c978184751c9060c88332d974499409d69e4a769672a7e7914"
+    },
+    {
+      "path": "apps/web/public/assets/ui/seal-access-approved.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 268,
+          "top": 267,
+          "right": 741,
+          "bottom": 709,
+          "width": 474,
+          "height": 443,
+          "centerX": 504.5,
+          "baseline": 709
+        },
+        "nonzeroBounds": {
+          "left": 260,
+          "top": 102,
+          "right": 964,
+          "bottom": 965,
+          "width": 705,
+          "height": 864,
+          "centerX": 612,
+          "baseline": 965
+        },
+        "visiblePixelRatio": 0.16164588928222656,
+        "nonzeroPixelRatio": 0.16222667694091797,
+        "transparentPixelRatio": 0.837773323059082
+      },
+      "sha256": "14b749e01cbafb1d86963356810584453780319ac3b42bb5827c86aa261b5cd2"
+    },
+    {
+      "path": "apps/web/public/assets/ui/seal-access-denied.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 286,
+          "top": 243,
+          "right": 741,
+          "bottom": 696,
+          "width": 456,
+          "height": 454,
+          "centerX": 513.5,
+          "baseline": 696
+        },
+        "nonzeroBounds": {
+          "left": 276,
+          "top": 240,
+          "right": 743,
+          "bottom": 934,
+          "width": 468,
+          "height": 695,
+          "centerX": 509.5,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.15903663635253906,
+        "nonzeroPixelRatio": 0.1596546173095703,
+        "transparentPixelRatio": 0.8403453826904297
+      },
+      "sha256": "f75c3dd58b430988681f579676139582cddb1aef751d6d7d063adae355868544"
+    },
+    {
+      "path": "apps/web/public/assets/ui/technical-drawer-mark.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 208,
+          "top": 272,
+          "right": 815,
+          "bottom": 654,
+          "width": 608,
+          "height": 383,
+          "centerX": 511.5,
+          "baseline": 654
+        },
+        "nonzeroBounds": {
+          "left": 208,
+          "top": 142,
+          "right": 815,
+          "bottom": 934,
+          "width": 608,
+          "height": 793,
+          "centerX": 511.5,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.2021465301513672,
+        "nonzeroPixelRatio": 0.20261859893798828,
+        "transparentPixelRatio": 0.7973814010620117
+      },
+      "sha256": "1b0675b1e91c6cb594f6c4a11a727508e6b5b70b07f543e16e2133382de29eba"
+    },
+    {
+      "path": "apps/web/public/assets/ui/verdict-no.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 274,
+          "top": 254,
+          "right": 750,
+          "bottom": 719,
+          "width": 477,
+          "height": 466,
+          "centerX": 512,
+          "baseline": 719
+        },
+        "nonzeroBounds": {
+          "left": 260,
+          "top": 6,
+          "right": 1020,
+          "bottom": 958,
+          "width": 761,
+          "height": 953,
+          "centerX": 640,
+          "baseline": 958
+        },
+        "visiblePixelRatio": 0.16786956787109375,
+        "nonzeroPixelRatio": 0.1685171127319336,
+        "transparentPixelRatio": 0.8314828872680664
+      },
+      "sha256": "877e991e88e2d2bfc08e5eb695ef5db5b0944163e5c87cb99c08e53ae44dbf6d"
+    },
+    {
+      "path": "apps/web/public/assets/ui/verdict-sealed.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 261,
+          "top": 254,
+          "right": 763,
+          "bottom": 720,
+          "width": 503,
+          "height": 467,
+          "centerX": 512,
+          "baseline": 720
+        },
+        "nonzeroBounds": {
+          "left": 256,
+          "top": 252,
+          "right": 764,
+          "bottom": 934,
+          "width": 509,
+          "height": 683,
+          "centerX": 510,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.17866802215576172,
+        "nonzeroPixelRatio": 0.17917633056640625,
+        "transparentPixelRatio": 0.8208236694335938
+      },
+      "sha256": "715ab8fb6ee9d60a27091566196183a3822e5d7cf56def89ce488dead4b8c66b"
+    },
+    {
+      "path": "apps/web/public/assets/ui/verdict-yes.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 274,
+          "top": 256,
+          "right": 750,
+          "bottom": 720,
+          "width": 477,
+          "height": 465,
+          "centerX": 512,
+          "baseline": 720
+        },
+        "nonzeroBounds": {
+          "left": 272,
+          "top": 254,
+          "right": 751,
+          "bottom": 934,
+          "width": 480,
+          "height": 681,
+          "centerX": 511.5,
+          "baseline": 934
+        },
+        "visiblePixelRatio": 0.16707897186279297,
+        "nonzeroPixelRatio": 0.16759586334228516,
+        "transparentPixelRatio": 0.8324041366577148
+      },
+      "sha256": "aaa370bee57335dadf006921cf79336fab15c74a45692f7dbaa5f904709b4e5f"
+    },
+    {
+      "path": "apps/web/public/assets/ui/warrant-request.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 268,
+          "top": 218,
+          "right": 821,
+          "bottom": 759,
+          "width": 554,
+          "height": 542,
+          "centerX": 544.5,
+          "baseline": 759
+        },
+        "nonzeroBounds": {
+          "left": 108,
+          "top": 6,
+          "right": 1020,
+          "bottom": 990,
+          "width": 913,
+          "height": 985,
+          "centerX": 564,
+          "baseline": 990
+        },
+        "visiblePixelRatio": 0.19064044952392578,
+        "nonzeroPixelRatio": 0.19139671325683594,
+        "transparentPixelRatio": 0.8086032867431641
+      },
+      "sha256": "84c07d72d98d08af75ed1ca93583983c29b4c41782f76314fdd78c92b60d7ba7"
+    }
+  ],
+  "developmentReferences": [
+    {
+      "path": "design/assets-source/characters/ada-vale/reference.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "464738efce9d02f75e302024a4d5b7a32d4a0ac53b4ecfd8dcfbbc06a56bfbee"
+    },
+    {
+      "path": "design/assets-source/characters/celeste-moreau/reference.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "268a64eb925eafe6ad37033026c7ab77694083bd82274e36a5ea0e4d7d078659"
+    },
+    {
+      "path": "design/assets-source/characters/marcus-reed/reference.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "0b20314a454bdc6f3fe95dc7c21c3e7c10c1d4ac3875a7d7429c675cd6385781"
+    },
+    {
+      "path": "design/assets-source/characters/theo-lin/reference.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1448,
+      "height": 1086,
+      "channels": 3,
+      "hasAlpha": false,
+      "alpha": null,
+      "sha256": "95e19cefcd25ac14cd5d4bfd1cde2e483c5f5a1d9449bd0991d34de8abde25c2"
+    },
+    {
+      "path": "design/assets-source/style/styleboard.png",
+      "actualFormat": "png",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "channels": 4,
+      "hasAlpha": true,
+      "alpha": {
+        "threshold": 8,
+        "visibleBounds": {
+          "left": 310,
+          "top": 127,
+          "right": 1277,
+          "bottom": 887,
+          "width": 968,
+          "height": 761,
+          "centerX": 793.5,
+          "baseline": 887
+        },
+        "nonzeroBounds": {
+          "left": 0,
+          "top": 0,
+          "right": 1503,
+          "bottom": 1022,
+          "width": 1504,
+          "height": 1023,
+          "centerX": 751.5,
+          "baseline": 1022
+        },
+        "visiblePixelRatio": 0.21213404337565103,
+        "nonzeroPixelRatio": 0.21514511108398438,
+        "transparentPixelRatio": 0.7848548889160156
+      },
+      "sha256": "fee763c09732ea94292f37e3eb5b15c41c25aa74a65c9edbda08386a00a4df3a"
+    }
+  ]
+}
