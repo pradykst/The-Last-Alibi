@@ -36,6 +36,18 @@ importers:
         specifier: 4.1.10
         version: 4.1.10(@types/node@22.15.3)
 
+  packages/protocol:
+    dependencies:
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
+
+  packages/runtime:
+    dependencies:
+      '@alibi/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+
 packages:
 
   '@babel/code-frame@7.29.7':
