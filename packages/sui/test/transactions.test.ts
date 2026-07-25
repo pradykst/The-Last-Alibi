@@ -6,6 +6,8 @@ import {
   buildCreatePracticeSession,
   buildExpireUnresolvedQuery,
   buildProofBackedResolution,
+  buildProofBackedVerdictFinalization,
+  buildStartTerminalAccusation,
 } from '../src';
 import { LEVEL_ID, PACKAGE_ID, SESSION_ID } from './fixtures';
 
@@ -66,6 +68,31 @@ describe('transaction builders', () => {
     ).toThrowError('not registered');
   });
 
+  it('starts a terminal accusation with only commitment, nonce, and Clock', () => {
+    const accusationCommitment = Uint8Array.from({ length: 32 }, () => 0x22);
+    const data = buildStartTerminalAccusation({
+      packageId: PACKAGE_ID,
+      levelConfigId: LEVEL_ID,
+      sessionId: SESSION_ID,
+      accusationCommitment,
+      expectedAttemptNonce: 0n,
+    }).getData();
+    expect(moveCall(data)).toMatchObject({ module: 'alibi', function: 'start_accusation' });
+    expect(data.inputs).toHaveLength(5);
+    expect(data.inputs[2]).toMatchObject({
+      Pure: { bytes: toBase64(Uint8Array.from([32, ...accusationCommitment])) },
+    });
+    expect(() =>
+      buildStartTerminalAccusation({
+        packageId: PACKAGE_ID,
+        levelConfigId: LEVEL_ID,
+        sessionId: SESSION_ID,
+        accusationCommitment: new Uint8Array(32),
+        expectedAttemptNonce: 0n,
+      }),
+    ).toThrowError('all zeroes');
+  });
+
   it('constructs expiry with no cancellation or result argument', () => {
     const data = buildExpireUnresolvedQuery({
       packageId: PACKAGE_ID,
@@ -92,5 +119,54 @@ describe('transaction builders', () => {
     expect(moveCall(data, 0)).toMatchObject({ module: 'verifier', function: 'verify_query_proof' });
     expect(moveCall(data, 1)).toMatchObject({ module: 'alibi', function: 'resolve_query' });
     expect(moveCall(data, 1).arguments as unknown[]).toHaveLength(3);
+  });
+
+  it('prepares the fail-closed Z1 verdict receipt and terminal consumption', () => {
+    const data = buildProofBackedVerdictFinalization({
+      packageId: PACKAGE_ID,
+      levelConfigId: LEVEL_ID,
+      sessionId: SESSION_ID,
+      attemptNonce: 0n,
+      caseCommitment: Uint8Array.from({ length: 32 }, () => 0x11),
+      accusationCommitment: Uint8Array.from({ length: 32 }, () => 0x22),
+      sessionAttemptDomainCommitment: Uint8Array.from({ length: 32 }, () => 0x33),
+      verdictCommitment: Uint8Array.from({ length: 32 }, () => 0x44),
+      encryptedVerdictBlobId: 1n,
+      expectedVerifierIdentity: Uint8Array.from({ length: 32 }, () => 0xaa),
+      proof: Uint8Array.of(1, 2, 3),
+    }).getData();
+    expect(data.commands).toHaveLength(2);
+    expect(moveCall(data, 0)).toMatchObject({
+      module: 'verifier',
+      function: 'verify_verdict_proof',
+    });
+    expect(moveCall(data, 0).arguments as unknown[]).toHaveLength(11);
+    expect(moveCall(data, 1)).toMatchObject({ module: 'alibi', function: 'finalize_verdict' });
+    expect(moveCall(data, 1).arguments as unknown[]).toHaveLength(4);
+  });
+
+  it('rejects absent verdict blobs, proofs, and malformed commitments client-side', () => {
+    const base = {
+      packageId: PACKAGE_ID,
+      levelConfigId: LEVEL_ID,
+      sessionId: SESSION_ID,
+      attemptNonce: 0n,
+      caseCommitment: Uint8Array.from({ length: 32 }, () => 0x11),
+      accusationCommitment: Uint8Array.from({ length: 32 }, () => 0x22),
+      sessionAttemptDomainCommitment: Uint8Array.from({ length: 32 }, () => 0x33),
+      verdictCommitment: Uint8Array.from({ length: 32 }, () => 0x44),
+      encryptedVerdictBlobId: 1n,
+      expectedVerifierIdentity: Uint8Array.from({ length: 32 }, () => 0xaa),
+      proof: Uint8Array.of(1),
+    };
+    expect(() =>
+      buildProofBackedVerdictFinalization({ ...base, encryptedVerdictBlobId: 0n }),
+    ).toThrowError('blob ID is missing');
+    expect(() =>
+      buildProofBackedVerdictFinalization({ ...base, proof: new Uint8Array() }),
+    ).toThrowError('proof is missing');
+    expect(() =>
+      buildProofBackedVerdictFinalization({ ...base, verdictCommitment: new Uint8Array(32) }),
+    ).toThrowError('all zeroes');
   });
 });

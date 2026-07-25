@@ -15,8 +15,11 @@ import {
   buildCreatePracticeSession,
   buildExpireUnresolvedQuery,
   buildProofBackedResolution,
+  buildProofBackedVerdictFinalization,
+  buildStartTerminalAccusation,
   type BuilderDependencies,
   type FutureProofResolution,
+  type FutureVerdictFinalization,
 } from './transactions';
 
 export type PendingTransaction = { status: 'pending'; digest: string };
@@ -65,6 +68,17 @@ export class AlibiSuiAdapter {
     );
   }
 
+  startAccusation(
+    sessionId: string,
+    accusationCommitment: Uint8Array | string,
+    expectedAttemptNonce: bigint | string,
+  ): Transaction {
+    return buildStartTerminalAccusation(
+      { ...this.config, sessionId, accusationCommitment, expectedAttemptNonce },
+      this.dependencies.builder,
+    );
+  }
+
   expireQuery(sessionId: string): Transaction {
     return buildExpireUnresolvedQuery({ ...this.config, sessionId }, this.dependencies.builder);
   }
@@ -73,6 +87,15 @@ export class AlibiSuiAdapter {
     input: Omit<FutureProofResolution, 'packageId' | 'levelConfigId'>,
   ): Transaction {
     return buildProofBackedResolution({ ...input, ...this.config }, this.dependencies.builder);
+  }
+
+  prepareVerdictFinalization(
+    input: Omit<FutureVerdictFinalization, 'packageId' | 'levelConfigId'>,
+  ): Transaction {
+    return buildProofBackedVerdictFinalization(
+      { ...input, ...this.config },
+      this.dependencies.builder,
+    );
   }
 
   async submit(transaction: Transaction): Promise<PendingTransaction> {

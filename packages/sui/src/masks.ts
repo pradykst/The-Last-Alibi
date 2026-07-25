@@ -1,6 +1,7 @@
 import { sanitizedError } from './errors';
 
 export const U64_MAX = (1n << 64n) - 1n;
+export const U256_MAX = (1n << 256n) - 1n;
 
 export function parseU64(value: bigint | string): bigint {
   if (typeof value === 'number') {
@@ -33,4 +34,27 @@ export function popcountU64(value: bigint | string): number {
     count += 1;
   }
   return count;
+}
+
+export function parseU256(value: bigint | string): bigint {
+  if (typeof value === 'number') {
+    throw sanitizedError('INVALID_INPUT', 'JavaScript numbers are not accepted for u256 values.');
+  }
+  if (typeof value === 'string' && !/^(0|[1-9][0-9]*)$/.test(value)) {
+    throw sanitizedError('INVALID_INPUT', 'The u256 value is not canonically encoded.');
+  }
+  let parsed: bigint;
+  try {
+    parsed = typeof value === 'bigint' ? value : BigInt(value);
+  } catch {
+    throw sanitizedError('INVALID_INPUT', 'The u256 value is invalid.');
+  }
+  if (parsed < 0n || parsed > U256_MAX) {
+    throw sanitizedError('INVALID_INPUT', 'The u256 value is outside the supported range.');
+  }
+  return parsed;
+}
+
+export function u256ToHex(value: bigint | string): string {
+  return `0x${parseU256(value).toString(16).padStart(64, '0')}`;
 }

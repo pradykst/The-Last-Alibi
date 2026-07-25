@@ -15,6 +15,7 @@ import {
 import { z } from 'zod';
 
 import {
+  ACCUSATION_PENDING_STATE,
   ACTIVE_STATE,
   LEVEL_VERSION,
   MOVE_PREDICATES,
@@ -22,10 +23,13 @@ import {
   PROTOCOL_VERSION,
   QUERY_PENDING_STATE,
   SCHEMA_VERSION,
+  TERMINAL_STATE,
+  VERIFIER_AVAILABLE_STATE,
   VERIFIER_UNAVAILABLE_STATE,
+  VERIFIER_VERIFIED_STATUS,
 } from './constants';
 import { sanitizedError } from './errors';
-import { parseU64, popcountU64, u64ToHex } from './masks';
+import { parseU256, parseU64, popcountU64, u256ToHex, u64ToHex } from './masks';
 
 export type MoveObjectEnvelope = {
   objectId: string;
@@ -39,6 +43,8 @@ const smallIntegerSchema = z.union([
   z.string().regex(/^(0|[1-9][0-9]*)$/),
 ]);
 const u64StringSchema = z.string().regex(/^(0|[1-9][0-9]*)$/);
+const u256StringSchema = z.string().regex(/^(0|[1-9][0-9]*)$/);
+const commitmentSchema = byteVectorSchema.length(32);
 const idFieldSchema = z.object({ id: z.string().refine(isValidSuiObjectId) }).strict();
 
 const predicateSchema = z
@@ -63,6 +69,8 @@ const levelFieldsSchema = z
     minimum_survivors: smallIntegerSchema,
     verifier_state: smallIntegerSchema,
     expected_verifier_identity: byteVectorSchema,
+    verdict_verifier_state: smallIntegerSchema,
+    expected_verdict_verifier_identity: byteVectorSchema,
     finalized: z.boolean(),
     predicates: z.array(predicateSchema),
   })
@@ -80,6 +88,29 @@ const pendingFieldsSchema = z
   })
   .strict();
 
+const pendingAccusationFieldsSchema = z
+  .object({
+    attempt_nonce: u64StringSchema,
+    accusation_commitment: commitmentSchema,
+    session_attempt_domain_commitment: commitmentSchema,
+    started_at_ms: u64StringSchema,
+  })
+  .strict();
+
+const verdictFieldsSchema = z
+  .object({
+    attempt_nonce: u64StringSchema,
+    accusation_commitment: commitmentSchema,
+    session_attempt_domain_commitment: commitmentSchema,
+    verdict_commitment: commitmentSchema,
+    encrypted_verdict_blob_id: u256StringSchema,
+    verifier_identity: commitmentSchema,
+    verifier_status: smallIntegerSchema,
+    started_at_ms: u64StringSchema,
+    finalized_at_ms: u64StringSchema,
+  })
+  .strict();
+
 const sessionFieldsSchema = z
   .object({
     id: idFieldSchema,
@@ -92,6 +123,9 @@ const sessionFieldsSchema = z
     used_predicates: smallIntegerSchema,
     query_nonce: u64StringSchema,
     pending_query: z.unknown(),
+    attempt_nonce: u64StringSchema,
+    pending_accusation: z.unknown(),
+    verdict: z.unknown(),
     state: smallIntegerSchema,
     protocol_version: smallIntegerSchema,
     level_version: smallIntegerSchema,
@@ -161,6 +195,8 @@ export type PublicLevelConfig = {
   disclosureLimit: typeof CERTIFIED_DISCLOSURE_LIMIT;
   minimumSurvivors: typeof MINIMUM_SURVIVING_CANDIDATES;
   verifierAvailable: false;
+  verdictVerifierAvailable: boolean;
+  expectedVerdictVerifierIdentity: string | null;
   finalized: true;
   predicates: readonly PublicPredicate[];
 };
@@ -175,6 +211,25 @@ export type PublicPendingQuery = {
   expiresAtMs: string;
 };
 
+export type PublicPendingAccusation = {
+  attemptNonce: string;
+  accusationCommitment: string;
+  sessionAttemptDomainCommitment: string;
+  startedAtMs: string;
+};
+
+export type PublicVerdictRecord = {
+  attemptNonce: string;
+  accusationCommitment: string;
+  sessionAttemptDomainCommitment: string;
+  verdictCommitment: string;
+  encryptedVerdictBlobId: string;
+  verifierIdentity: string;
+  verifierStatus: typeof VERIFIER_VERIFIED_STATUS;
+  startedAtMs: string;
+  finalizedAtMs: string;
+};
+
 export type PublicGameSession = {
   objectId: string;
   player: string;
@@ -187,7 +242,14 @@ export type PublicGameSession = {
   usedPredicates: number;
   queryNonce: string;
   pendingQuery: PublicPendingQuery | null;
-  state: typeof ACTIVE_STATE | typeof QUERY_PENDING_STATE;
+  attemptNonce: string;
+  pendingAccusation: PublicPendingAccusation | null;
+  verdict: PublicVerdictRecord | null;
+  state:
+    | typeof ACTIVE_STATE
+    | typeof QUERY_PENDING_STATE
+    | typeof ACCUSATION_PENDING_STATE
+    | typeof TERMINAL_STATE;
   protocolVersion: typeof PROTOCOL_VERSION;
   levelVersion: typeof LEVEL_VERSION;
 };
@@ -232,6 +294,13 @@ export function decodeLevelConfig(
     smallInteger(fields.minimum_survivors) !== MINIMUM_SURVIVING_CANDIDATES ||
     smallInteger(fields.verifier_state) !== VERIFIER_UNAVAILABLE_STATE ||
     fields.expected_verifier_identity.length !== 0 ||
+    (smallInteger(fields.verdict_verifier_state) !== VERIFIER_UNAVAILABLE_STATE &&
+      smallInteger(fields.verdict_verifier_state) !== VERIFIER_AVAILABLE_STATE) ||
+    (smallInteger(fields.verdict_verifier_state) === VERIFIER_UNAVAILABLE_STATE &&
+      fields.expected_verdict_verifier_identity.length !== 0) ||
+    (smallInteger(fields.verdict_verifier_state) === VERIFIER_AVAILABLE_STATE &&
+      (fields.expected_verdict_verifier_identity.length !== 32 ||
+        fields.expected_verdict_verifier_identity.every((byte) => byte === 0))) ||
     fields.finalized !== true
   ) {
     malformedState();
@@ -247,12 +316,18 @@ export function decodeLevelConfig(
     disclosureLimit: CERTIFIED_DISCLOSURE_LIMIT,
     minimumSurvivors: MINIMUM_SURVIVING_CANDIDATES,
     verifierAvailable: false,
+    verdictVerifierAvailable:
+      smallInteger(fields.verdict_verifier_state) === VERIFIER_AVAILABLE_STATE,
+    expectedVerdictVerifierIdentity:
+      fields.expected_verdict_verifier_identity.length === 0
+        ? null
+        : bytesToHex(fields.expected_verdict_verifier_identity),
     finalized: true,
     predicates,
   };
 }
 
-export function decodePendingQuery(value: unknown): PublicPendingQuery | null {
+function optionValue(value: unknown): unknown | null {
   let contents: unknown[];
   if (value === null) return null;
   if (Array.isArray(value)) contents = value;
@@ -263,7 +338,18 @@ export function decodePendingQuery(value: unknown): PublicPendingQuery | null {
   } else malformedState();
   if (contents.length === 0) return null;
   if (contents.length !== 1) malformedState();
-  const parsed = pendingFieldsSchema.safeParse(contents[0]);
+  return contents[0];
+}
+
+function publicCommitment(bytes: readonly number[]): string {
+  if (bytes.length !== 32 || bytes.every((byte) => byte === 0)) malformedState();
+  return bytesToHex(bytes);
+}
+
+export function decodePendingQuery(value: unknown): PublicPendingQuery | null {
+  const contents = optionValue(value);
+  if (contents === null) return null;
+  const parsed = pendingFieldsSchema.safeParse(contents);
   if (!parsed.success) malformedState();
   const pending = parsed.data;
   const predicateId = smallInteger(pending.predicate_id);
@@ -290,6 +376,44 @@ export function decodePendingQuery(value: unknown): PublicPendingQuery | null {
   };
 }
 
+export function decodePendingAccusation(value: unknown): PublicPendingAccusation | null {
+  const contents = optionValue(value);
+  if (contents === null) return null;
+  const parsed = pendingAccusationFieldsSchema.safeParse(contents);
+  if (!parsed.success) malformedState();
+  return {
+    attemptNonce: parseU64(parsed.data.attempt_nonce).toString(),
+    accusationCommitment: publicCommitment(parsed.data.accusation_commitment),
+    sessionAttemptDomainCommitment: publicCommitment(parsed.data.session_attempt_domain_commitment),
+    startedAtMs: parseU64(parsed.data.started_at_ms).toString(),
+  };
+}
+
+export function decodeVerdictRecord(value: unknown): PublicVerdictRecord | null {
+  const contents = optionValue(value);
+  if (contents === null) return null;
+  const parsed = verdictFieldsSchema.safeParse(contents);
+  if (!parsed.success) malformedState();
+  const blobId = parseU256(parsed.data.encrypted_verdict_blob_id);
+  if (
+    blobId === 0n ||
+    smallInteger(parsed.data.verifier_status) !== VERIFIER_VERIFIED_STATUS ||
+    parseU64(parsed.data.finalized_at_ms) < parseU64(parsed.data.started_at_ms)
+  )
+    malformedState();
+  return {
+    attemptNonce: parseU64(parsed.data.attempt_nonce).toString(),
+    accusationCommitment: publicCommitment(parsed.data.accusation_commitment),
+    sessionAttemptDomainCommitment: publicCommitment(parsed.data.session_attempt_domain_commitment),
+    verdictCommitment: publicCommitment(parsed.data.verdict_commitment),
+    encryptedVerdictBlobId: u256ToHex(blobId),
+    verifierIdentity: publicCommitment(parsed.data.verifier_identity),
+    verifierStatus: VERIFIER_VERIFIED_STATUS,
+    startedAtMs: parseU64(parsed.data.started_at_ms).toString(),
+    finalizedAtMs: parseU64(parsed.data.finalized_at_ms).toString(),
+  };
+}
+
 export function decodeGameSession(
   envelope: MoveObjectEnvelope,
   packageId: string,
@@ -300,17 +424,28 @@ export function decodeGameSession(
   const fields = parsed.data;
   const state = smallInteger(fields.state);
   const pendingQuery = decodePendingQuery(fields.pending_query);
+  const pendingAccusation = decodePendingAccusation(fields.pending_accusation);
+  const verdict = decodeVerdictRecord(fields.verdict);
   const queryNonce = parseU64(fields.query_nonce).toString();
+  const attemptNonce = parseU64(fields.attempt_nonce).toString();
   const disclosureCount = smallInteger(fields.disclosure_count);
   const usedPredicates = smallInteger(fields.used_predicates);
   if (
     normalizeSuiObjectId(fields.id.id) !== normalizeSuiObjectId(envelope.objectId) ||
     smallInteger(fields.mode) !== PRACTICE_MODE ||
-    (state !== ACTIVE_STATE && state !== QUERY_PENDING_STATE) ||
+    (state !== ACTIVE_STATE &&
+      state !== QUERY_PENDING_STATE &&
+      state !== ACCUSATION_PENDING_STATE &&
+      state !== TERMINAL_STATE) ||
     (state === QUERY_PENDING_STATE) !== (pendingQuery !== null) ||
+    (state === ACCUSATION_PENDING_STATE) !== (pendingAccusation !== null) ||
+    (state === TERMINAL_STATE) !== (verdict !== null) ||
     (pendingQuery !== null &&
       (pendingQuery.queryNonce !== queryNonce ||
         pendingQuery.preCandidateMask !== u64ToHex(fields.candidate_mask))) ||
+    (pendingAccusation !== null &&
+      parseU64(pendingAccusation.attemptNonce) + 1n !== parseU64(attemptNonce)) ||
+    (verdict !== null && parseU64(verdict.attemptNonce) + 1n !== parseU64(attemptNonce)) ||
     disclosureCount > CERTIFIED_DISCLOSURE_LIMIT ||
     usedPredicates > 0x0fff ||
     smallInteger(fields.protocol_version) !== PROTOCOL_VERSION ||
@@ -329,6 +464,9 @@ export function decodeGameSession(
     usedPredicates,
     queryNonce,
     pendingQuery,
+    attemptNonce,
+    pendingAccusation,
+    verdict,
     state,
     protocolVersion: PROTOCOL_VERSION,
     levelVersion: LEVEL_VERSION,

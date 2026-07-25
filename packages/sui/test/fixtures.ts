@@ -4,6 +4,11 @@ export const PACKAGE_ID = '0x000000000000000000000000000000000000000000000000000
 export const LEVEL_ID = '0x000000000000000000000000000000000000000000000000000000000001e0e1';
 export const SESSION_ID = '0x00000000000000000000000000000000000000000000000000000000005e5510';
 export const PLAYER = '0x000000000000000000000000000000000000000000000000000000000000cafe';
+export const VERIFIER_IDENTITY = Array.from({ length: 32 }, () => 0xaa);
+
+function commitment(byte: number): number[] {
+  return Array.from({ length: 32 }, () => byte);
+}
 
 export function levelEnvelope(extra: Record<string, unknown> = {}) {
   return {
@@ -21,6 +26,8 @@ export function levelEnvelope(extra: Record<string, unknown> = {}) {
       minimum_survivors: 2,
       verifier_state: 0,
       expected_verifier_identity: [],
+      verdict_verifier_state: 0,
+      expected_verdict_verifier_identity: [],
       finalized: true,
       predicates: REGISTERED_PREDICATES.map((predicate, id) => ({
         id,
@@ -48,6 +55,9 @@ export function sessionEnvelope(extra: Record<string, unknown> = {}) {
       used_predicates: 0,
       query_nonce: '0',
       pending_query: { vec: [] },
+      attempt_nonce: '0',
+      pending_accusation: { vec: [] },
+      verdict: { vec: [] },
       state: 1,
       protocol_version: 1,
       level_version: 1,
@@ -66,5 +76,28 @@ export function pendingQuery() {
     no_branch: (((1n << 64n) - 1n) ^ predicateMask).toString(),
     authorized_at_ms: '1000',
     expires_at_ms: '301000',
+  };
+}
+
+export function pendingAccusation() {
+  return {
+    attempt_nonce: '0',
+    accusation_commitment: commitment(0x22),
+    session_attempt_domain_commitment: commitment(0x33),
+    started_at_ms: '1000',
+  };
+}
+
+export function verdictRecord() {
+  return {
+    attempt_nonce: '0',
+    accusation_commitment: commitment(0x22),
+    session_attempt_domain_commitment: commitment(0x33),
+    verdict_commitment: commitment(0x44),
+    encrypted_verdict_blob_id: '1',
+    verifier_identity: VERIFIER_IDENTITY,
+    verifier_status: 1,
+    started_at_ms: '1000',
+    finalized_at_ms: '2000',
   };
 }

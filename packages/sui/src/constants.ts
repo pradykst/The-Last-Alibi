@@ -6,10 +6,15 @@ export const SCHEMA_VERSION = 1 as const;
 export const LEVEL_VERSION = 1 as const;
 export const PROTOCOL_VERSION = 1 as const;
 export const RECEIPT_VERSION = 1 as const;
+export const VERDICT_RECEIPT_VERSION = 1 as const;
 export const PRACTICE_MODE = 0 as const;
 export const ACTIVE_STATE = 1 as const;
 export const QUERY_PENDING_STATE = 2 as const;
+export const ACCUSATION_PENDING_STATE = 3 as const;
+export const TERMINAL_STATE = 4 as const;
 export const VERIFIER_UNAVAILABLE_STATE = 0 as const;
+export const VERIFIER_AVAILABLE_STATE = 1 as const;
+export const VERIFIER_VERIFIED_STATUS = 1 as const;
 
 export const MOVE_PREDICATES = REGISTERED_PREDICATES.map((predicate, id) => ({
   id,

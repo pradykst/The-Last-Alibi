@@ -1,5 +1,7 @@
 # Sui canonical state (S1)
 
+> S2 extends this frozen S1 foundation with AccusationPending and Terminal state. See [S2 terminal-verdict boundary](./S2_TERMINAL_VERDICT.md) for the current terminal lifecycle and the exact Z1 handoff. The S1 query behavior documented below remains unchanged.
+
 S1 establishes the canonical public state and certified-disclosure transition boundary for **The Last Alibi**. It does not claim a testnet deployment. It creates no wallet, signer, key, mnemonic, keystore, credential, package ID, object ID, transaction digest, checkpoint, or explorer URL.
 
 The implementation follows the repository-pinned Sui documentation in `.tools/sui-pilot`, especially the Move Book sections on [package manifests](../.tools/sui-pilot/.move-book-docs/reference/packages.md), [module initializers](../.tools/sui-pilot/.move-book-docs/book/programmability/module-initializer.md), [object storage](../.tools/sui-pilot/.move-book-docs/book/storage/storage-functions.md), and [unit testing](../.tools/sui-pilot/.move-book-docs/book/testing/index.md), plus the Sui documentation for [the Clock object](../.tools/sui-pilot/.sui-docs/sui-stack/on-chain-primitives/access-time.mdx) and [Groth16](../.tools/sui-pilot/.sui-docs/develop/cryptography/groth16.mdx). The TypeScript package follows the pinned [SDK 2.0 migration guide](../.tools/sui-pilot/.ts-sdk-docs/sui/migrations/sui-2.0/index.mdx) and [transaction guide](../.tools/sui-pilot/.ts-sdk-docs/sui/transactions/basics.mdx).
