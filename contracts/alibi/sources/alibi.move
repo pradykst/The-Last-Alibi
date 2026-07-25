@@ -34,6 +34,8 @@ const EInvalidEncryptedVerdictReference: u64 = 23;
 const EInvalidVerdictReceipt: u64 = 24;
 const EVerdictReceiptReplay: u64 = 25;
 const EUnverifiedVerdict: u64 = 26;
+const EMalformedSealIdentity: u64 = 27;
+const ESealIdentityMismatch: u64 = 28;
 
 const SCHEMA_VERSION: u16 = 1;
 const LEVEL_VERSION: u16 = 1;
@@ -62,6 +64,11 @@ const PRODUCT_ID: vector<u8> = b"the-last-alibi";
 const LEVEL_ID: vector<u8> = b"the-last-exhibit";
 const SESSION_ATTEMPT_DOMAIN: vector<u8> =
     b"the-last-alibi::verdict::session-attempt::v1";
+const SEAL_VERDICT_IDENTITY_DOMAIN: vector<u8> =
+    b"the-last-alibi::seal::verdict-capsule::v1";
+const SEAL_VERDICT_IDENTITY_VERSION: u16 = 1;
+const SEAL_VERDICT_IDENTITY_LENGTH: u64 = 152;
+const SEAL_VERDICT_IDENTITY_DOMAIN_LENGTH: u8 = 41;
 
 /// One-time capability consumed when the canonical level is finalized.
 public struct PublisherCap has key {
@@ -482,7 +489,74 @@ public fun finalize_verdict(
         finalized_at_ms,
     });
 }
+/// Side-effect-free Seal policy for the terminal encrypted verdict capsule.
+///
+/// The `id` is the inner Seal identity, excluding Seal's package namespace.
+/// Key servers evaluate this entry function by dry-run and release shares only
+/// when every identity field equals immutable terminal state for the sender.
+entry fun seal_approve_verdict_capsule(
+    id: vector<u8>,
+    session: &GameSession,
+    ctx: &TxContext,
+) {
+    assert_seal_verdict_access(id, session, ctx.sender());
+}
 
+fun assert_seal_verdict_access(
+    id: vector<u8>,
+    session: &GameSession,
+    requester: address,
+) {
+    assert!(
+        id.length() == SEAL_VERDICT_IDENTITY_LENGTH
+            && id[0] == SEAL_VERDICT_IDENTITY_DOMAIN_LENGTH,
+        EMalformedSealIdentity,
+    );
+    let mut prepared = bcs::new(id);
+    let (
+        domain,
+        identity_version,
+        requested_session,
+        attempt_nonce,
+        protocol_version,
+        level_version,
+        accusation_as_address,
+        verdict_as_address,
+    ) = (
+        prepared.peel_vec_u8(),
+        prepared.peel_u16(),
+        prepared.peel_address(),
+        prepared.peel_u64(),
+        prepared.peel_u16(),
+        prepared.peel_u16(),
+        prepared.peel_address(),
+        prepared.peel_address(),
+    );
+    let remainder = prepared.into_remainder_bytes();
+    assert!(remainder.is_empty(), EMalformedSealIdentity);
+    assert!(
+        domain == SEAL_VERDICT_IDENTITY_DOMAIN
+            && identity_version == SEAL_VERDICT_IDENTITY_VERSION,
+        ESealIdentityMismatch,
+    );
+    assert!(requester == session.player, EUnauthorized);
+    assert!(session.state == STATE_TERMINAL, EInvalidSessionState);
+    assert!(session.verdict.is_some(), EInvalidSessionState);
+
+    let record = session.verdict.borrow();
+    let accusation_commitment = bcs::to_bytes(&accusation_as_address);
+    let verdict_commitment = bcs::to_bytes(&verdict_as_address);
+    assert!(
+        requested_session == object::id(session).to_address()
+            && attempt_nonce == record.attempt_nonce
+            && protocol_version == session.protocol_version
+            && level_version == session.level_version
+            && accusation_commitment == record.accusation_commitment
+            && verdict_commitment == record.verdict_commitment
+            && record.encrypted_verdict_blob_id != 0,
+        ESealIdentityMismatch,
+    );
+}
 /// Authorizes one safe registered query without evaluating the hidden case.
 public fun authorize_query(
     session: &mut GameSession,
@@ -1122,6 +1196,15 @@ public fun verdict_receipt_version_for_testing(): u16 {
     VERDICT_RECEIPT_VERSION
 }
 
+
+#[test_only]
+public fun assert_seal_verdict_access_for_testing(
+    id: vector<u8>,
+    session: &GameSession,
+    requester: address,
+) {
+    assert_seal_verdict_access(id, session, requester);
+}
 #[test_only]
 public fun verified_verdict_status_for_testing(): u8 {
     VERIFIER_VERIFIED

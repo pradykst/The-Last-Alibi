@@ -13,7 +13,16 @@ function bytesToBigEndianU256(bytes: Uint8Array): bigint {
   }
   return value;
 }
-
+function bigEndianU256ToBytes(value: bigint): Uint8Array {
+  if (value < 0n || value > (1n << 256n) - 1n) invalidBlobId();
+  const bytes = new Uint8Array(WALRUS_BLOB_ID_LENGTH);
+  let remaining = value;
+  for (let index = bytes.length - 1; index >= 0; index -= 1) {
+    bytes[index] = Number(remaining & 0xffn);
+    remaining >>= 8n;
+  }
+  return bytes;
+}
 function encodeBase64Url(bytes: Uint8Array): string {
   return toBase64(bytes).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/u, '');
 }
@@ -27,7 +36,8 @@ function invalidBlobId(): never {
 
 /**
  * A canonical Walrus content-derived blob ID. This is deliberately distinct
- * from the Sui Blob metadata object ID and cannot be constructed from a u256.
+ * from the Sui Blob metadata object ID and can be reconstructed from the
+ * authoritative Walrus u256 recorded by Move only at a state-reading boundary.
  */
 export class WalrusContentBlobId {
   readonly #base64Url: string;
@@ -64,7 +74,12 @@ export class WalrusContentBlobId {
     }
     return new WalrusContentBlobId(value, bytes.slice(), bytesToBigEndianU256(bytes));
   }
-
+  static fromAuthoritativeMoveU256(value: bigint): WalrusContentBlobId {
+    if (typeof value !== 'bigint') return invalidBlobId();
+    const bytes = bigEndianU256ToBytes(value);
+    if (bytes.every((byte) => byte === 0)) invalidBlobId();
+    return new WalrusContentBlobId(encodeBase64Url(bytes), bytes, value);
+  }
   toBase64Url(): string {
     return this.#base64Url;
   }
@@ -75,6 +90,13 @@ export class WalrusContentBlobId {
 
   toMoveU256(): bigint {
     return this.#moveU256;
+  }
+  equals(other: WalrusContentBlobId): boolean {
+    return this.#base64Url === other.#base64Url;
+  }
+
+  toString(): string {
+    return this.#base64Url;
   }
 }
 
