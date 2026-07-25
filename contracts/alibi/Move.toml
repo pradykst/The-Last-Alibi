@@ -1,0 +1,6 @@
+[package]
+name = "alibi"
+edition = "2024"
+
+[addresses]
+alibi = "0x0"
