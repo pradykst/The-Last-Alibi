@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@alibi/protocol', '@alibi/runtime'],
+  transpilePackages: ['@alibi/game-engine', '@alibi/protocol', '@alibi/runtime'],
 };
 
 export default nextConfig;
