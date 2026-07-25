@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import './globals.css';
 import './opening.css';
+import './investigation.css';
 
 export const metadata: Metadata = {
   title: 'The Last Alibi',

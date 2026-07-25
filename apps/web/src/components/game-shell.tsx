@@ -22,9 +22,10 @@ import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { z } from 'zod';
 
-import { separateEvidence, submissionsAreDisabled } from './game-shell-helpers';
 import type { PendingAction } from './game-shell-helpers';
 import OpeningExperience from './opening-experience';
+import InvestigationExperience, { VerdictExperience } from './investigation-experience';
+
 import type { MotionPreference, SessionCreationStage } from './opening-experience';
 
 type GameShellProps = {
@@ -102,7 +103,7 @@ async function requestGame<TSchema extends z.ZodType>(
   return parsed.data;
 }
 
-function shortCommitment(value: string): string {
+export function shortCommitment(value: string): string {
   return `${value.slice(0, 8)}…${value.slice(-6)}`;
 }
 
@@ -218,9 +219,6 @@ export default function GameShell({
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [error, setError] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState('Ready to begin.');
-  const [predicateDimension, setPredicateDimension] = useState<
-    'suspect' | 'room' | 'weapon' | 'time'
-  >('suspect');
   const [confirmTerminal, setConfirmTerminal] = useState(false);
   const [hypothesis, setHypothesis] = useState<Hypothesis>({
     suspectId: '',
@@ -466,7 +464,14 @@ export default function GameShell({
   };
 
   if (session?.state === 'terminal') {
-    return <TerminalView result={session.terminalResult} onRestart={restart} />;
+    return (
+      <VerdictExperience
+        result={session.terminalResult}
+        session={session}
+        runtimeLabel={runtimeLabel}
+        onRestart={restart}
+      />
+    );
   }
 
   if (session === null || content === null) {
@@ -496,10 +501,49 @@ export default function GameShell({
     );
   }
 
+  /*
   const selectedRoom = content.manifest.rooms.find((room) => room.id === selectedRoomId)!;
   const roomSuspect = content.manifest.suspects.find(
     (suspect) => suspect.primaryRoomId === selectedRoomId,
   )!;
+  */
+  return (
+    <InvestigationExperience
+      session={session}
+      content={content}
+      runtimeLabel={runtimeLabel}
+      selectedRoomId={selectedRoomId}
+      pendingAction={pendingAction}
+      error={error}
+      announcement={announcement}
+      hypothesis={hypothesis}
+      confirmTerminal={confirmTerminal}
+      motionPreference={motionPreference}
+      onMotionPreferenceChange={changeMotionPreference}
+      onSelectRoom={selectRoom}
+      onCollectObservation={collectObservation}
+      onRequestTestimony={requestTestimony}
+      onRequestWarrant={requestWarrant}
+      onHypothesisChange={(key, value) =>
+        setHypothesis((current) => ({
+          ...current,
+          [key]: value,
+        }))
+      }
+      onConfirmTerminalChange={setConfirmTerminal}
+      onSubmitAccusation={submitAccusation}
+      onDismissError={() => setError(null)}
+      onRestart={restart}
+    />
+  );
+
+  /*
+   * The original B2 screen remains below for this presentation checkpoint so its fixture flow is
+   * reviewable in the commit history. It is unreachable and will be removed in the polish commit
+   * once the cinematic interaction coverage is in place.
+   */
+
+  /*
   const suspectQuestions = content.testimonyQuestions.filter(
     (question) => question.suspectId === roomSuspect.id,
   );
@@ -895,4 +939,5 @@ export default function GameShell({
       </footer>
     </main>
   );
+  */
 }
