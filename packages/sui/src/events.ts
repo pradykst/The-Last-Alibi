@@ -7,7 +7,7 @@ import {
 } from '@mysten/sui/utils';
 import { z } from 'zod';
 
-import { ALIBI_MOVE_MODULE } from './constants';
+import { ALIBI_MOVE_MODULE, VERIFIER_VERIFIED_STATUS } from './constants';
 import { sanitizedError } from './errors';
 import { parseU256, parseU64, popcountU64, u256ToHex, u64ToHex } from './masks';
 
@@ -157,6 +157,12 @@ export function decodeAlibiEvent(envelope: MoveEventEnvelope, packageId: string)
   const result = schemas[kind].safeParse(envelope.parsedJson);
   if (!result.success)
     throw sanitizedError('MALFORMED_EVENT', 'The Alibi event payload is malformed.');
+  if (
+    kind === 'VerdictFinalized' &&
+    'verifier_status' in result.data &&
+    numberValue(result.data.verifier_status) !== VERIFIER_VERIFIED_STATUS
+  )
+    throw sanitizedError('MALFORMED_EVENT', 'The verdict event is not verified.');
   const data: Record<string, boolean | number | string> = {};
   for (const [key, value] of Object.entries(result.data)) {
     if (key === 'session' || key === 'level') data[key] = normalizeSuiObjectId(value as string);

@@ -140,6 +140,9 @@ describe('public object decoding', () => {
         PACKAGE_ID,
       ),
     ).toThrowError('malformed');
+    expect(() =>
+      decodeGameSession(sessionEnvelope({ attempt_nonce: '1' }), PACKAGE_ID),
+    ).toThrowError('malformed');
   });
 });
 
@@ -194,6 +197,26 @@ describe('sanitized event decoding', () => {
     expect(event.data.verdict_commitment).toMatch(/^0x[0-9a-f]{64}$/);
     expect(event.data.encrypted_verdict_blob_id).toBe(`0x${'0'.repeat(63)}1`);
     expect('result' in event.data).toBe(false);
+    expect(() =>
+      decodeAlibiEvent(
+        {
+          type: `${PACKAGE_ID}::alibi::VerdictFinalized`,
+          parsedJson: {
+            session: SESSION_ID,
+            level: LEVEL_ID,
+            attempt_nonce: '0',
+            accusation_commitment: Array.from({ length: 32 }, () => 0x22),
+            session_attempt_domain_commitment: Array.from({ length: 32 }, () => 0x33),
+            verdict_commitment: Array.from({ length: 32 }, () => 0x44),
+            encrypted_verdict_blob_id: '1',
+            verifier_identity: Array.from({ length: 32 }, () => 0xaa),
+            verifier_status: 0,
+            finalized_at_ms: '2000',
+          },
+        },
+        PACKAGE_ID,
+      ),
+    ).toThrowError('not verified');
   });
 
   it('explicitly rejects or ignores malformed and foreign events', () => {

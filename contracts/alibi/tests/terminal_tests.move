@@ -303,6 +303,49 @@ fun stale_attempt_nonce_is_rejected() {
     abort 255
 }
 
+#[test, expected_failure(abort_code = 4, location = alibi)]
+fun attempt_nonce_overflow_is_rejected() {
+    let (level, mut session, clock, mut ctx) = setup(128);
+    alibi::set_attempt_nonce_for_testing(&mut session, std::u64::max_value!());
+    alibi::start_accusation(
+        &mut session,
+        &level,
+        accusation_commitment(),
+        std::u64::max_value!(),
+        &clock,
+        &mut ctx,
+    );
+    abort 255
+}
+
+#[test, expected_failure(abort_code = 12, location = alibi)]
+fun accusation_pending_cannot_use_query_expiry_as_cancellation() {
+    let (level, mut session, clock, mut ctx) = setup(129);
+    start(&mut session, &level, &clock, &mut ctx);
+    alibi::expire_query(&mut session, &level, &clock, &mut ctx);
+    abort 255
+}
+
+#[test, expected_failure(abort_code = 24, location = alibi)]
+fun wrong_verdict_receipt_version_is_rejected() {
+    let (level, mut session, clock, mut ctx) = setup(130);
+    start(&mut session, &level, &clock, &mut ctx);
+    let receipt = verifier::mint_verified_verdict_receipt_for_testing(
+        2,
+        object::id(&session),
+        object::id(&level),
+        0,
+        case_commitment(),
+        accusation_commitment(),
+        *alibi::pending_session_attempt_domain_commitment(&session),
+        verdict_commitment(),
+        TEST_BLOB_ID,
+        verifier_identity(),
+    );
+    alibi::finalize_verdict(&mut session, &level, receipt, &clock);
+    abort 255
+}
+
 #[test, expected_failure(abort_code = 24, location = alibi)]
 fun verdict_for_wrong_session_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(112);

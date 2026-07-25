@@ -165,6 +165,7 @@ public struct SessionCreated has copy, drop {
     level_version: u16,
 }
 
+/// Sanitized public metadata emitted when secret accusation evaluation may begin.
 public struct AccusationStarted has copy, drop {
     session: ID,
     level: ID,
@@ -174,6 +175,7 @@ public struct AccusationStarted has copy, drop {
     started_at_ms: u64,
 }
 
+/// Sanitized public metadata emitted after verified irreversible finalization.
 public struct VerdictFinalized has copy, drop {
     session: ID,
     level: ID,

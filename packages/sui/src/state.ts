@@ -440,6 +440,8 @@ export function decodeGameSession(
     (state === QUERY_PENDING_STATE) !== (pendingQuery !== null) ||
     (state === ACCUSATION_PENDING_STATE) !== (pendingAccusation !== null) ||
     (state === TERMINAL_STATE) !== (verdict !== null) ||
+    ((state === ACTIVE_STATE || state === QUERY_PENDING_STATE) && attemptNonce !== '0') ||
+    ((state === ACCUSATION_PENDING_STATE || state === TERMINAL_STATE) && attemptNonce !== '1') ||
     (pendingQuery !== null &&
       (pendingQuery.queryNonce !== queryNonce ||
         pendingQuery.preCandidateMask !== u64ToHex(fields.candidate_mask))) ||
