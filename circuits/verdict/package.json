@@ -1,0 +1,17 @@
+{
+  "name": "@alibi/verdict-circuit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pinned circuit libraries for the Z1 accusation-verdict proof",
+  "scripts": {
+    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/compile.ps1",
+    "clean": "node -e \"require('node:fs').rmSync('build', { recursive: true, force: true })\"",
+    "lint": "node ../../scripts/verify-z1-dependencies.mjs",
+    "typecheck": "node ../../scripts/verify-z1-dependencies.mjs",
+    "test": "node ../../scripts/verify-z1-dependencies.mjs"
+  },
+  "dependencies": {
+    "circomlib": "2.0.5",
+    "circomlibjs": "0.1.7"
+  }
+}

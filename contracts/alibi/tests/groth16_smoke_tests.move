@@ -1,0 +1,15 @@
+#[test_only]
+module alibi::groth16_smoke_tests;
+
+use sui::groth16;
+
+#[test]
+fun deterministic_arkworks_bn254_proof_passes_native_verification() {
+    let verifying_key = x"201f538d75d2121279d7fb037cff8ceff15d46f54845d9803e2a66edfb40bc010ec0b2f26c281051d153b01e24d69a3581f956587f5fd152cfdb31e5ae36d900e1a381494da40a450514884cb36d2ad3f079078f39b7b54f1894fc4d270b438a66760eb576cbc305895c6c5a13dab3f2d31bc37b7a586015d892905cf2723e1c6c907c664b7dbe0d7f5835bdebb2a6bf4bba5b8edbd4cb232f9bb59632c6b3879814e4a6775ea9e17559ff8608acbeb8c417c1307edb166d1733b64d1629230179f7bcf96b73da3656b0d50554415cc4eb2934699262251f866c1bb0c9c58c200200000000000000d4dcf98fec626b938928eebddda52ac8423c2de2ea8c0d1e6ff8018b5d9718977555cd9d5b9376d2b12003624c7a42efcfc302c2464ddfb73eb3063f13e81ca3";
+    let proof = x"23afd491cd2e909b6d2fc99306775788bc8fd2d199c0ae6244e57a48d32a6b2272393dabc1787a9b9cffb24c8579e22d5b56b1d1a15d243d6c147ccd2251ff28764c5d22e698700091ce4c5b1d4d481001aec38a087429552abaa4063813e891defbce5d688567c617bb03857ea365293e58a756527f099c056293f537f44123";
+    let public_inputs = x"2100000000000000000000000000000000000000000000000000000000000000";
+    let prepared_key = groth16::prepare_verifying_key(&groth16::bn254(), &verifying_key);
+    let proof_points = groth16::proof_points_from_bytes(proof);
+    let public_proof_inputs = groth16::public_proof_inputs_from_bytes(public_inputs);
+    assert!(groth16::verify_groth16_proof(&groth16::bn254(), &prepared_key, &public_proof_inputs, &proof_points));
+}

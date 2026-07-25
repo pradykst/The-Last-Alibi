@@ -40,3 +40,6 @@ yarn-error.log*
 .alibi/
 artifacts/proofs/
 artifacts/circuits/
+
+# Rust build output
+target/
