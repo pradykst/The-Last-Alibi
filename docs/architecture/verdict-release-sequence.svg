@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1320" role="img" aria-labelledby="title desc">
+  <title id="title">Accusation and verdict release sequence</title>
+  <desc id="desc">Sequence showing a salted accusation commitment, private proof generation, encrypted minimal verdict capsule storage on Walrus, native Sui Groth16 verification, terminal state recording, Seal evaluation of Sui-defined policy, local commitment-opening validation, and release of only YES or NO. Explicit denial paths cover failed proof, pre-terminal access, unauthorized player, modified ciphertext, and incorrect opening.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#526076"/>
+    </marker>
+    <marker id="arrow-proof" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#287b68"/>
+    </marker>
+    <style>
+      .bg{fill:#fff}.title{font:700 28px 'Segoe UI',Arial,sans-serif;fill:#172033}.subtitle{font:400 15px 'Segoe UI',Arial,sans-serif;fill:#526076}
+      .actor{fill:#eef4ff;stroke:#5573a6;stroke-width:2}.private{fill:#fff3df;stroke:#b47720;stroke-width:2}.encrypted{fill:#f3edff;stroke:#7357a8;stroke-width:2}.proof{fill:#e8f7f3;stroke:#287b68;stroke-width:2}
+      .actor-text{font:600 15px 'Segoe UI',Arial,sans-serif;fill:#172033;text-anchor:middle}.actor-sub{font:400 12px 'Segoe UI',Arial,sans-serif;fill:#435066;text-anchor:middle}.life{stroke:#a8b2c0;stroke-width:1.4;stroke-dasharray:6 6}
+      .msg{fill:none;stroke:#526076;stroke-width:2;marker-end:url(#arrow)}.proof-msg{fill:none;stroke:#287b68;stroke-width:2.3;marker-end:url(#arrow-proof)}.return{fill:none;stroke:#526076;stroke-width:1.8;stroke-dasharray:7 5;marker-end:url(#arrow)}
+      .label{font:500 13px 'Segoe UI',Arial,sans-serif;fill:#253149;text-anchor:middle}.small{font:400 12px 'Segoe UI',Arial,sans-serif;fill:#435066;text-anchor:middle}
+      .step{fill:#3f67a1}.step-text{font:600 12px 'Segoe UI',Arial,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:middle}
+      .note{fill:#fff7e8;stroke:#b47720;stroke-width:1.5}.note-title{font:600 13px 'Segoe UI',Arial,sans-serif;fill:#432b0b}.note-text{font:400 12px 'Segoe UI',Arial,sans-serif;fill:#5a3a0e}
+      .fail{fill:#fff0f0;stroke:#a74949;stroke-width:1.5}.fail-title{font:700 13px 'Segoe UI',Arial,sans-serif;fill:#7a2525}.fail-text{font:400 12px 'Segoe UI',Arial,sans-serif;fill:#5a2525}
+      .success{fill:#edf8f3;stroke:#287b68;stroke-width:1.5}.success-text{font:600 15px 'Segoe UI',Arial,sans-serif;fill:#174d40;text-anchor:middle}
+    </style>
+  </defs>
+  <rect class="bg" width="1800" height="1320"/>
+  <text class="title" x="45" y="42">Accusation + verdict — commitment-checked release sequence</text>
+  <text class="subtitle" x="45" y="67">Plaintext accusation fields stay private; only a proof-bound terminal record can authorize release of the encrypted binary capsule.</text>
+
+  <g>
+    <rect class="actor" x="25" y="92" width="170" height="58" rx="9"/><text class="actor-text" x="110" y="126">Player</text>
+    <rect class="actor" x="235" y="92" width="180" height="58" rx="9"/><text class="actor-text" x="325" y="117">Browser</text><text class="actor-sub" x="325" y="137">commit + validate</text>
+    <rect class="actor" x="455" y="92" width="190" height="58" rx="9"/><text class="actor-text" x="550" y="117">API / relayer</text><text class="actor-sub" x="550" y="137">orchestrate</text>
+    <rect class="private" x="675" y="92" width="190" height="58" rx="9"/><text class="actor-text" x="770" y="117">Private prover</text><text class="actor-sub" x="770" y="137">witness → proof</text>
+    <rect class="encrypted" x="905" y="92" width="190" height="58" rx="9"/><text class="actor-text" x="1000" y="117">Walrus</text><text class="actor-sub" x="1000" y="137">ciphertext only</text>
+    <rect class="actor" x="1135" y="92" width="190" height="58" rx="9"/><text class="actor-text" x="1230" y="117">Sui Move</text><text class="actor-sub" x="1230" y="137">canonical state</text>
+    <rect class="proof" x="1365" y="92" width="190" height="58" rx="9"/><text class="actor-text" x="1460" y="117">Native Groth16</text><text class="actor-sub" x="1460" y="137">expected key</text>
+    <rect class="encrypted" x="1595" y="92" width="180" height="58" rx="9"/><text class="actor-text" x="1685" y="117">Seal</text><text class="actor-sub" x="1685" y="137">policy-controlled</text>
+    <line class="life" x1="110" y1="150" x2="110" y2="1260"/><line class="life" x1="325" y1="150" x2="325" y2="1260"/>
+    <line class="life" x1="550" y1="150" x2="550" y2="1260"/><line class="life" x1="770" y1="150" x2="770" y2="1260"/>
+    <line class="life" x1="1000" y1="150" x2="1000" y2="1260"/><line class="life" x1="1230" y1="150" x2="1230" y2="1260"/>
+    <line class="life" x1="1460" y1="150" x2="1460" y2="1260"/><line class="life" x1="1685" y1="150" x2="1685" y2="1260"/>
+  </g>
+
+  <circle class="step" cx="18" cy="190" r="13"/><text class="step-text" x="18" y="190">1</text>
+  <line class="msg" x1="110" y1="190" x2="325" y2="190"/><text class="label" x="218" y="179">suspect + room + weapon + time</text>
+  <circle class="step" cx="18" cy="238" r="13"/><text class="step-text" x="18" y="238">2</text>
+  <path class="msg" d="M325 238H405V270H325"/><text class="label" x="462" y="248">salt + commit</text>
+  <rect class="note" x="235" y="286" width="405" height="58" rx="9"/>
+  <text class="note-title" x="255" y="311">Privacy boundary</text><text class="note-text" x="255" y="332">Plaintext accusation fields are never published onchain.</text>
+  <line class="msg" x1="325" y1="370" x2="550" y2="370"/><text class="label" x="438" y="359">accusation commitment + private job</text>
+
+  <circle class="step" cx="18" cy="418" r="13"/><text class="step-text" x="18" y="418">3</text>
+  <line class="msg" x1="550" y1="418" x2="770" y2="418"/><text class="label" x="660" y="397">private accusation + committed case</text><text class="small" x="660" y="414">session + attempt nonce</text>
+  <rect class="note" x="675" y="442" width="420" height="88" rx="9"/>
+  <text class="note-title" x="695" y="467">4 · Proof binds</text>
+  <text class="note-text" x="695" y="490">case commitment • accusation commitment • session</text>
+  <text class="note-text" x="695" y="512">attempt nonce • verdict commitment</text>
+  <circle class="step" cx="18" cy="560" r="13"/><text class="step-text" x="18" y="560">5</text>
+  <line class="proof-msg" x1="770" y1="560" x2="550" y2="560"/><text class="label" x="660" y="549">proof + verdict commitment + minimal capsule</text>
+  <rect class="note" x="450" y="582" width="425" height="58" rx="9"/>
+  <text class="note-text" x="470" y="607">Capsule = binary result + minimum commitment-opening data.</text>
+  <circle class="step" cx="18" cy="670" r="13"/><text class="step-text" x="18" y="670">6</text>
+  <path class="msg" d="M550 670H640V702H550"/><text class="label" x="686" y="680">encrypt capsule</text>
+  <circle class="step" cx="18" cy="735" r="13"/><text class="step-text" x="18" y="735">7</text>
+  <line class="msg" x1="550" y1="735" x2="1000" y2="735"/><text class="label" x="775" y="724">store ciphertext only</text>
+  <line class="return" x1="1000" y1="775" x2="550" y2="775"/><text class="label" x="775" y="765">public blob reference</text>
+
+  <circle class="step" cx="18" cy="825" r="13"/><text class="step-text" x="18" y="825">8</text>
+  <line class="proof-msg" x1="550" y1="825" x2="1230" y2="825"/><text class="label" x="890" y="814">proof + verdict commitment + Walrus blob reference</text>
+  <circle class="step" cx="18" cy="875" r="13"/><text class="step-text" x="18" y="875">9</text>
+  <line class="proof-msg" x1="1230" y1="875" x2="1460" y2="875"/><text class="label" x="1345" y="864">verify expected key + inputs</text>
+  <line class="return" x1="1460" y1="915" x2="1230" y2="915"/><text class="label" x="1345" y="905">valid / invalid</text>
+  <rect class="fail" x="35" y="855" width="425" height="76" rx="9"/>
+  <text class="fail-title" x="55" y="881">DENY — failed proof verification</text>
+  <text class="fail-text" x="55" y="904">Abort; no terminal state and no verdict release.</text>
+
+  <line class="return" x1="1230" y1="955" x2="550" y2="955"/><text class="label" x="890" y="944">terminal VerdictRecord + confirmed execution/finality</text>
+  <line class="msg" x1="110" y1="995" x2="325" y2="995"/><text class="label" x="218" y="984">request final verdict</text>
+  <line class="msg" x1="325" y1="1035" x2="1000" y2="1035"/><text class="label" x="663" y="1024">fetch recorded ciphertext</text>
+  <line class="return" x1="1000" y1="1075" x2="325" y2="1075"/><text class="label" x="663" y="1064">ciphertext</text>
+  <line class="msg" x1="325" y1="1115" x2="1685" y2="1115"/><text class="label" x="1005" y="1104">request decryption for canonical session identity</text>
+  <circle class="step" cx="18" cy="1155" r="13"/><text class="step-text" x="18" y="1155">10</text>
+  <line class="msg" x1="1685" y1="1155" x2="1230" y2="1155"/><text class="label" x="1458" y="1144">evaluate Sui-defined seal_approve policy</text>
+  <rect class="note" x="1110" y="1172" width="665" height="70" rx="9"/>
+  <text class="note-title" x="1130" y="1197">Policy requires</text>
+  <text class="note-text" x="1130" y="1219">correct player • terminal session • matching blob + commitment • correct protocol / level version</text>
+
+  <rect class="fail" x="35" y="1095" width="515" height="146" rx="9"/>
+  <text class="fail-title" x="55" y="1121">EXPLICIT DENIAL PATHS</text>
+  <text class="fail-text" x="55" y="1145">• pre-terminal access or unauthorized player → Seal denies</text>
+  <text class="fail-text" x="55" y="1168">• modified ciphertext → authenticated decryption fails</text>
+  <text class="fail-text" x="55" y="1191">• incorrect commitment opening → client rejects</text>
+  <text class="fail-text" x="55" y="1214">No denial path renders a verdict.</text>
+
+  <line class="return" x1="1685" y1="1265" x2="325" y2="1265"/><text class="label" x="1005" y="1254">11 · authorized decryption material only after policy allows</text>
+  <rect class="success" x="610" y="1278" width="1155" height="32" rx="9"/>
+  <text class="success-text" x="1187" y="1300">12 · validate version, session, nonce, and opening → 13 · render YES or NO only</text>
+</svg>

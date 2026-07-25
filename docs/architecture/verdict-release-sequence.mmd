@@ -1,0 +1,59 @@
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Inter,Segoe UI,Arial,sans-serif","primaryColor":"#eef4ff","primaryTextColor":"#172033","primaryBorderColor":"#5573a6","lineColor":"#526076","actorBkg":"#eef4ff","actorBorder":"#5573a6","actorTextColor":"#172033","signalColor":"#526076","signalTextColor":"#172033","noteBkgColor":"#fff7e8","noteBorderColor":"#b47720","noteTextColor":"#432b0b"}}}%%
+sequenceDiagram
+    autonumber
+    actor Player
+    participant Web as Browser game
+    participant API as Game API / relayer
+    participant Prover as Private ZK prover
+    participant Walrus
+    participant Sui as Sui Move canonical state
+    participant G16 as Native Sui Groth16
+    participant Seal as Seal key servers
+
+    Player->>Web: Select suspect, room, weapon, and time
+    Web->>Web: Salt fields and create accusation commitment
+    Note over Web,Sui: Plaintext accusation fields are never published onchain
+    Web->>API: Accusation commitment + private proof job
+    API->>Prover: Private accusation, committed case, session, attempt nonce
+    Note over Prover: Proof binds case commitment, accusation commitment,<br/>session, attempt nonce, and verdict commitment
+    Prover-->>API: Proof + verdict commitment + minimal verdict capsule
+    Note over API: Capsule contains only result bit and commitment-opening data
+    API->>API: Encrypt capsule
+    API->>Walrus: Store ciphertext only
+    Walrus-->>API: Blob reference
+    API->>Sui: Submit proof, verdict commitment, blob reference
+    Sui->>G16: Verify expected key and bound public inputs
+
+    alt Proof verification fails
+        G16-->>Sui: Invalid
+        Sui-->>API: Abort; no terminal state
+    else Proof valid
+        G16-->>Sui: Valid
+        Sui->>Sui: Record terminal state and VerdictRecord
+        Sui-->>API: Confirmed execution / finality
+        Player->>Web: Request final verdict
+        Web->>Walrus: Fetch ciphertext by recorded blob reference
+        Walrus-->>Web: Ciphertext
+        Web->>Seal: Request decryption for session identity
+        Seal->>Sui: Evaluate Sui-defined seal_approve policy
+        Note over Seal,Sui: Require correct player, terminal session, matching blob + commitment,<br/>and correct protocol / level version
+
+        alt Pre-terminal access or unauthorized player
+            Sui-->>Seal: Deny
+            Seal-->>Web: No decryption material
+        else Policy allows
+            Sui-->>Seal: Allow
+            Seal-->>Web: Authorized decryption material
+            Web->>Web: Authenticate and decrypt ciphertext
+            alt Modified ciphertext
+                Web-->>Player: Deny; render no verdict
+            else Ciphertext authentic
+                Web->>Web: Validate version, session, nonce, and commitment opening
+                alt Incorrect commitment opening
+                    Web-->>Player: Deny; render no verdict
+                else Opening valid
+                    Web-->>Player: Render YES or NO only
+                end
+            end
+        end
+    end

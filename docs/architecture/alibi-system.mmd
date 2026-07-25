@@ -1,0 +1,82 @@
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Inter,Segoe UI,Arial,sans-serif","primaryColor":"#eef4ff","primaryTextColor":"#172033","primaryBorderColor":"#5573a6","lineColor":"#526076","secondaryColor":"#f5f7fa","tertiaryColor":"#fff7e8","clusterBkg":"#fbfcfe","clusterBorder":"#c8d1df"},"flowchart":{"htmlLabels":true,"curve":"basis","nodeSpacing":28,"rankSpacing":42}}}%%
+flowchart TB
+    subgraph ENTRY["Entry paths"]
+        Player["Player"]
+        Agent["Ranked Detective Agent"]
+        World["World AgentKit<br/>human-backed authorization"]
+        Agent -->|"one scarce ranked attempt"| World
+    end
+
+    subgraph APP["Application and orchestration — not truth authority"]
+        Web["Game web application<br/>presentation + local interaction"]
+        API["Game API / relayer<br/>idempotency, proof jobs, finality waiting"]
+        AI["0G verified suspect inference<br/>informal testimony only"]
+        Prover["Private proof service / ZK prover<br/>private witness → proof"]
+    end
+
+    subgraph SUI["Sui — canonical policy and state"]
+        Move["Sui Move canonical state<br/>commitments, masks, disclosure, replay, terminal state"]
+        Groth["Native Sui Groth16 verification<br/>expected verifier identity"]
+        LC["LevelConfig"]
+        GS["GameSession"]
+        PQ["PendingQuery"]
+        RP["RankedPermit"]
+        VR["VerdictRecord"]
+        Move --- LC
+        Move --- GS
+        Move --- PQ
+        Move --- RP
+        Move --- VR
+        Move -->|"prepared key + bound public inputs"| Groth
+        Groth -->|"valid / invalid"| Move
+    end
+
+    subgraph DATA["Encrypted persistence and controlled release"]
+        Walrus["Walrus<br/>ciphertext persistence only"]
+        Seal["Seal<br/>Sui-defined decryption policy"]
+        Result["Player-visible result<br/>YES or NO only"]
+    end
+
+    Player -->|"play"| Web
+    World -->|"ranked permit request"| API
+    Web <-->|"public requests + confirmed state"| API
+    API -->|"bounded character + public/non-canonical context<br/>never hidden case"| AI
+    AI -.->|"informal testimony<br/>cannot change candidate mask"| API
+    API -->|"private witness job"| Prover
+    Prover -->|"proof-bound result"| API
+    API -->|"authorized transition + proof + nonce"| Move
+    Move -->|"confirmed effects / finalized checkpoint"| API
+    API -->|"only after confirmation"| Web
+    API -->|"encrypted capsule bytes"| Walrus
+    Walrus -->|"public blob reference + ciphertext"| API
+    Web -->|"decryption request"| Seal
+    Seal -->|"evaluate seal_approve policy"| Move
+    Move -->|"allow / deny from canonical state"| Seal
+    Walrus -->|"ciphertext"| Web
+    Seal -->|"authorized decryption material"| Web
+    Web -->|"validate commitment opening"| Result
+
+    NoEarly["Fail closed:<br/>no certified answer before Sui confirmation/finality"]
+    API -.-> NoEarly
+
+    subgraph LEGEND["Information classes"]
+        LP["Public"]
+        LPr["Private"]
+        LE["Encrypted"]
+        LB["Proof-bound"]
+        LCn["Canonical onchain state"]
+    end
+
+    classDef public fill:#f5f7fa,stroke:#8a97aa,color:#172033;
+    classDef private fill:#fff3df,stroke:#b47720,color:#432b0b;
+    classDef encrypted fill:#f3edff,stroke:#7357a8,color:#24163d;
+    classDef proof fill:#e8f7f3,stroke:#287b68,color:#12392f;
+    classDef canonical fill:#eaf1ff,stroke:#3f67a1,color:#142d51,stroke-width:2px;
+    classDef guard fill:#fff0f0,stroke:#a74949,color:#4b1717;
+
+    class Player,Agent,World,Web,API,AI,LP public;
+    class Prover,LPr private;
+    class Walrus,Seal,LE encrypted;
+    class Groth,LB proof;
+    class Move,LC,GS,PQ,RP,VR,LCn canonical;
+    class NoEarly guard;

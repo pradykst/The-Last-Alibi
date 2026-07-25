@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Certified warrant sequence</title>
+  <desc id="desc">Sequence from a player selecting a registered binary warrant through Sui safety authorization, private proof generation, native Groth16 verification, canonical state transition, finality waiting, and release of a certified YES or NO answer. Unsafe queries, invalid proofs, replays, sixth queries, and missing finality block disclosure.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#526076"/>
+    </marker>
+    <marker id="arrow-proof" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#287b68"/>
+    </marker>
+    <style>
+      .bg{fill:#fff}.title{font:700 28px 'Segoe UI',Arial,sans-serif;fill:#172033}.subtitle{font:400 15px 'Segoe UI',Arial,sans-serif;fill:#526076}
+      .actor{fill:#eef4ff;stroke:#5573a6;stroke-width:2}.actor-private{fill:#fff3df;stroke:#b47720;stroke-width:2}.actor-proof{fill:#e8f7f3;stroke:#287b68;stroke-width:2}
+      .actor-text{font:600 16px 'Segoe UI',Arial,sans-serif;fill:#172033;text-anchor:middle}.life{stroke:#a8b2c0;stroke-width:1.5;stroke-dasharray:6 6}
+      .msg{fill:none;stroke:#526076;stroke-width:2;marker-end:url(#arrow)}.proof-msg{fill:none;stroke:#287b68;stroke-width:2.3;marker-end:url(#arrow-proof)}.return{fill:none;stroke:#526076;stroke-width:1.8;stroke-dasharray:7 5;marker-end:url(#arrow)}
+      .label{font:500 14px 'Segoe UI',Arial,sans-serif;fill:#253149;text-anchor:middle}.small{font:400 13px 'Segoe UI',Arial,sans-serif;fill:#435066;text-anchor:middle}
+      .step{fill:#3f67a1}.step-text{font:600 12px 'Segoe UI',Arial,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:middle}
+      .note{fill:#fff7e8;stroke:#b47720;stroke-width:1.5}.note-title{font:600 14px 'Segoe UI',Arial,sans-serif;fill:#432b0b}.note-text{font:400 13px 'Segoe UI',Arial,sans-serif;fill:#5a3a0e}
+      .fail{fill:#fff0f0;stroke:#a74949;stroke-width:1.5}.fail-title{font:700 14px 'Segoe UI',Arial,sans-serif;fill:#7a2525}.fail-text{font:400 13px 'Segoe UI',Arial,sans-serif;fill:#5a2525}
+      .success{fill:#edf8f3;stroke:#287b68;stroke-width:1.5}.success-text{font:600 15px 'Segoe UI',Arial,sans-serif;fill:#174d40;text-anchor:middle}
+    </style>
+  </defs>
+  <rect class="bg" width="1800" height="1080"/>
+  <text class="title" x="52" y="42">Certified warrant — proof-gated disclosure sequence</text>
+  <text class="subtitle" x="52" y="67">The result remains private until a safe pending query and proof-backed Sui transition are confirmed.</text>
+
+  <g>
+    <rect class="actor" x="55" y="92" width="220" height="58" rx="9"/><text class="actor-text" x="165" y="126">Player</text>
+    <rect class="actor" x="350" y="92" width="240" height="58" rx="9"/><text class="actor-text" x="470" y="118">Browser game</text><text class="small" x="470" y="137">presentation only</text>
+    <rect class="actor" x="675" y="92" width="250" height="58" rx="9"/><text class="actor-text" x="800" y="118">Game API / relayer</text><text class="small" x="800" y="137">orchestration + finality</text>
+    <rect class="actor" x="1010" y="92" width="250" height="58" rx="9"/><text class="actor-text" x="1135" y="118">Sui Move</text><text class="small" x="1135" y="137">canonical state</text>
+    <rect class="actor-private" x="1325" y="92" width="220" height="58" rx="9"/><text class="actor-text" x="1435" y="118">Private prover</text><text class="small" x="1435" y="137">witness → proof</text>
+    <line class="life" x1="165" y1="150" x2="165" y2="1008"/><line class="life" x1="470" y1="150" x2="470" y2="1008"/>
+    <line class="life" x1="800" y1="150" x2="800" y2="1008"/><line class="life" x1="1135" y1="150" x2="1135" y2="1008"/><line class="life" x1="1435" y1="150" x2="1435" y2="1008"/><line class="life" x1="1675" y1="150" x2="1675" y2="1008"/>
+    <rect class="actor-proof" x="1580" y="92" width="190" height="58" rx="9"/><text class="actor-text" x="1675" y="118">Native Groth16</text><text class="small" x="1675" y="137">expected key</text>
+  </g>
+
+  <circle class="step" cx="32" cy="190" r="14"/><text class="step-text" x="32" y="190">1</text>
+  <line class="msg" x1="165" y1="190" x2="470" y2="190"/><text class="label" x="317" y="179">Select registered binary warrant</text>
+  <circle class="step" cx="32" cy="238" r="14"/><text class="step-text" x="32" y="238">2</text>
+  <line class="msg" x1="470" y1="238" x2="800" y2="238"/><text class="label" x="635" y="227">session + typed predicate + query nonce</text>
+  <circle class="step" cx="32" cy="286" r="14"/><text class="step-text" x="32" y="286">3</text>
+  <line class="msg" x1="800" y1="286" x2="1135" y2="286"/><text class="label" x="968" y="275">request safe PendingQuery authorization</text>
+
+  <rect class="note" x="970" y="314" width="535" height="126" rx="10"/>
+  <text class="note-title" x="992" y="340">4 · Sui authorizes only when every rule holds</text>
+  <text class="note-text" x="992" y="366">• known predicate • no existing pending action • predicate unused</text>
+  <text class="note-text" x="992" y="389">• disclosure count below five</text>
+  <text class="note-text" x="992" y="412">• both non-empty branches retain at least two candidates</text>
+  <text class="note-text" x="992" y="432">• correct session and nonce</text>
+
+  <rect class="fail" x="55" y="458" width="715" height="74" rx="10"/>
+  <text class="fail-title" x="78" y="484">FAILURE BOUNDARY A — reject before witness evaluation</text>
+  <text class="fail-text" x="78" y="508">Unsafe query, replay, sixth query, used/unknown predicate, pending action, or session/nonce mismatch → no disclosure.</text>
+  <line class="return" x1="1135" y1="548" x2="800" y2="548"/><text class="label" x="968" y="538">safe PendingQuery authorization</text>
+
+  <circle class="step" cx="32" cy="604" r="14"/><text class="step-text" x="32" y="604">5</text>
+  <line class="msg" x1="800" y1="604" x2="1435" y2="604"/><text class="label" x="1118" y="593">evaluate committed hidden case privately</text>
+  <rect class="note" x="980" y="625" width="525" height="92" rx="10"/>
+  <text class="note-title" x="1002" y="651">6 · Proof statement binds</text>
+  <text class="note-text" x="1002" y="676">case commitment • registered typed predicate • result bit</text>
+  <text class="note-text" x="1002" y="699">session • query nonce</text>
+  <line class="proof-msg" x1="1435" y1="742" x2="800" y2="742"/><text class="label" x="1118" y="732">Groth16 proof + bound public inputs</text>
+
+  <circle class="step" cx="32" cy="790" r="14"/><text class="step-text" x="32" y="790">7</text>
+  <line class="proof-msg" x1="800" y1="790" x2="1135" y2="790"/><text class="label" x="968" y="779">submit proof-backed transition</text>
+  <circle class="step" cx="32" cy="838" r="14"/><text class="step-text" x="32" y="838">8</text>
+  <line class="proof-msg" x1="1135" y1="838" x2="1675" y2="838"/><text class="label" x="1405" y="827">native verification with expected key + bound inputs</text>
+  <line class="return" x1="1675" y1="874" x2="1135" y2="874"/><text class="label" x="1405" y="864">valid / invalid</text>
+  <rect class="fail" x="55" y="858" width="715" height="72" rx="10"/>
+  <text class="fail-title" x="78" y="885">FAILURE BOUNDARY B — canonical state remains unchanged</text>
+  <text class="fail-text" x="78" y="909">Invalid proof or replayed transition → abort and withhold the answer.</text>
+
+  <circle class="step" cx="32" cy="958" r="14"/><text class="step-text" x="32" y="958">9</text>
+  <line class="return" x1="1135" y1="958" x2="800" y2="958"/><text class="label" x="968" y="947">executed effects; wait for confirmation / finality</text>
+  <line class="return" x1="800" y1="1002" x2="470" y2="1002"/><text class="label" x="635" y="991">confirmed result + candidate count</text>
+  <line class="msg" x1="470" y1="1038" x2="165" y2="1038"/><text class="label" x="317" y="1027">10 · render certified YES or NO only</text>
+
+  <rect class="success" x="820" y="1015" width="950" height="44" rx="10"/>
+  <text class="success-text" x="1295" y="1042">Missing confirmation/finality always withholds the certified answer.</text>
+</svg>

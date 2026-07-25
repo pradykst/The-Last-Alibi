@@ -1,0 +1,43 @@
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Inter,Segoe UI,Arial,sans-serif","primaryColor":"#eef4ff","primaryTextColor":"#172033","primaryBorderColor":"#5573a6","lineColor":"#526076","actorBkg":"#eef4ff","actorBorder":"#5573a6","actorTextColor":"#172033","signalColor":"#526076","signalTextColor":"#172033","noteBkgColor":"#fff7e8","noteBorderColor":"#b47720","noteTextColor":"#432b0b"}}}%%
+sequenceDiagram
+    autonumber
+    actor Player
+    participant Web as Browser game
+    participant API as Game API / relayer
+    participant Sui as Sui Move canonical state
+    participant Prover as Private ZK prover
+    participant G16 as Native Sui Groth16
+
+    Player->>Web: Select registered binary warrant
+    Web->>API: Request warrant(session, predicate, nonce)
+    API->>Sui: Authorize safe pending query
+    Note over Sui: Check known predicate; no pending action; unused predicate;<br/>disclosures < 5; both non-empty branches retain ≥ 2 candidates;<br/>correct session and nonce
+
+    alt Unsafe query, replay, sixth query, or invalid session/nonce
+        Sui-->>API: Reject without disclosure
+        API-->>Web: Fail closed — no certified answer
+    else Safe pending query authorized
+        Sui-->>API: PendingQuery authorization
+        API->>Prover: Private witness + committed case + typed predicate
+        Note over Prover: Proof binds case commitment, registered typed predicate,<br/>result bit, session, and query nonce
+        Prover-->>API: Groth16 proof + public inputs
+        API->>Sui: Submit proof-backed transition
+        Sui->>G16: Verify expected key, proof, and bound inputs
+
+        alt Invalid proof or replayed transition
+            G16-->>Sui: Invalid
+            Sui-->>API: Abort; canonical state unchanged
+            API-->>Web: No disclosure
+        else Proof valid
+            G16-->>Sui: Valid
+            Sui->>Sui: Update candidate mask, disclosure count, nonce, PendingQuery
+            Sui-->>API: Executed transaction effects
+            API->>API: Wait for confirmed execution / finality
+            alt Confirmation or finality missing
+                API-->>Web: Withhold certified result
+            else Confirmed
+                API-->>Web: Certified result + updated candidate count
+                Web-->>Player: Render YES or NO only
+            end
+        end
+    end
