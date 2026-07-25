@@ -1,0 +1,936 @@
+/* Final B3 UI scale and composition pass.
+   Keeps the approved palette and interaction model while improving cinematic depth and legibility. */
+
+.opening-key-art {
+  opacity: 0.3;
+  filter: saturate(0.62) contrast(1.08) brightness(0.5) sepia(0.08);
+  transform: scale(1.035);
+  animation: opening-camera-drift 16s ease-in-out infinite alternate;
+}
+
+.opening-ambient {
+  background:
+    radial-gradient(ellipse at 50% 32%, rgb(108 43 61 / 55%), transparent 44%),
+    radial-gradient(ellipse at 28% 52%, rgb(104 56 42 / 44%), transparent 46%),
+    linear-gradient(115deg, #10090f 0%, #28151d 42%, #221513 68%, #09090b 100%);
+}
+
+.opening-ambient::before {
+  z-index: 1;
+  opacity: 1;
+  background:
+    linear-gradient(90deg, rgb(7 5 8 / 88%), transparent 34% 66%, rgb(7 5 8 / 84%)),
+    linear-gradient(180deg, rgb(17 8 16 / 28%), rgb(51 20 31 / 48%) 55%, rgb(4 4 6 / 84%)),
+    radial-gradient(circle at 50% 44%, transparent 0 18%, rgb(24 10 18 / 42%) 63%, #070609 100%);
+}
+
+.opening-ambient::after {
+  z-index: 2;
+  inset: -8%;
+  opacity: 0.85;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgb(211 139 91 / 15%), transparent 34%),
+    radial-gradient(ellipse at 48% 64%, rgb(102 35 58 / 24%), transparent 48%);
+  mix-blend-mode: screen;
+}
+
+.museum-arch {
+  opacity: 0.72;
+  border-color: rgb(208 160 99 / 23%);
+  box-shadow:
+    inset 0 0 0 1.4rem rgb(0 0 0 / 26%),
+    inset 0 0 0 1.5rem rgb(202 166 107 / 11%),
+    0 0 5rem rgb(71 22 43 / 22%);
+}
+
+.museum-floor {
+  opacity: 0.38;
+}
+
+.museum-clock {
+  top: 7.5%;
+  width: clamp(6.8rem, 8.5vw, 9rem);
+  border-color: rgb(225 185 117 / 44%);
+  background: radial-gradient(circle, rgb(42 23 29 / 58%), rgb(8 7 9 / 28%));
+  box-shadow:
+    0 0 0 11px rgb(0 0 0 / 24%),
+    0 0 6rem rgb(156 83 65 / 24%);
+}
+
+.museum-clock::after {
+  animation: clock-tick 18s steps(12, end) infinite;
+}
+
+.museum-figure {
+  opacity: 0.2;
+  filter: blur(1px) drop-shadow(0 0 2rem #000);
+}
+
+.title-reveal {
+  background: radial-gradient(ellipse at 50% 50%, rgb(82 30 49 / 17%), transparent 48%);
+}
+
+.title-lockup {
+  grid-template-columns: clamp(6.5rem, 11vw, 10rem) minmax(25rem, 58rem);
+  gap: clamp(0.8rem, 2vw, 2rem);
+  width: min(72rem, 92vw);
+}
+
+.opening-experience[data-intro-phase='title'] .title-logo-mark,
+.opening-experience[data-intro-phase='ready'] .menu-logo-mark {
+  animation: brand-mark-arrive 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.opening-experience[data-intro-phase='title'] .title-wordmark,
+.opening-experience[data-intro-phase='ready'] .menu-wordmark {
+  animation: brand-wordmark-arrive 1050ms 110ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.case-title-card {
+  width: min(42rem, 90vw);
+  background: linear-gradient(90deg, transparent, rgb(18 10 15 / 80%) 16% 84%, transparent);
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 22%);
+}
+
+.main-menu {
+  grid-template-columns: minmax(0, 1.15fr) minmax(27rem, 0.68fr);
+  gap: clamp(3rem, 7vw, 8rem);
+  width: min(94rem, 100%);
+  padding: clamp(2.5rem, 5vw, 5rem);
+}
+
+.menu-brand-lockup {
+  grid-template-columns: clamp(6rem, 9vw, 9rem) minmax(24rem, 42rem);
+  gap: clamp(0.9rem, 1.8vw, 1.8rem);
+  margin-block: 1.2rem 1.8rem;
+}
+
+.menu-actions {
+  width: min(35rem, 100%);
+  border: 1px solid rgb(220 185 126 / 22%);
+  background: linear-gradient(100deg, rgb(91 30 47 / 24%), transparent 72%), rgb(14 10 14 / 76%);
+  box-shadow: 0 1.6rem 5rem rgb(0 0 0 / 32%);
+}
+
+.menu-actions button {
+  grid-template-columns: 3.5rem 1fr;
+  min-height: 6rem;
+  padding-inline: 1.65rem;
+  font-size: 1.08rem;
+}
+
+.menu-actions .menu-primary {
+  font-size: 1.28rem;
+}
+
+.menu-actions button span {
+  font-size: 0.68rem;
+}
+
+.menu-actions .menu-technical {
+  font-size: 1rem;
+}
+
+.menu-case {
+  font-size: 0.82rem;
+}
+
+.opening-panel {
+  width: 100%;
+  max-width: none;
+  padding-inline: clamp(2rem, 7vw, 8rem);
+  background:
+    radial-gradient(ellipse at 72% 34%, rgb(93 34 52 / 24%), transparent 38%),
+    linear-gradient(105deg, rgb(10 7 11 / 99%), rgb(31 17 24 / 97%) 52%, rgb(17 10 15 / 98%));
+  box-shadow: inset 0 0 12rem rgb(0 0 0 / 48%);
+}
+
+.mode-panel > .panel-heading,
+.mode-panel > .mode-options,
+.mode-panel > .mode-warning {
+  width: min(86rem, 100%);
+  margin-inline: auto;
+}
+
+.mode-options {
+  gap: 1.4rem;
+}
+
+.mode-card {
+  min-height: 16rem;
+  padding: 2rem;
+}
+
+.mode-number {
+  width: 3rem;
+}
+
+.mode-number img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.mode-copy small {
+  font-size: 0.72rem;
+}
+
+.mode-copy strong {
+  font-size: clamp(1.9rem, 3vw, 2.65rem);
+}
+
+.mode-copy > span {
+  font-size: 1rem;
+}
+
+.briefing-layout {
+  width: min(90rem, 100%);
+  margin-inline: auto;
+}
+
+.briefing-key-art {
+  width: min(48rem, 100%);
+}
+
+.back-button {
+  z-index: 5;
+  background: rgb(10 8 11 / 76%);
+  backdrop-filter: blur(0.35rem);
+}
+
+.guarantee-dossier h2 {
+  font-size: 1.12rem;
+}
+
+.guarantee-dossier article p,
+.fixture-honesty p {
+  font-size: 0.8rem;
+}
+
+.session-creation {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  width: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgb(101 35 55 / 36%), transparent 24rem),
+    linear-gradient(145deg, #0a080b, #1d1118 54%, #09080a);
+  backdrop-filter: none;
+}
+
+.session-creation::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  opacity: 0.3;
+  background:
+    linear-gradient(rgb(225 184 119 / 6%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(225 184 119 / 5%) 1px, transparent 1px);
+  background-size:
+    100% 5rem,
+    5rem 100%;
+  mask-image: radial-gradient(circle at 50% 45%, black, transparent 68%);
+}
+
+.session-creation::after {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid rgb(224 184 119 / 12%);
+  content: '';
+  transform: rotate(45deg) scale(0.72);
+  animation: loading-field 7s linear infinite;
+}
+
+.session-creation > * {
+  position: relative;
+  z-index: 1;
+}
+
+.commitment-animation {
+  width: 8rem;
+  margin-bottom: 2.5rem;
+}
+
+.commitment-animation img {
+  width: 5.6rem;
+  height: 5.6rem;
+}
+
+.session-creation h1 {
+  font-size: clamp(3rem, 6vw, 5rem);
+}
+
+.creation-steps {
+  width: min(39rem, 92vw);
+}
+
+.creation-steps li {
+  grid-template-columns: 3.2rem 1fr;
+  min-height: 5rem;
+  padding: 0.9rem 1.1rem;
+}
+
+.creation-steps li > span {
+  width: 2.25rem;
+  font-size: 0.72rem;
+}
+
+.creation-steps strong {
+  font-size: 1rem;
+}
+
+.creation-steps small,
+.creation-status {
+  font-size: 0.82rem;
+}
+
+.opening-modal {
+  width: min(47rem, 100%);
+  max-height: min(48rem, calc(100svh - 2rem));
+  padding: clamp(1.6rem, 3vw, 2.5rem);
+}
+
+.modal-heading h2 {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+}
+
+.settings-group {
+  gap: 1rem;
+  margin-block: 1.8rem;
+}
+
+.settings-group legend {
+  font-size: 1.55rem;
+}
+
+.settings-group > p {
+  font-size: 0.9rem;
+}
+
+.settings-group label {
+  min-height: 5rem;
+  padding: 1.1rem 1.2rem;
+}
+
+.settings-group label strong {
+  font-size: 1.05rem;
+}
+
+.settings-group label span,
+.audio-unavailable p {
+  font-size: 0.86rem;
+}
+
+.audio-unavailable {
+  grid-template-columns: 3.2rem 1fr;
+  min-height: 4.5rem;
+  padding: 1rem;
+}
+
+/* Active game shell */
+
+.cinematic-game {
+  grid-template:
+    'hud hud hud' 5rem
+    'rail stage notebook' minmax(0, 1fr)
+    'rail context notebook' 5rem /
+    6rem minmax(34rem, 1fr) minmax(21rem, 23.5rem);
+}
+
+.case-hud {
+  grid-template-columns: minmax(20rem, 1fr) minmax(14rem, 0.65fr) auto auto;
+}
+
+.case-insignia {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(10rem, 1fr);
+  gap: 0.9rem;
+  padding: 0.6rem 1.15rem;
+}
+
+.case-insignia > span {
+  width: 3.35rem;
+  overflow: visible;
+  border: 0;
+  transform: none;
+}
+
+.case-insignia > span img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: none;
+  filter: drop-shadow(0 0.4rem 0.8rem rgb(0 0 0 / 42%));
+}
+
+.case-brand-lockup {
+  display: grid;
+  gap: 0.22rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.case-brand-wordmark {
+  display: block;
+  width: clamp(10rem, 13vw, 13.5rem);
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.case-insignia small,
+.hud-location small,
+.hud-metrics dt {
+  font-size: 0.62rem;
+}
+
+.hud-location strong {
+  font-size: 1.08rem;
+}
+
+.hud-metrics > div {
+  min-width: 7.3rem;
+  padding-inline: 1rem;
+}
+
+.hud-metrics dd {
+  font-size: 0.86rem;
+}
+
+.room-rail button {
+  gap: 0.35rem;
+  min-height: 5.5rem;
+  padding: 0.55rem 0.35rem;
+}
+
+.room-rail button > span {
+  width: 2.1rem;
+  font-size: 0.75rem;
+}
+
+.room-rail button strong {
+  display: -webkit-box;
+  max-width: 5.2rem;
+  overflow: hidden;
+  font-size: 0.56rem;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.room-rail button small {
+  font-size: 0.52rem;
+}
+
+.square-control {
+  width: 3.05rem;
+  min-width: 3.05rem;
+}
+
+.square-control > img,
+.room-rail img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.game-eyebrow {
+  font-size: 0.66rem;
+}
+
+.scene-heading > p,
+.room-heading p,
+.desk-heading > div > p {
+  font-size: 0.88rem;
+}
+
+.museum-map-screen {
+  padding: clamp(1.4rem, 2.2vw, 2.4rem);
+  background:
+    radial-gradient(circle at 51% 48%, rgb(128 70 50 / 24%), transparent 40rem),
+    linear-gradient(145deg, #211318, #100d10 64%);
+}
+
+.museum-map {
+  width: min(82rem, 100%);
+  max-width: none;
+  margin-top: clamp(0.8rem, 1.6vh, 1.4rem);
+}
+
+.museum-map-scene {
+  width: min(100%, 70rem);
+  border-color: rgb(226 189 128 / 55%);
+  background: #151319;
+  box-shadow:
+    0 1.5rem 4.5rem rgb(0 0 0 / 46%),
+    0 0 0 1px rgb(106 47 59 / 24%);
+}
+
+.museum-map-image {
+  filter: saturate(1.08) contrast(1.04) brightness(1.06);
+}
+
+.map-scene-hotspot {
+  min-width: 10.25rem;
+  min-height: 4rem;
+  padding: 0.6rem 0.8rem;
+}
+
+.map-scene-hotspot > span {
+  left: -1rem;
+  width: 2rem;
+  font-size: 0.62rem;
+}
+
+.map-scene-hotspot strong {
+  font-size: 0.95rem;
+}
+
+.map-scene-hotspot small {
+  font-size: 0.54rem;
+}
+
+.map-room-list {
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+
+.map-room-list .map-room {
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  min-height: 6.1rem;
+  padding: 0.65rem;
+}
+
+.map-room-list .map-room-art {
+  width: 4.5rem;
+}
+
+.map-room-list .map-room-copy strong {
+  font-size: clamp(1rem, 1.3vw, 1.3rem);
+}
+
+.map-room-list .map-room-copy small {
+  font-size: 0.6rem;
+}
+
+.room-artwork::before {
+  opacity: 0.42;
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 62%), transparent 34% 76%, rgb(0 0 0 / 18%)),
+    linear-gradient(180deg, rgb(0 0 0 / 12%), transparent 62%, rgb(4 5 7 / 28%));
+}
+
+.room-character-sprite {
+  right: 2%;
+  bottom: -8%;
+  width: 47%;
+}
+
+.room-screen[data-interview='true'] .room-character-sprite {
+  right: 5%;
+  bottom: -8%;
+  width: 52%;
+}
+
+.room-heading {
+  max-width: 35rem;
+  padding: clamp(1.5rem, 2.4vw, 2.5rem);
+}
+
+.room-heading > div {
+  padding: 1.15rem 1.35rem;
+  background: linear-gradient(90deg, rgb(8 8 10 / 88%), rgb(17 12 15 / 50%) 72%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.suspect-presence {
+  width: min(30rem, calc(100% - 2rem));
+}
+
+.suspect-focus {
+  grid-template-columns: 5.25rem 1fr auto;
+  min-height: 6.2rem;
+  padding: 0.7rem 0.9rem;
+}
+
+.suspect-copy small {
+  font-size: 0.58rem;
+}
+
+.suspect-copy strong {
+  font-size: 1.45rem;
+}
+
+.suspect-copy > span,
+.suspect-focus > span:last-child {
+  font-size: 0.72rem;
+}
+
+.interview-dossier {
+  max-height: calc(100svh - 12rem);
+}
+
+.demeanor-line p,
+.testimony-boundary p,
+.question-composer select,
+.question-composer button,
+.dialogue-history p {
+  font-size: 0.78rem;
+}
+
+.detective-notebook {
+  background:
+    linear-gradient(90deg, transparent 2.4rem, rgb(126 48 53 / 20%) 2.45rem, transparent 2.5rem),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 2.2rem,
+      rgb(82 63 49 / 10%) 2.25rem,
+      transparent 2.3rem
+    ),
+    #ddccb0;
+}
+
+.notebook-heading {
+  padding: 1.2rem 1.1rem 1rem 3.2rem;
+}
+
+.notebook-heading h2 {
+  font-size: 1.8rem;
+}
+
+.notebook-meter {
+  margin-left: 3.2rem;
+}
+
+.notebook-meter span {
+  font-size: 0.58rem;
+}
+
+.notebook-meter strong {
+  font-size: 1.4rem;
+}
+
+.notebook-scroll {
+  padding: 0.4rem 1rem 1.2rem 3.2rem;
+}
+
+.note-section {
+  padding-block: 0.9rem;
+}
+
+.note-section > header {
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.7rem;
+}
+
+.evidence-glyph {
+  width: 2.2rem;
+}
+
+.note-section h3 {
+  font-size: 0.92rem;
+}
+
+.note-section header small {
+  font-size: 0.52rem;
+}
+
+.note-section ul {
+  margin-left: 3.15rem;
+}
+
+.note-section li strong {
+  font-size: 0.78rem;
+}
+
+.note-section li span,
+.empty-note {
+  font-size: 0.65rem;
+}
+
+.notebook-actions button {
+  min-height: 3.8rem;
+  font-size: 0.7rem;
+}
+
+.choice-grid strong,
+.choice-stack strong {
+  font-size: 0.8rem;
+}
+
+.choice-grid small,
+.choice-stack small {
+  font-size: 0.61rem;
+}
+
+.choice-stack .choice-icon {
+  width: 4rem;
+  height: 4rem;
+}
+
+.accusation-summary h2 {
+  font-size: 1.7rem;
+}
+
+.accusation-summary li span {
+  font-size: 0.58rem;
+}
+
+.accusation-summary li strong {
+  font-size: 0.78rem;
+}
+
+@keyframes opening-camera-drift {
+  from {
+    transform: scale(1.035) translate3d(-0.35%, -0.2%, 0);
+  }
+  to {
+    transform: scale(1.075) translate3d(0.45%, 0.3%, 0);
+  }
+}
+
+@keyframes brand-mark-arrive {
+  from {
+    opacity: 0;
+    transform: translateX(-1.5rem) rotate(-14deg) scale(0.72);
+    filter: blur(8px) drop-shadow(0 0 0 transparent);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes brand-wordmark-arrive {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: translateX(-1.2rem);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes clock-tick {
+  to {
+    transform: rotate(588deg);
+  }
+}
+
+@keyframes loading-field {
+  to {
+    transform: rotate(405deg) scale(0.72);
+  }
+}
+
+@media (max-width: 1120px) {
+  .cinematic-game {
+    grid-template:
+      'hud hud' 5rem
+      'rail stage' minmax(0, 1fr)
+      'rail context' 5rem /
+      5.5rem minmax(0, 1fr);
+  }
+
+  .case-hud {
+    grid-template-columns: minmax(18rem, 1fr) minmax(13rem, 0.65fr) auto auto;
+  }
+
+  .map-room-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .main-menu {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .menu-brand-lockup {
+    grid-template-columns: 5rem minmax(0, 1fr);
+  }
+
+  .opening-panel {
+    padding-inline: 1.5rem;
+  }
+
+  .mode-card {
+    min-height: 12rem;
+  }
+}
+
+@media (max-width: 780px) {
+  .cinematic-game {
+    grid-template:
+      'hud' 4.5rem
+      'stage' minmax(0, 1fr)
+      'context' 4.5rem /
+      minmax(0, 1fr);
+  }
+
+  .case-hud {
+    height: 4.5rem;
+  }
+
+  .case-insignia {
+    grid-template-columns: 2.7rem minmax(0, 1fr);
+    padding: 0.45rem 0.65rem;
+  }
+
+  .case-insignia > span {
+    width: 2.65rem;
+  }
+
+  .case-brand-wordmark {
+    width: min(10.5rem, 38vw);
+  }
+
+  .room-character-sprite {
+    right: -2%;
+    bottom: -5%;
+    width: 58%;
+  }
+
+  .room-screen[data-interview='true'] .room-character-sprite {
+    right: -2%;
+    width: 61%;
+  }
+
+  .map-scene-hotspot {
+    min-height: 3rem;
+  }
+
+  .suspect-focus {
+    grid-template-columns: 4.5rem 1fr auto;
+    min-height: 5.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .opening-key-art {
+    opacity: 0.24;
+  }
+
+  .title-lockup,
+  .menu-brand-lockup {
+    grid-template-columns: 4.2rem minmax(0, 1fr);
+  }
+
+  .main-menu {
+    gap: 2rem;
+  }
+
+  .menu-actions button {
+    min-height: 4.8rem;
+    font-size: 1rem;
+  }
+
+  .opening-modal {
+    padding: 1.25rem;
+  }
+
+  .settings-group label {
+    min-height: 4.5rem;
+  }
+
+  .museum-map-screen {
+    padding-inline: 0.8rem;
+  }
+
+  .map-room-list {
+    grid-template-columns: 1fr;
+  }
+
+  .room-character-sprite,
+  .room-screen[data-interview='true'] .room-character-sprite {
+    right: -7%;
+    width: 66%;
+  }
+
+  .room-heading > div {
+    padding: 0.9rem 1rem;
+  }
+
+  .room-heading h1 {
+    font-size: clamp(2.3rem, 12vw, 3.3rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-key-art,
+  .museum-clock::after,
+  .session-creation::after {
+    animation: none !important;
+  }
+}
+
+.opening-experience[data-motion='reduced'] .opening-key-art,
+.opening-experience[data-motion='reduced'] .museum-clock::after,
+.opening-experience[data-motion='reduced'] .session-creation::after {
+  animation: none !important;
+}
+.room-screen {
+  background: radial-gradient(ellipse at 60% 50%, rgb(50 76 96 / 72%), transparent 58%), #111d28;
+}
+
+.room-screen[data-room='room_restoration'] {
+  background: linear-gradient(180deg, #1b2c38, #111c25 72%);
+}
+
+.room-screen[data-room='room_archive'] {
+  background: linear-gradient(180deg, #193043, #101d29 72%);
+}
+
+.room-screen[data-room='room_conservatory'] {
+  background: linear-gradient(180deg, #203538, #101e22 72%);
+}
+
+@media (max-width: 1500px) and (min-width: 781px) {
+  .museum-map-screen .scene-heading {
+    display: grid;
+    gap: 0.65rem;
+    align-items: start;
+  }
+
+  .museum-map-screen .scene-heading h1 {
+    font-size: clamp(3rem, 4vw, 3.75rem);
+  }
+
+  .museum-map-screen .scene-heading > p {
+    max-width: 48rem;
+  }
+}
+
+@media (max-width: 780px) {
+  .case-hud {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .hud-controls {
+    width: max-content;
+    min-width: 0;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 480px) {
+  .case-insignia {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-brand-wordmark {
+    width: min(10.5rem, 50vw);
+    max-width: none;
+  }
+
+  .room-character-sprite,
+  .room-screen[data-interview='true'] .room-character-sprite {
+    right: 0;
+    width: 62%;
+  }
+}

@@ -5,6 +5,7 @@ import './globals.css';
 import './opening.css';
 import './investigation.css';
 import './asset-integration.css';
+import './ui-polish.css';
 
 export const metadata: Metadata = {
   title: 'The Last Alibi',

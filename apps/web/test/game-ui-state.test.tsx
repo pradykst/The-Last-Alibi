@@ -515,6 +515,20 @@ describe('B3 accessibility, technical policy, and responsiveness', () => {
     expect(css).toContain('overflow: hidden');
   });
 
+  it('locks the cinematic loader, bounded actors, and responsive game branding', () => {
+    const css = readFileSync(join(process.cwd(), 'src', 'app', 'ui-polish.css'), 'utf8');
+    const experience = readFileSync(
+      join(process.cwd(), 'src', 'components', 'investigation-experience.tsx'),
+      'utf8',
+    );
+    expect(css).toMatch(/\.session-creation\s*\{[^}]*position:\s*fixed/s);
+    expect(css).toMatch(/\.room-character-sprite\s*\{[^}]*width:\s*47%/s);
+    expect(css).toContain('@media (max-width: 1500px) and (min-width: 781px)');
+    expect(css).toContain('grid-template-columns: minmax(0, 1fr) auto');
+    expect(experience).toContain('className="case-brand-wordmark"');
+    expect(experience).toContain('alt="The Last Alibi"');
+  });
+
   it('does not introduce positive tabindex values into the game controls', () => {
     const opening = renderOpening();
     expect(opening).not.toMatch(/tabindex="[1-9]/);

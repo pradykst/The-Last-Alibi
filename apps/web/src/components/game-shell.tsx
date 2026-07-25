@@ -289,17 +289,20 @@ export default function GameShell({
     setError(null);
     setAnnouncement('Preparing a new fixture session.');
     try {
-      await new Promise<void>((resolve) => window.setTimeout(resolve, 120));
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 320));
       setCreationStage('committing');
       setAnnouncement('Generating a local fixture commitment.');
-      const response = await requestGame('/api/game/sessions', createSessionResponseSchema, {
-        method: 'POST',
-      });
+      const [response] = await Promise.all([
+        requestGame('/api/game/sessions', createSessionResponseSchema, {
+          method: 'POST',
+        }),
+        new Promise<void>((resolve) => window.setTimeout(resolve, 560)),
+      ]);
       setSelectedRoomId(response.content.manifest.rooms[0]!.id);
       saveSession(response.session, response.content);
       setCreationStage('confirmed');
       setAnnouncement('Investigation opened with 64 candidate cases.');
-      await new Promise<void>((resolve) => window.setTimeout(resolve, 520));
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 650));
       setSession(response.session);
       setContent(response.content);
     } catch (requestError: unknown) {

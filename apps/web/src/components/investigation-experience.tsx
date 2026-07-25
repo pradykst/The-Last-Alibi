@@ -1448,9 +1448,15 @@ export default function InvestigationExperience({
           <span aria-hidden="true">
             <img src={brandAssets.logoMark} width="1024" height="1024" alt="" />
           </span>
-          <div>
+          <div className="case-brand-lockup">
+            <img
+              className="case-brand-wordmark"
+              src={brandAssets.wordmark}
+              width="745"
+              height="142"
+              alt="The Last Alibi"
+            />
             <small>Case 001</small>
-            <strong>The Last Exhibit</strong>
           </div>
         </button>
         <div className="hud-location" aria-live="polite">
