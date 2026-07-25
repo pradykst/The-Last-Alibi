@@ -1,6 +1,7 @@
 .next
 .tools
 .agents
+apps/web/next-env.d.ts
 coverage
 dist
 node_modules

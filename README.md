@@ -31,31 +31,69 @@ Editable architecture and trust material:
 
 ## Authority at a glance
 
-| Component | Intended authority | Explicit boundary |
-|---|---|---|
-| Sui Move | Canonical game state, disclosure policy, proof acceptance, replay protection, ranked permits, terminal verdict record | Does not receive model authority or plaintext private witnesses |
-| ZK prover | Private witness processing and proof generation | Cannot set policy, state, eligibility, or verdict |
-| 0G | Planned verified suspect-agent inference | Never receives the hidden case and cannot eliminate candidates |
-| Walrus | Planned encrypted artifact persistence | Stores ciphertext; does not authorize access or establish truth |
-| Seal | Planned decryption under Sui-defined policy | Does not prove plaintext truthfulness |
-| World AgentKit | Planned human-backed authorization for a scarce Ranked Agent attempt | Cannot determine the game outcome |
-| Game API / relayer | Orchestration, idempotency, proof jobs, finality waiting, permit handling | Cannot choose the case or verdict |
-| Web application | Presentation and local interaction | Cannot establish case truth or proof validity |
+| Component          | Intended authority                                                                                                    | Explicit boundary                                               |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Sui Move           | Canonical game state, disclosure policy, proof acceptance, replay protection, ranked permits, terminal verdict record | Does not receive model authority or plaintext private witnesses |
+| ZK prover          | Private witness processing and proof generation                                                                       | Cannot set policy, state, eligibility, or verdict               |
+| 0G                 | Planned verified suspect-agent inference                                                                              | Never receives the hidden case and cannot eliminate candidates  |
+| Walrus             | Planned encrypted artifact persistence                                                                                | Stores ciphertext; does not authorize access or establish truth |
+| Seal               | Planned decryption under Sui-defined policy                                                                           | Does not prove plaintext truthfulness                           |
+| World AgentKit     | Planned human-backed authorization for a scarce Ranked Agent attempt                                                  | Cannot determine the game outcome                               |
+| Game API / relayer | Orchestration, idempotency, proof jobs, finality waiting, permit handling                                             | Cannot choose the case or verdict                               |
+| Web application    | Presentation and local interaction                                                                                    | Cannot establish case truth or proof validity                   |
 
 ## Target partner tracks
 
 The planned architecture targets Sui, 0G, World AgentKit, Walrus, Seal, and zero-knowledge proof integrations. These are intended roles, not claims of completed or live partner integrations.
 
+## Local development
+
+Prerequisites are Node.js 22.13.1 (or a compatible Node 22 release) and pnpm 9.15.4.
+
+```powershell
+corepack enable
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+The application runs at `http://localhost:3000`; its sanitized public health route is
+`http://localhost:3000/api/health`.
+
+## Workspace
+
+| Path                | Responsibility                                                |
+| ------------------- | ------------------------------------------------------------- |
+| `apps/web`          | Next.js App Router application and server-only route handlers |
+| `packages/protocol` | Browser-safe public constants, schemas, and inferred types    |
+| `packages/runtime`  | Fixture/live mode enforcement and capability status handling  |
+| `docs/architecture` | Canonical architecture diagrams and trust boundaries          |
+
+Quality and build commands:
+
+```powershell
+pnpm lint
+pnpm format:check
+pnpm typecheck
+pnpm test
+pnpm check
+pnpm build
+```
+
+See [Development](docs/DEVELOPMENT.md) and [Environment policy](docs/ENVIRONMENT.md) for the
+full local workflow and runtime rules.
+
 ## Current status
 
-Checkpoint D1 establishes the canonical architecture package:
+Checkpoint B1 adds the first runnable product baseline:
 
-- editable Mermaid sources and accessible SVG exports;
-- explicit certified-warrant and terminal-verdict sequences;
-- a component authority matrix, data classifications, fail-closed rules, and threat assumptions;
-- pinned local sui-pilot documentation and Codex development tooling.
+- a pnpm workspace with strict TypeScript and repository-local quality gates;
+- a deployable Next.js application shell with a sanitized health endpoint;
+- browser-safe protocol schemas and a fail-closed fixture/live runtime boundary;
+- the preserved D1 architecture package and pinned sui-pilot development tooling.
 
-No Alibi application scaffold, Move contract, circuit, deployment, package address, live partner integration, or production proof setup exists yet.
+No playable case engine, Move contract, circuit, wallet flow, deployment, package address, live
+partner integration, or production proof setup exists yet. Fixture mode is visibly labelled and
+is not evidence that any partner integration is working.
 
 ## Product work and reused tooling
 
@@ -63,8 +101,8 @@ The architecture, game rules, trust model, and future Alibi implementation are n
 
 ## Immediate roadmap
 
-1. **B1 ? Repository baseline:** choose and document the application, contract, circuit, and service workspace boundaries.
-2. Define versioned protocol identifiers, typed predicates, commitment encodings, and proof public inputs.
+1. **B2: Playable investigation shell:** implement the deterministic 64-case engine and level manifest.
+2. Define typed predicates, commitment encodings, and proof public inputs.
 3. Scaffold the smallest testable Sui Move package and circuit only after the baseline is approved.
-4. Build fail-closed API and browser slices against local tests before introducing live partner integrations.
-5. Revalidate these diagrams against deployed reality before submission.
+4. Introduce each partner adapter with official documentation, fail-closed tests, and honest status reporting.
+5. Revalidate the canonical diagrams against deployed reality before submission.
