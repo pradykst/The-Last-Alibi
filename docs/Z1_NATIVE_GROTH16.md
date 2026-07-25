@@ -142,16 +142,16 @@ The 12.2 MB R1CS and 3.7 MB WASM are reproducible build outputs and remain ignor
 fixture manifest, proofs, commitments, VKs, seeds, and hashes are committed in
 `artifacts/z1-verdict/fixtures.json`.
 
-| Artifact | SHA-256 |
-| --- | --- |
-| Verdict circuit source | `ccc50208a9f068920ff95f0c82b2cbaa11f0c7c6474692f43ec4d2936a53bf31` |
-| Fixed BLAKE2b circuit source | `df0dde20a48a4fb3168702a1a4e226756e73183e916cec37b435f3d9468a86a3` |
-| TypeScript commitment/encoder source | `b4eeafc2e933437d67e50f0f59c84a3f3579f74170cd4fb3ba032ecf332d4a7f` |
-| Rust verdict prover source | `24a58fc246a5651450f7114891d61033b4cb39a996ab6e9b36e53ad417540382` |
-| Verdict R1CS | `b3dcf33b4a9664e9957273584dfe64fc17de12a6eb57e3f57fa6eafed5fdc7e2` |
-| Verdict WASM | `41bf58bf9f9d717b1fa1450b8faa71b8055adc0217be8c0b9deba488396f5740` |
+| Artifact                                  | SHA-256                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------ |
+| Verdict circuit source                    | `ccc50208a9f068920ff95f0c82b2cbaa11f0c7c6474692f43ec4d2936a53bf31` |
+| Fixed BLAKE2b circuit source              | `df0dde20a48a4fb3168702a1a4e226756e73183e916cec37b435f3d9468a86a3` |
+| TypeScript commitment/encoder source      | `b6a5ec6fc20fb7f090507d142c05c89fb91b9e81d2eed46b8d490652e7cbc4f8` |
+| Rust verdict prover source                | `24a58fc246a5651450f7114891d61033b4cb39a996ab6e9b36e53ad417540382` |
+| Verdict R1CS                              | `b3dcf33b4a9664e9957273584dfe64fc17de12a6eb57e3f57fa6eafed5fdc7e2` |
+| Verdict WASM                              | `41bf58bf9f9d717b1fa1450b8faa71b8055adc0217be8c0b9deba488396f5740` |
 | Compressed verification key / verifier ID | `57413ae2abe8025a6035cca0c5c063687827fcc56bd5f8b11126ba47072fe2c3` |
-| Different-key negative-test VK | `220dee77d9416e2a96fc6dfa6323817389f0bc8d6a8ee8f36649d796258e43dc` |
-| Fixture manifest | `f0231db165264545b816149b12ca32eadc6c9064e805a7082e68af58f35843fd` |
+| Different-key negative-test VK            | `220dee77d9416e2a96fc6dfa6323817389f0bc8d6a8ee8f36649d796258e43dc` |
+| Fixture manifest                          | `f0231db165264545b816149b12ca32eadc6c9064e805a7082e68af58f35843fd` |
 
 Two consecutive fixture generations produced the same manifest hash.

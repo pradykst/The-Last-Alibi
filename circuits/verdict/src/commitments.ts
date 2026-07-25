@@ -39,7 +39,9 @@ export interface PublicInputEncoding {
 
 function assertByteLength(value: Uint8Array, expected: number, label: string): void {
   if (value.length !== expected) {
-    throw new RangeError(`${label} must contain exactly ${expected} bytes; received ${value.length}`);
+    throw new RangeError(
+      `${label} must contain exactly ${expected} bytes; received ${value.length}`,
+    );
   }
 }
 
@@ -191,16 +193,13 @@ export async function accusationCommitment(opening: CaseOpening): Promise<Uint8A
   ]);
 }
 
-export async function verdictCommitment(verdict: bigint, saltBytes: Uint8Array): Promise<Uint8Array> {
+export async function verdictCommitment(
+  verdict: bigint,
+  saltBytes: Uint8Array,
+): Promise<Uint8Array> {
   assertRange(verdict, 0n, 1n, 'verdict');
   const salt = canonicalFieldFromBytes(saltBytes, 'verdict salt');
-  return poseidonCommitment([
-    VERDICT_DOMAIN,
-    PROTOCOL_VERSION,
-    LEVEL_VERSION,
-    verdict,
-    salt,
-  ]);
+  return poseidonCommitment([VERDICT_DOMAIN, PROTOCOL_VERSION, LEVEL_VERSION, verdict, salt]);
 }
 
 function encodeU64(value: bigint): Uint8Array {

@@ -181,9 +181,9 @@ describe('canonical eight-field encoding', () => {
     expect(() => decodePublicInputBytes(new Uint8Array(255))).toThrow(/exactly 256 bytes/);
     expect(() => decodePublicInputBytes(new Uint8Array(257))).toThrow(/exactly 256 bytes/);
     expect(() => canonicalFieldBytes(BN254_SCALAR_MODULUS)).toThrow(/outside/);
-    expect(() => canonicalFieldFromBytes(bigIntToLittleEndianBytes(BN254_SCALAR_MODULUS, 32))).toThrow(
-      /not a canonical/,
-    );
+    expect(() =>
+      canonicalFieldFromBytes(bigIntToLittleEndianBytes(BN254_SCALAR_MODULUS, 32)),
+    ).toThrow(/not a canonical/);
 
     const malformedScalarInputs = new Uint8Array(256);
     malformedScalarInputs[16] = 1;
@@ -218,7 +218,10 @@ describe('verdict circuit relation', () => {
     verdict: bigint,
     salt: Uint8Array,
   ): Promise<void> {
-    const witness = await calculator.calculateWitness(witnessInput(accusation, verdict, salt), true);
+    const witness = await calculator.calculateWitness(
+      witnessInput(accusation, verdict, salt),
+      true,
+    );
     const expected = encodePublicInputs(await expectedCommitments(accusation, verdict, salt));
     expect(witness.slice(1, 9)).toEqual(expected.fields);
   }

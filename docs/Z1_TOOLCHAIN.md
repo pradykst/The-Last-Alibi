@@ -54,11 +54,11 @@ snarkjs, rapidsnark, Solidity calldata, or a production ceremony.
 
 Two consecutive builds and proof generations under the pinned toolchain produced identical bytes:
 
-| Artifact | SHA-256 |
-| --- | --- |
-| Smoke R1CS | `18e7e2acedabd39db3efaa8a9b457e3dbd3883ae1c421be4a725eec530574ee2` |
-| Smoke WASM | `bf30a128fe8b86b69ec88725371a4ea9ab1a39842f400300c30e7955ce7f42c1` |
+| Artifact              | SHA-256                                                            |
+| --------------------- | ------------------------------------------------------------------ |
+| Smoke R1CS            | `18e7e2acedabd39db3efaa8a9b457e3dbd3883ae1c421be4a725eec530574ee2` |
+| Smoke WASM            | `bf30a128fe8b86b69ec88725371a4ea9ab1a39842f400300c30e7955ce7f42c1` |
 | Native smoke manifest | `34ce6a229291c67798658bce6bc99e42c26cae524d409fd3bb19c8a358d2a69c` |
-| Verification key | `89de2e5f6d5fd1cc07b4d98028a6638f4c6efc41e829fb00c10bfa634ec66322` |
-| Proof points | `cd27969601ea24bbb8a165eb4f78c7652a3479f069f6da729cd45bbaccf3dcf0` |
-| Public inputs | `2a3310c3b8ccce8b0fd345f873da17c9227d5920568120b67144b51e50c561ff` |
+| Verification key      | `89de2e5f6d5fd1cc07b4d98028a6638f4c6efc41e829fb00c10bfa634ec66322` |
+| Proof points          | `cd27969601ea24bbb8a165eb4f78c7652a3479f069f6da729cd45bbaccf3dcf0` |
+| Public inputs         | `2a3310c3b8ccce8b0fd345f873da17c9227d5920568120b67144b51e50c561ff` |
