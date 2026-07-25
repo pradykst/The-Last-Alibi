@@ -195,6 +195,22 @@ describe('verified 0G inference adapter', () => {
     );
   });
 
+  it('accepts a metadata route beneath the configured provider catalog origin', async () => {
+    const fetch = vi.fn<ZeroGFetch>(async () =>
+      providerResponse({ responseIdHeader: ['ZG-Res-Key', 'response-123'] }),
+    );
+    await createAdapter({
+      broker: fakeBroker({
+        listServices: async () => [{ ...SERVICE, endpoint: 'https://provider.example/' }],
+      }),
+      fetch,
+    }).createVerifiedChatCompletion({ messages: MESSAGES });
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://provider.example/v1/proxy/chat/completions',
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
   it('times out through an AbortSignal', async () => {
     const fetch: ZeroGFetch = (_url, init) =>
       new Promise((_resolve, reject) => {

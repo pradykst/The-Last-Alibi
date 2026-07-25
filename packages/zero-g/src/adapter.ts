@@ -63,6 +63,12 @@ function completionEndpoint(baseEndpoint: string): string {
   return endpoint.toString();
 }
 
+function serviceOriginsMatch(catalogEndpoint: string, metadataEndpoint: string): boolean {
+  return (
+    requireSecureEndpoint(catalogEndpoint).origin === requireSecureEndpoint(metadataEndpoint).origin
+  );
+}
+
 async function readBoundedResponse(response: Response, maximumBytes: number): Promise<string> {
   const announcedLength = response.headers.get('content-length');
   if (announcedLength !== null) {
@@ -213,7 +219,10 @@ export function createVerifiedZeroGAdapter(options: {
     let authenticatedHeaders: Readonly<Record<string, string>>;
     try {
       metadata = await broker.getServiceMetadata(config.providerAddress);
-      if (metadata.model !== config.model || metadata.endpoint !== service.endpoint) {
+      if (
+        metadata.model !== config.model ||
+        !serviceOriginsMatch(service.endpoint, metadata.endpoint)
+      ) {
         throw new ZeroGError('ZERO_G_PROVIDER_MISMATCH');
       }
       authenticatedHeaders = await broker.getRequestHeaders(config.providerAddress);

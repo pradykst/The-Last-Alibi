@@ -8,6 +8,7 @@ import { requestVerifiedSuspectTestimony } from './testimony';
 import type { VerifiedZeroGAdapter, ZeroGBroker, ZeroGFetch } from './types';
 
 type DiagnosticStage =
+  | 'provider/service validation'
   | 'request serialization'
   | 'authenticated request dispatch'
   | 'HTTP response status'
@@ -30,7 +31,7 @@ type LiveDiagnostic = {
 };
 
 const diagnostic: LiveDiagnostic = {
-  stage: 'request serialization',
+  stage: 'provider/service validation',
   requestSerialization: 'not-checked',
   httpStatus: null,
   responseContentType: null,
