@@ -1,0 +1,33 @@
+{
+  "name": "the-last-alibi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The Last Alibi hackathon workspace",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22.13.1 <23",
+    "pnpm": "9.15.4"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @alibi/web dev",
+    "lint": "pnpm -r --aggregate-output lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "pnpm -r --aggregate-output typecheck",
+    "test": "pnpm -r --aggregate-output test",
+    "build": "pnpm -r --aggregate-output build",
+    "clean": "pnpm -r --aggregate-output clean",
+    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.2",
+    "@next/eslint-plugin-next": "16.2.11",
+    "@types/node": "22.15.3",
+    "eslint": "9.39.2",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "prettier": "3.9.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.65.0",
+    "vitest": "4.1.10"
+  }
+}

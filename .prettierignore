@@ -1,0 +1,12 @@
+.next
+.tools
+.agents
+coverage
+dist
+node_modules
+pnpm-lock.yaml
+AGENTS.md
+docs/architecture
+docs/SUI_PILOT_VALIDATION.md
+docs/THIRD_PARTY_COMPONENTS.md
+scripts
