@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+import prettier from 'prettier';
 import sharp from 'sharp';
 
 sharp.cache(false);
@@ -760,7 +761,11 @@ ${states
 The JSON report beside this file contains SHA-256 hashes, actual formats, dimensions, alpha data,
 source-to-destination mappings, per-emotion transforms, and every runtime-file record.
 `;
-  await writeFile(path.join(reportRoot, 'asset-validation-report.md'), markdown, 'utf8');
+  await writeFile(
+    path.join(reportRoot, 'asset-validation-report.md'),
+    await prettier.format(markdown, { parser: 'markdown', endOfLine: 'lf' }),
+    'utf8',
+  );
 
   if (runtimeFindings.length > 0) {
     throw new Error(`Runtime asset validation failed with ${runtimeFindings.length} issue(s).`);
