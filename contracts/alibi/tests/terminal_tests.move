@@ -11,7 +11,10 @@ use alibi::verifier::{Self, VerdictProofReceipt};
 
 const PLAYER: address = @0xA11CE;
 const OTHER: address = @0xB0B;
-const TEST_BLOB_ID: u256 = 1;
+const TEST_BLOB_ID: u256 =
+    23308994573709855642619175826119088931643282545396843698436971920739544859977;
+const OTHER_BLOB_ID: u256 =
+    73232971686157566821481873965217386899727957463339902141909339126548630902136;
 
 fun case_commitment(): vector<u8> {
     x"1111111111111111111111111111111111111111111111111111111111111111"
@@ -62,7 +65,7 @@ fun setup(hint: u64): (LevelConfig, GameSession, Clock, TxContext) {
 }
 
 fun start(session: &mut GameSession, level: &LevelConfig, clock: &Clock, ctx: &mut TxContext) {
-    alibi::start_accusation(session, level, accusation_commitment(), 0, clock, ctx)
+    alibi::start_accusation(session, level, accusation_commitment(), TEST_BLOB_ID, 0, clock, ctx)
 }
 
 fun verified_receipt(
@@ -137,7 +140,7 @@ fun active_transitions_to_accusation_pending_with_exact_binding() {
     assert_eq!(*alibi::pending_accusation_commitment(&session), accusation_commitment());
     assert_eq!(
         *alibi::pending_session_attempt_domain_commitment(&session),
-        alibi::session_attempt_domain_commitment_for_testing(&session, 0),
+        alibi::session_attempt_domain_commitment_for_testing(&session, 0, TEST_BLOB_ID),
     );
     assert!(alibi::has_pending_accusation(&session));
     assert!(!alibi::has_pending_query(&session));
@@ -145,13 +148,14 @@ fun active_transitions_to_accusation_pending_with_exact_binding() {
 
     let events = event::events_by_type<alibi::AccusationStarted>();
     assert_eq!(events.length(), 1);
-    let (event_session, event_level, nonce, commitment, domain, started_at_ms) =
+    let (event_session, event_level, nonce, commitment, expected_blob_id, domain, started_at_ms) =
         alibi::accusation_started_fields_for_testing(events.borrow(0));
     assert_eq!(event_session, session_id);
     assert_eq!(event_level, level_id);
     assert_eq!(nonce, 0);
     assert_eq!(commitment, accusation_commitment());
-    assert_eq!(domain, alibi::session_attempt_domain_commitment_for_testing(&session, 0));
+    assert_eq!(expected_blob_id, TEST_BLOB_ID);
+    assert_eq!(domain, alibi::session_attempt_domain_commitment_for_testing(&session, 0, TEST_BLOB_ID));
     assert_eq!(started_at_ms, 0);
     cleanup(level, session, clock);
 }
@@ -170,7 +174,7 @@ fun verified_finalization_creates_public_terminal_record() {
     assert_eq!(*alibi::verdict_accusation_commitment(&session), accusation_commitment());
     assert_eq!(
         *alibi::verdict_session_attempt_domain_commitment(&session),
-        alibi::session_attempt_domain_commitment_for_testing(&session, 0),
+        alibi::session_attempt_domain_commitment_for_testing(&session, 0, TEST_BLOB_ID),
     );
     assert_eq!(*alibi::verdict_commitment(&session), verdict_commitment());
     assert_eq!(alibi::encrypted_verdict_blob_id(&session), TEST_BLOB_ID);
@@ -213,7 +217,7 @@ fun no_path_terminal_record_discloses_no_hidden_solution() {
     assert_eq!(event_level, object::id(&level));
     assert_eq!(nonce, 0);
     assert_eq!(accusation, accusation_commitment());
-    assert_eq!(domain, alibi::session_attempt_domain_commitment_for_testing(&session, 0));
+    assert_eq!(domain, alibi::session_attempt_domain_commitment_for_testing(&session, 0, TEST_BLOB_ID));
     assert_eq!(verdict, no_path_verdict_commitment());
     assert_eq!(blob_id, TEST_BLOB_ID);
     assert_eq!(identity, verifier_identity());
@@ -226,7 +230,7 @@ fun no_path_terminal_record_discloses_no_hidden_solution() {
 fun accusation_while_query_is_pending_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(103);
     alibi::authorize_query(&mut session, &level, 0, 0, &clock, &mut ctx);
-    alibi::start_accusation(&mut session, &level, accusation_commitment(), 0, &clock, &mut ctx);
+    alibi::start_accusation(&mut session, &level, accusation_commitment(), TEST_BLOB_ID, 0, &clock, &mut ctx);
     abort 255
 }
 
@@ -238,6 +242,7 @@ fun accusation_by_wrong_player_is_rejected() {
         &mut session,
         &level,
         accusation_commitment(),
+        TEST_BLOB_ID,
         0,
         &clock,
         &mut other_ctx,
@@ -248,7 +253,7 @@ fun accusation_by_wrong_player_is_rejected() {
 #[test, expected_failure(abort_code = 3, location = alibi)]
 fun empty_accusation_commitment_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(106);
-    alibi::start_accusation(&mut session, &level, vector[], 0, &clock, &mut ctx);
+    alibi::start_accusation(&mut session, &level, vector[], TEST_BLOB_ID, 0, &clock, &mut ctx);
     abort 255
 }
 
@@ -259,6 +264,7 @@ fun malformed_accusation_commitment_is_rejected() {
         &mut session,
         &level,
         x"01010101010101010101010101010101010101010101010101010101010101",
+        TEST_BLOB_ID,
         0,
         &clock,
         &mut ctx,
@@ -273,9 +279,19 @@ fun zero_accusation_commitment_is_rejected() {
         &mut session,
         &level,
         x"0000000000000000000000000000000000000000000000000000000000000000",
+        TEST_BLOB_ID,
         0,
         &clock,
         &mut ctx,
+    );
+    abort 255
+}
+
+#[test, expected_failure(abort_code = 23, location = alibi)]
+fun zero_verdict_blob_id_is_rejected() {
+    let (level, mut session, clock, mut ctx) = setup(130);
+    alibi::start_accusation(
+        &mut session, &level, accusation_commitment(), 0, 0, &clock, &mut ctx,
     );
     abort 255
 }
@@ -284,14 +300,14 @@ fun zero_accusation_commitment_is_rejected() {
 fun duplicate_accusation_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(109);
     start(&mut session, &level, &clock, &mut ctx);
-    alibi::start_accusation(&mut session, &level, accusation_commitment(), 1, &clock, &mut ctx);
+    alibi::start_accusation(&mut session, &level, accusation_commitment(), TEST_BLOB_ID, 1, &clock, &mut ctx);
     abort 255
 }
 
 #[test, expected_failure(abort_code = 9, location = alibi)]
 fun wrong_attempt_nonce_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(110);
-    alibi::start_accusation(&mut session, &level, accusation_commitment(), 1, &clock, &mut ctx);
+    alibi::start_accusation(&mut session, &level, accusation_commitment(), TEST_BLOB_ID, 1, &clock, &mut ctx);
     abort 255
 }
 
@@ -299,7 +315,7 @@ fun wrong_attempt_nonce_is_rejected() {
 fun stale_attempt_nonce_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(111);
     alibi::set_attempt_nonce_for_testing(&mut session, 1);
-    alibi::start_accusation(&mut session, &level, accusation_commitment(), 0, &clock, &mut ctx);
+    alibi::start_accusation(&mut session, &level, accusation_commitment(), TEST_BLOB_ID, 0, &clock, &mut ctx);
     abort 255
 }
 
@@ -311,6 +327,7 @@ fun attempt_nonce_overflow_is_rejected() {
         &mut session,
         &level,
         accusation_commitment(),
+        TEST_BLOB_ID,
         std::u64::max_value!(),
         &clock,
         &mut ctx,
@@ -408,14 +425,14 @@ fun verdict_for_wrong_session_attempt_domain_is_rejected() {
 fun stale_verdict_attempt_nonce_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(115);
     alibi::set_attempt_nonce_for_testing(&mut session, 1);
-    alibi::start_accusation(&mut session, &level, accusation_commitment(), 1, &clock, &mut ctx);
+    alibi::start_accusation(&mut session, &level, accusation_commitment(), TEST_BLOB_ID, 1, &clock, &mut ctx);
     let receipt = verified_receipt(
         &session,
         &level,
         0,
         case_commitment(),
         accusation_commitment(),
-        alibi::session_attempt_domain_commitment_for_testing(&session, 0),
+        alibi::session_attempt_domain_commitment_for_testing(&session, 0, TEST_BLOB_ID),
         verdict_commitment(),
         TEST_BLOB_ID,
         verifier_identity(),
@@ -434,7 +451,7 @@ fun future_verdict_attempt_nonce_is_rejected() {
         1,
         case_commitment(),
         accusation_commitment(),
-        alibi::session_attempt_domain_commitment_for_testing(&session, 1),
+        alibi::session_attempt_domain_commitment_for_testing(&session, 1, TEST_BLOB_ID),
         verdict_commitment(),
         TEST_BLOB_ID,
         verifier_identity(),
@@ -520,6 +537,25 @@ fun missing_encrypted_verdict_reference_is_rejected() {
     abort 255
 }
 
+#[test, expected_failure(abort_code = 23, location = alibi)]
+fun receipt_blob_differing_from_pending_expected_blob_is_rejected() {
+    let (level, mut session, clock, mut ctx) = setup(131);
+    start(&mut session, &level, &clock, &mut ctx);
+    let receipt = verified_receipt(
+        &session,
+        &level,
+        0,
+        case_commitment(),
+        accusation_commitment(),
+        *alibi::pending_session_attempt_domain_commitment(&session),
+        verdict_commitment(),
+        OTHER_BLOB_ID,
+        verifier_identity(),
+    );
+    alibi::finalize_verdict(&mut session, &level, receipt, &clock);
+    abort 255
+}
+
 #[test, expected_failure(abort_code = 3, location = alibi)]
 fun invalid_verdict_commitment_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(121);
@@ -582,7 +618,7 @@ fun accusation_after_terminal_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(126);
     start(&mut session, &level, &clock, &mut ctx);
     terminate(&mut session, &level, &clock, verdict_commitment());
-    alibi::start_accusation(&mut session, &level, other_accusation_commitment(), 1, &clock, &mut ctx);
+    alibi::start_accusation(&mut session, &level, other_accusation_commitment(), TEST_BLOB_ID, 1, &clock, &mut ctx);
     abort 255
 }
 

@@ -102,6 +102,7 @@ public struct PendingQuery has copy, drop, store {
 public struct PendingAccusation has copy, drop, store {
     attempt_nonce: u64,
     accusation_commitment: vector<u8>,
+    expected_verdict_blob_id: u256,
     session_attempt_domain_commitment: vector<u8>,
     started_at_ms: u64,
 }
@@ -171,6 +172,7 @@ public struct AccusationStarted has copy, drop {
     level: ID,
     attempt_nonce: u64,
     accusation_commitment: vector<u8>,
+    expected_verdict_blob_id: u256,
     session_attempt_domain_commitment: vector<u8>,
     started_at_ms: u64,
 }
@@ -273,11 +275,12 @@ entry fun create_session(
     transfer::transfer(session, ctx.sender());
 }
 
-/// Starts the one terminal accusation using only its salted commitment.
+/// Starts one terminal accusation and single-assigns its Walrus content blob ID.
 public fun start_accusation(
     session: &mut GameSession,
     level: &LevelConfig,
     accusation_commitment: vector<u8>,
+    expected_verdict_blob_id: u256,
     expected_attempt_nonce: u64,
     clock: &Clock,
     ctx: &mut TxContext,
@@ -291,12 +294,18 @@ public fun start_accusation(
     assert!(session.verdict.is_none(), EInvalidSessionState);
     assert!(session.attempt_nonce == expected_attempt_nonce, EStaleOrWrongNonce);
     assert_valid_commitment(&accusation_commitment);
+    assert!(expected_verdict_blob_id != 0, EInvalidEncryptedVerdictReference);
 
-    let domain_commitment = session_attempt_domain_commitment(session, expected_attempt_nonce);
+    let domain_commitment = session_attempt_domain_commitment(
+        session,
+        expected_attempt_nonce,
+        expected_verdict_blob_id,
+    );
     let started_at_ms = clock.timestamp_ms();
     session.pending_accusation.fill(PendingAccusation {
         attempt_nonce: expected_attempt_nonce,
         accusation_commitment: copy accusation_commitment,
+        expected_verdict_blob_id,
         session_attempt_domain_commitment: copy domain_commitment,
         started_at_ms,
     });
@@ -308,9 +317,63 @@ public fun start_accusation(
         level: object::id(level),
         attempt_nonce: expected_attempt_nonce,
         accusation_commitment,
+        expected_verdict_blob_id,
         session_attempt_domain_commitment: domain_commitment,
         started_at_ms,
     });
+}
+
+/// Verifies a verdict proof against the authoritative pending attempt.
+public fun verify_verdict_proof(
+    session: &GameSession,
+    level: &LevelConfig,
+    attempt_nonce: u64,
+    verdict_commitment: vector<u8>,
+    encrypted_verdict_blob_id: u256,
+    proof: vector<u8>,
+): VerdictProofReceipt {
+    assert_session_binding(session, level);
+    assert_not_terminal(session);
+    assert!(session.state == STATE_ACCUSATION_PENDING, EInvalidSessionState);
+    assert!(session.pending_accusation.is_some(), EPendingAccusationMissing);
+    assert!(session.verdict.is_none(), EInvalidSessionState);
+    assert!(encrypted_verdict_blob_id != 0, EInvalidEncryptedVerdictReference);
+    assert!(level.verdict_verifier_state == VERIFIER_AVAILABLE, EInvalidVerifier);
+    assert!(
+        verifier::verdict_verifier_identity()
+            == level.expected_verdict_verifier_identity,
+        EInvalidVerifier,
+    );
+
+    let pending = session.pending_accusation.borrow();
+    assert!(attempt_nonce == pending.attempt_nonce, EPendingAccusationMismatch);
+    assert!(session.attempt_nonce == attempt_nonce + 1, EPendingAccusationMismatch);
+    assert!(
+        encrypted_verdict_blob_id == pending.expected_verdict_blob_id,
+        EInvalidEncryptedVerdictReference,
+    );
+    let domain_commitment = session_attempt_domain_commitment(
+        session,
+        attempt_nonce,
+        encrypted_verdict_blob_id,
+    );
+    assert!(
+        domain_commitment == pending.session_attempt_domain_commitment,
+        EPendingAccusationMismatch,
+    );
+
+    verifier::verify_verdict_proof(
+        VERDICT_RECEIPT_VERSION,
+        object::id(session),
+        object::id(level),
+        attempt_nonce,
+        session.case_commitment,
+        pending.accusation_commitment,
+        domain_commitment,
+        verdict_commitment,
+        encrypted_verdict_blob_id,
+        proof,
+    )
 }
 
 /// Consumes a verifier-owned verdict receipt and irreversibly terminates the session.
@@ -364,6 +427,10 @@ public fun finalize_verdict(
     assert!(receipt_attempt_nonce >= pending.attempt_nonce, EVerdictReceiptReplay);
     assert!(receipt_attempt_nonce == pending.attempt_nonce, EPendingAccusationMismatch);
     assert!(
+        encrypted_verdict_blob_id == pending.expected_verdict_blob_id,
+        EInvalidEncryptedVerdictReference,
+    );
+    assert!(
         receipt_accusation_commitment == pending.accusation_commitment,
         EPendingAccusationMismatch,
     );
@@ -373,7 +440,11 @@ public fun finalize_verdict(
     );
     assert!(
         receipt_domain_commitment
-            == session_attempt_domain_commitment(session, receipt_attempt_nonce),
+            == session_attempt_domain_commitment(
+                session,
+                receipt_attempt_nonce,
+                pending.expected_verdict_blob_id,
+            ),
         EPendingAccusationMismatch,
     );
     assert!(
@@ -738,12 +809,16 @@ fun contains_nonzero_byte(bytes: &vector<u8>): bool {
 fun session_attempt_domain_commitment(
     session: &GameSession,
     attempt_nonce: u64,
+    expected_verdict_blob_id: u256,
 ): vector<u8> {
     let mut input = SESSION_ATTEMPT_DOMAIN;
     input.append(bcs::to_bytes(&object::id(session)));
     input.append(bcs::to_bytes(&attempt_nonce));
     input.append(bcs::to_bytes(&session.protocol_version));
     input.append(bcs::to_bytes(&session.level_version));
+    let mut blob_id_bytes = bcs::to_bytes(&expected_verdict_blob_id);
+    blob_id_bytes.reverse();
+    input.append(blob_id_bytes);
     hash::blake2b256(&input)
 }
 
@@ -859,6 +934,11 @@ public fun pending_accusation_attempt_nonce(session: &GameSession): u64 {
 /// Returns the pending salted accusation commitment.
 public fun pending_accusation_commitment(session: &GameSession): &vector<u8> {
     &session.pending_accusation.borrow().accusation_commitment
+}
+
+/// Returns the single-assignment Walrus content blob ID for the pending attempt.
+public fun pending_expected_verdict_blob_id(session: &GameSession): u256 {
+    session.pending_accusation.borrow().expected_verdict_blob_id
 }
 
 /// Returns the pending session-attempt domain commitment.
@@ -1051,19 +1131,21 @@ public fun verified_verdict_status_for_testing(): u8 {
 public fun session_attempt_domain_commitment_for_testing(
     session: &GameSession,
     attempt_nonce: u64,
+    expected_verdict_blob_id: u256,
 ): vector<u8> {
-    session_attempt_domain_commitment(session, attempt_nonce)
+    session_attempt_domain_commitment(session, attempt_nonce, expected_verdict_blob_id)
 }
 
 #[test_only]
 public fun accusation_started_fields_for_testing(
     emitted: &AccusationStarted,
-): (ID, ID, u64, vector<u8>, vector<u8>, u64) {
+): (ID, ID, u64, vector<u8>, u256, vector<u8>, u64) {
     (
         emitted.session,
         emitted.level,
         emitted.attempt_nonce,
         emitted.accusation_commitment,
+        emitted.expected_verdict_blob_id,
         emitted.session_attempt_domain_commitment,
         emitted.started_at_ms,
     )

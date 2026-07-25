@@ -41,6 +41,10 @@ const witnessCalculatorPath = resolve(
 const witnessWasmPath = resolve(circuitRoot, 'build/verdict/verdict_js/verdict.wasm');
 
 const sessionId = Uint8Array.from({ length: 32 }, (_, index) => index);
+const verdictBlobId = Uint8Array.from([
+  0x33, 0x88, 0x6c, 0x64, 0x64, 0x35, 0xa0, 0x29, 0x2d, 0x77, 0x37, 0xa0, 0x07, 0xa1, 0xe7, 0x23,
+  0xa3, 0x22, 0xdb, 0xc4, 0xb6, 0x9e, 0xa3, 0x8f, 0x1f, 0x12, 0xbe, 0x5b, 0xbf, 0xf8, 0x05, 0x49,
+]);
 const caseSalt = canonicalFieldBytes(0x1234_5678_90ab_cdefn);
 const accusationSalt = canonicalFieldBytes(0x0102_0304_0506_0708n);
 const yesVerdictSalt = canonicalFieldBytes(0x9988_7766_5544_3322n);
@@ -83,6 +87,7 @@ function witnessInput(
     accusation_salt_high: accusationSaltHigh,
     session_id: [...sessionId],
     attempt_nonce: '7',
+    verdict_blob_id: [...verdictBlobId],
     verdict_bit: verdict.toString(),
     verdict_salt_low: verdictSaltLow,
     verdict_salt_high: verdictSaltHigh,
@@ -98,7 +103,7 @@ async function expectedCommitments(
   return {
     caseCommitment: await caseCommitment(hiddenCase),
     accusationCommitment: await accusationCommitment(accusation),
-    sessionAttemptDomainCommitment: sessionAttemptDomainCommitment(sessionId, 7n),
+    sessionAttemptDomainCommitment: sessionAttemptDomainCommitment(sessionId, 7n, verdictBlobId),
     verdictCommitment: await verdictCommitment(verdict, verdictSalt),
   };
 }
@@ -283,7 +288,7 @@ describe('verdict circuit relation', () => {
     ).rejects.toThrow();
   });
 
-  it('binds the exact session and attempt nonce', async () => {
+  it('binds the exact session, attempt nonce, and Walrus content blob ID', async () => {
     const accusation = { ...hiddenCase, salt: accusationSalt };
     const canonicalWitness = await calculator.calculateWitness(
       witnessInput(accusation, 1n, yesVerdictSalt),
@@ -299,7 +304,14 @@ describe('verdict circuit relation', () => {
       witnessInput(accusation, 1n, yesVerdictSalt, { attempt_nonce: '8' }),
       true,
     );
+    const changedBlobId = verdictBlobId.slice();
+    changedBlobId[31] = (changedBlobId[31] ?? 0) ^ 1;
+    const wrongBlob = await calculator.calculateWitness(
+      witnessInput(accusation, 1n, yesVerdictSalt, { verdict_blob_id: [...changedBlobId] }),
+      true,
+    );
     expect(wrongSession.slice(5, 7)).not.toEqual(canonicalWitness.slice(5, 7));
     expect(wrongNonce.slice(5, 7)).not.toEqual(canonicalWitness.slice(5, 7));
+    expect(wrongBlob.slice(5, 7)).not.toEqual(canonicalWitness.slice(5, 7));
   });
 });

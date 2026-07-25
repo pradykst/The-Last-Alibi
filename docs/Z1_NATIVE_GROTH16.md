@@ -10,11 +10,12 @@ compares every receipt field with the immutable level and pending session state.
 
 ## Circuit statement
 
-The circuit is BN254 Groth16 compiled by Circom 2.2.1. All 48 witness inputs are private. Its only
+The circuit is BN254 Groth16 compiled by Circom 2.2.1. All 80 witness inputs are private. Its only
 public signals are the eight output limbs described below.
 
 The private witness contains case and accusation `{suspect, room, weapon, time}` values, their
-salts, the 32 raw session-ID bytes, the `u64` attempt nonce, the verdict bit, and the verdict salt.
+salts, the 32 raw session-ID bytes, the `u64` attempt nonce, the 32 raw Walrus content Blob ID
+bytes, the verdict bit, and the verdict salt.
 Suspect and room are constrained to two bits (`0..3`); weapon and time are Boolean (`0..1`). Every
 salt is a canonical BN254 scalar represented by two little-endian `u128` limbs. The high two bits
 are zero and `Bits2Num_strict` rejects values at or above the scalar modulus.
@@ -66,22 +67,30 @@ Leading zero bytes are preserved.
 
 ## Session-attempt domain
 
-The circuit implements S2's definition exactly:
+The circuit implements the blob-bound S2 definition exactly:
 
 ```text
 BLAKE2b-256(
   UTF8("the-last-alibi::verdict::session-attempt::v1") ||
-  raw 32-byte Sui object ID ||
+  raw 32-byte Sui session object ID ||
   attempt_nonce as u64 little-endian ||
   protocol_version as u16 little-endian ||
-  level_version as u16 little-endian
+  level_version as u16 little-endian ||
+  raw 32-byte Walrus content Blob ID
 )
 ```
 
-This is an 88-byte preimage. `blake2b_256_88.circom` constrains the complete single-block BLAKE2b
-compression, including the 32-byte digest parameter block, byte count `88`, and final-block flag.
-TypeScript uses `@noble/hashes@2.2.0`; tests prove its result equals the circuit output and the S2
-Move computation.
+This is a 120-byte preimage. `blake2b_256_120.circom` constrains the complete single-block BLAKE2b
+compression, including the 32-byte digest parameter block, byte count `120`, and final-block flag.
+The Blob ID is Walrus's content-derived `BlobId`: canonical 43-character URL-safe Base64 without
+padding decodes once to exactly 32 bytes. Those bytes are the unsigned big-endian Walrus `u256`.
+Sui BCS serializes that `u256` little-endian, so Move reverses the 32 BCS bytes before hashing;
+Circom, Rust, and TypeScript hash the original decoded bytes. It is not a Sui Blob object ID,
+transaction digest, storage address, text encoding, or arbitrary nonzero integer.
+
+TypeScript uses `@noble/hashes@2.2.0`; tests prove its result equals the circuit output and the Move
+computation. Any change to the session, nonce, versions, or exact content Blob ID changes the
+proof-bound public digest.
 
 ## Exact public-input encoding
 
@@ -114,14 +123,21 @@ VK before verification.
 
 ```text
 SHA-256(compressed_verifying_key) =
-57413ae2abe8025a6035cca0c5c063687827fcc56bd5f8b11126ba47072fe2c3
+8d33885ac91333e3ad68a2885c2f030e43a1042abb95cb68ddd2c0e59f700b8f
 ```
 
-The production function calls `sui::groth16::bn254`, `prepare_verifying_key`,
-`proof_points_from_bytes`, `public_proof_inputs_from_bytes`, and `verify_groth16_proof`. It creates
-`VerdictProofReceipt` only after the native call returns true. The receipt retains no abilities and
-binds the session ID, level ID, attempt nonce, all four commitments, encrypted blob ID, verifier
-identity, and verified status. S2 consumes it and rechecks every canonical field.
+The public `alibi::verify_verdict_proof` boundary reads the immutable level and authoritative
+pending attempt, requires the submitted content Blob ID to equal the single-assignment pending ID,
+recomputes the 120-byte domain digest, and then calls the package-only verifier. That verifier calls
+`sui::groth16::bn254`, `prepare_verifying_key`, `proof_points_from_bytes`,
+`public_proof_inputs_from_bytes`, and `verify_groth16_proof`. It creates `VerdictProofReceipt` only
+after the native call returns true.
+
+The receipt retains no abilities and binds the session ID, level ID, attempt nonce, all four
+commitments, exact content Blob ID, verifier identity, and verified status. Finalization independently
+requires equality between the pending expected ID, proof-bound domain, receipt ID, and terminal ID.
+Both verification and finalization abort atomically, so a rejected substitution leaves the same
+pending attempt retryable.
 
 The native API and the eight-input bound are documented in the pinned
 `.tools/sui-pilot/.sui-docs/develop/cryptography/groth16.mdx`. Test-only receipt constructors and the
@@ -144,14 +160,21 @@ fixture manifest, proofs, commitments, VKs, seeds, and hashes are committed in
 
 | Artifact                                  | SHA-256                                                            |
 | ----------------------------------------- | ------------------------------------------------------------------ |
-| Verdict circuit source                    | `ccc50208a9f068920ff95f0c82b2cbaa11f0c7c6474692f43ec4d2936a53bf31` |
-| Fixed BLAKE2b circuit source              | `df0dde20a48a4fb3168702a1a4e226756e73183e916cec37b435f3d9468a86a3` |
-| TypeScript commitment/encoder source      | `b6a5ec6fc20fb7f090507d142c05c89fb91b9e81d2eed46b8d490652e7cbc4f8` |
-| Rust verdict prover source                | `24a58fc246a5651450f7114891d61033b4cb39a996ab6e9b36e53ad417540382` |
-| Verdict R1CS                              | `b3dcf33b4a9664e9957273584dfe64fc17de12a6eb57e3f57fa6eafed5fdc7e2` |
-| Verdict WASM                              | `41bf58bf9f9d717b1fa1450b8faa71b8055adc0217be8c0b9deba488396f5740` |
-| Compressed verification key / verifier ID | `57413ae2abe8025a6035cca0c5c063687827fcc56bd5f8b11126ba47072fe2c3` |
-| Different-key negative-test VK            | `220dee77d9416e2a96fc6dfa6323817389f0bc8d6a8ee8f36649d796258e43dc` |
-| Fixture manifest                          | `f0231db165264545b816149b12ca32eadc6c9064e805a7082e68af58f35843fd` |
+| Verdict circuit source                    | `265e7253ef98df831d25bd933e07cf22118c139e7a1eb43835ae2babab50d82a` |
+| Fixed BLAKE2b circuit source              | `7a5e6c57f26aacbec60fd9ee62f44f216b3aa12dd97cdd08b5c0627ffa89e1dd` |
+| TypeScript commitment/encoder source      | `a0bf6f3849d5a13092b13b91fbd06d4d420a1b808fcf8eb56fb7c64d2988471e` |
+| Rust verdict prover source                | `3ada9ca3953414b4e65471aa86a25f69b103a676bd9ef746d5a9b5aa052483b3` |
+| Verdict R1CS                              | `65e21cc257d150fd42184fed626ca9a905d9f641168e3b01602b3ee006fd99a2` |
+| Verdict WASM                              | `28db2c5b2d5652456c337c5ba8519563a8435c07b9233f2eb009a9870de94764` |
+| Compressed verification key / verifier ID | `8d33885ac91333e3ad68a2885c2f030e43a1042abb95cb68ddd2c0e59f700b8f` |
+| Different-key negative-test VK            | `b5b6d0a37bf6a0c51b948dc184db0fab5425a3cab1261858ea662e6ea8d4508f` |
+| Fixture manifest                          | `1d8a1b34ad0830c7991d90c845ccb8e15edc32a031a576d1f8dd56d53139a21e` |
+
+The deterministic fixtures bind Walrus content ID
+`M4hsZGQ1oCktdzegB6HnI6Mi28S2nqOPHxK-W7_4BUk` (raw bytes
+`33886c646435a0292d7737a007a1e723a322dbc4b69ea38f1f12be5bbff80549`) and session-attempt
+digest `9bdcc3b07d45d65a6cd07d4e341bcc27d3b39bf75fbb44ae16993e6983812452`. The YES and NO
+proof hashes are `27223e6e2cf8f23b397a7bb789608bb6a956a495a1e9aa62bd286dd262701708` and
+`00cb29f92bf5fcddd9bf53ac3deebbfe72c12dd94dee828149b7412a6d4825b0`.
 
 Two consecutive fixture generations produced the same manifest hash.

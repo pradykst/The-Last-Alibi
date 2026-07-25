@@ -10,7 +10,10 @@ use alibi::verifier::{Self, VerdictProofReceipt};
 const PLAYER: address = @0xA11CE;
 const INTEGRATION_HINT: u64 = 9001;
 const EUnreachable: u64 = 255;
-const TEST_BLOB_ID: u256 = 1;
+const TEST_BLOB_ID: u256 =
+    23308994573709855642619175826119088931643282545396843698436971920739544859977;
+const OTHER_BLOB_ID: u256 =
+    73232971686157566821481873965217386899727957463339902141909339126548630902136;
 
 fun case_commitment(): vector<u8> {
     x"106c34916b658b524e34177dd72e90bf8650db66556e6071c571e241dd848a09"
@@ -25,7 +28,7 @@ fun no_accusation_commitment(): vector<u8> {
 }
 
 fun domain_commitment(): vector<u8> {
-    x"1a609d9f368d85a174de6e875d07cf751de7a8fad15926dccf249e29f0acbd27"
+    x"9bdcc3b07d45d65a6cd07d4e341bcc27d3b39bf75fbb44ae16993e6983812452"
 }
 
 fun yes_verdict_commitment(): vector<u8> {
@@ -37,19 +40,19 @@ fun no_verdict_commitment(): vector<u8> {
 }
 
 fun yes_proof(): vector<u8> {
-    x"b7db83659d3c430b4409000fd12b50239e6076954a1e1dab3d0c623c0bcd9e8d45645defdc19379a471908080697e8a88ba9bb1eb3c3c2f7e5c91ad830e61d1546340211e7e8113320552e85b705a3b9127ccabcc4785cf2e7e3f1972a74d18b59de1a97dd26dc8660d815f185fba08af84598823c3cc7c1ac3bd0f5afba49a0"
+    x"00aac6ca2ebeaf71119050176daba5ba70c2376672f10c62db985534e7f484070f6ab6c927188b3e7cf94cc5e9ae36bb8f61c543f7f49b3ebae7e919f41d530132390b51ff9be9623b35acd8631a8a26734ecb512c3ea285f86f6f33fed22bb013db43e539e30ceaf2f132946c8933af33ebcfd267812cc37516a4c3ff0718ab"
 }
 
 fun no_proof(): vector<u8> {
-    x"f5c63cb9f5f18ff2c455087859056eca198369bc73fb16c53c89cbc7df26c39f512e443fc0b2c8df241e36b5c49a056362fbf35b612261fd45e647f89f4b0b036ca030e42301e6e99da24f2b83f34e63efaa67ce409a281417cdfafabf10d8152b0139aa0c8d2c14b5295587249caa937e3b70b17722d1824614263b0f02c123"
+    x"3b943391f0289af4b111fd9aaeac94cf40f4189f90b1afa05c50d2732da94f880b80a70a8ea6fe5cbd5b397b0b32611c9e04a91a56dc2fcecf2e7f6ed797e620841d7c71fb02dff307eacdf44a4ee18c7db5c7a0a14803d15850d5d28804b294129c897943e669690d61b82991c674dc08910130deba2d51efb56fc6bbce708a"
 }
 
 fun wrong_key_proof(): vector<u8> {
-    x"b8220fcb827123dfb9aabc6caee562041cfdf6033410e6792d1f3f3149cc529953cd2a1c7b2edde007cc266e166dd77f262d912bad14c601d372cbf4644a5b2e522dd62a4638a365585e2fb0edc164472e282dbcfa5534b88b99b35f229423ab7be3703a28eb94cd688eceac78a5f3c71191117c66517d9599a37c32b8aadf05"
+    x"78a2375d2e320e42a0027349eca4162ccbd88b39d82d6de8417825339eca048eb3365d1ae691c8db616382149f740e68656144f4a708935b3fcb2cb6bd8d7e05c0cf6b5d7a7b03e4865b8f4b38f9a528d6163e1adc408d9aa5785f1cd33e4023f1ee9eed09276d641fb237bffac640e0a830b3237da5db3fe210537c6f649d18"
 }
 
 fun verifier_identity(): vector<u8> {
-    x"57413ae2abe8025a6035cca0c5c063687827fcc56bd5f8b11126ba47072fe2c3"
+    x"8d33885ac91333e3ad68a2885c2f030e43a1042abb95cb68ddd2c0e59f700b8f"
 }
 
 fun fixture_session_id(): ID {
@@ -108,7 +111,7 @@ fun move_public_input_bytes_match_the_fixture_exactly() {
         domain_commitment(),
         yes_verdict_commitment(),
     );
-    assert_eq!(encoded, x"106c34916b658b524e34177dd72e90bf000000000000000000000000000000008650db66556e6071c571e241dd848a0900000000000000000000000000000000a8d366f23cf3c0cdf7fcdbe78e60be42000000000000000000000000000000007de84b2e7ebc6f9e4af81a506b538628000000000000000000000000000000001a609d9f368d85a174de6e875d07cf75000000000000000000000000000000001de7a8fad15926dccf249e29f0acbd2700000000000000000000000000000000fe136f6110208a23f4f918dfae160d9400000000000000000000000000000000195403788f7f3bc9ff8a07f3f9835a1300000000000000000000000000000000");
+    assert_eq!(encoded, x"106c34916b658b524e34177dd72e90bf000000000000000000000000000000008650db66556e6071c571e241dd848a0900000000000000000000000000000000a8d366f23cf3c0cdf7fcdbe78e60be42000000000000000000000000000000007de84b2e7ebc6f9e4af81a506b538628000000000000000000000000000000009bdcc3b07d45d65a6cd07d4e341bcc2700000000000000000000000000000000d3b39bf75fbb44ae16993e698381245200000000000000000000000000000000fe136f6110208a23f4f918dfae160d9400000000000000000000000000000000195403788f7f3bc9ff8a07f3f9835a1300000000000000000000000000000000");
 }
 
 #[test]
@@ -131,20 +134,18 @@ fun verified_receipt_finalizes_the_matching_pending_attempt() {
         &mut session,
         &level,
         yes_accusation_commitment(),
+        TEST_BLOB_ID,
         0,
         &test_clock,
         &mut ctx,
     );
+    assert_eq!(alibi::pending_expected_verdict_blob_id(&session), TEST_BLOB_ID);
     assert_eq!(*alibi::pending_session_attempt_domain_commitment(&session), domain_commitment());
 
-    let receipt = verifier::verify_verdict_proof(
-        alibi::verdict_receipt_version_for_testing(),
-        object::id(&session),
-        object::id(&level),
+    let receipt = alibi::verify_verdict_proof(
+        &session,
+        &level,
         0,
-        case_commitment(),
-        yes_accusation_commitment(),
-        domain_commitment(),
         yes_verdict_commitment(),
         TEST_BLOB_ID,
         yes_proof(),
@@ -161,6 +162,43 @@ fun verified_receipt_finalizes_the_matching_pending_attempt() {
     destroy(level);
 }
 
+#[test, expected_failure(abort_code = 23, location = alibi)]
+fun substituted_valid_content_blob_aborts_before_receipt_and_preserves_pending_atomically() {
+    let mut ctx = tx_context::new_from_hint(PLAYER, INTEGRATION_HINT, 0, 0, 0);
+    let level = alibi::new_level_for_testing(&mut ctx);
+    let mut session = alibi::new_session_for_testing(
+        &level,
+        alibi::practice_mode_for_testing(),
+        case_commitment(),
+        alibi::protocol_version_for_testing(),
+        alibi::level_version_for_testing(),
+        &mut ctx,
+    );
+    let test_clock = clock::create_for_testing(&mut ctx);
+
+    alibi::start_accusation(
+        &mut session,
+        &level,
+        yes_accusation_commitment(),
+        TEST_BLOB_ID,
+        0,
+        &test_clock,
+        &mut ctx,
+    );
+    assert_eq!(alibi::pending_expected_verdict_blob_id(&session), TEST_BLOB_ID);
+
+    let receipt = alibi::verify_verdict_proof(
+        &session,
+        &level,
+        0,
+        yes_verdict_commitment(),
+        OTHER_BLOB_ID,
+        yes_proof(),
+    );
+    consume_verified(receipt);
+    abort EUnreachable
+}
+
 #[test, expected_failure(abort_code = 22, location = verifier)]
 fun proof_under_another_key_fails() {
     let receipt = verifier::verify_verdict_proof(
@@ -175,7 +213,7 @@ fun proof_under_another_key_fails() {
 #[test, expected_failure(abort_code = 22, location = verifier)]
 fun corrupted_proof_fails() {
     let mut proof = yes_proof();
-    *proof.borrow_mut(0) = 0;
+    *proof.borrow_mut(0) = 1;
     let receipt = verifier::verify_verdict_proof(
         1, fixture_session_id(), fixture_level_id(), 0, case_commitment(),
         yes_accusation_commitment(), domain_commitment(), yes_verdict_commitment(),

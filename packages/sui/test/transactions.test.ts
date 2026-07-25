@@ -8,8 +8,11 @@ import {
   buildProofBackedResolution,
   buildProofBackedVerdictFinalization,
   buildStartTerminalAccusation,
+  walrusContentBlobIdFromBase64Url,
 } from '../src';
-import { LEVEL_ID, PACKAGE_ID, SESSION_ID } from './fixtures';
+import { LEVEL_ID, OTHER_WALRUS_BLOB_ID, PACKAGE_ID, SESSION_ID, WALRUS_BLOB_ID } from './fixtures';
+
+const verdictBlobId = walrusContentBlobIdFromBase64Url(WALRUS_BLOB_ID);
 
 type TransactionData = ReturnType<ReturnType<typeof buildCreatePracticeSession>['getData']>;
 
@@ -68,19 +71,23 @@ describe('transaction builders', () => {
     ).toThrowError('not registered');
   });
 
-  it('starts a terminal accusation with only commitment, nonce, and Clock', () => {
+  it('starts a terminal accusation with one canonical content blob ID', () => {
     const accusationCommitment = Uint8Array.from({ length: 32 }, () => 0x22);
     const data = buildStartTerminalAccusation({
       packageId: PACKAGE_ID,
       levelConfigId: LEVEL_ID,
       sessionId: SESSION_ID,
       accusationCommitment,
+      expectedVerdictBlobId: verdictBlobId,
       expectedAttemptNonce: 0n,
     }).getData();
     expect(moveCall(data)).toMatchObject({ module: 'alibi', function: 'start_accusation' });
-    expect(data.inputs).toHaveLength(5);
+    expect(data.inputs).toHaveLength(6);
     expect(data.inputs[2]).toMatchObject({
       Pure: { bytes: toBase64(Uint8Array.from([32, ...accusationCommitment])) },
+    });
+    expect(data.inputs[3]).toMatchObject({
+      Pure: { bytes: toBase64(verdictBlobId.toBytes().slice().reverse()) },
     });
     expect(() =>
       buildStartTerminalAccusation({
@@ -88,6 +95,7 @@ describe('transaction builders', () => {
         levelConfigId: LEVEL_ID,
         sessionId: SESSION_ID,
         accusationCommitment: new Uint8Array(32),
+        expectedVerdictBlobId: verdictBlobId,
         expectedAttemptNonce: 0n,
       }),
     ).toThrowError('all zeroes');
@@ -121,50 +129,72 @@ describe('transaction builders', () => {
     expect(moveCall(data, 1).arguments as unknown[]).toHaveLength(3);
   });
 
-  it('prepares native Z1 verification and terminal receipt consumption', () => {
+  it('binds one content blob through verification with no finalization override', () => {
     const data = buildProofBackedVerdictFinalization({
       packageId: PACKAGE_ID,
       levelConfigId: LEVEL_ID,
       sessionId: SESSION_ID,
       attemptNonce: 0n,
-      caseCommitment: Uint8Array.from({ length: 32 }, () => 0x11),
-      accusationCommitment: Uint8Array.from({ length: 32 }, () => 0x22),
-      sessionAttemptDomainCommitment: Uint8Array.from({ length: 32 }, () => 0x33),
       verdictCommitment: Uint8Array.from({ length: 32 }, () => 0x44),
-      encryptedVerdictBlobId: 1n,
+      encryptedVerdictBlobId: verdictBlobId,
       proof: Uint8Array.from({ length: 128 }, () => 1),
     }).getData();
     expect(data.commands).toHaveLength(2);
     expect(moveCall(data, 0)).toMatchObject({
-      module: 'verifier',
+      module: 'alibi',
       function: 'verify_verdict_proof',
     });
-    expect(moveCall(data, 0).arguments as unknown[]).toHaveLength(10);
+    expect(moveCall(data, 0).arguments as unknown[]).toHaveLength(6);
+    expect(data.inputs[4]).toMatchObject({
+      Pure: { bytes: toBase64(verdictBlobId.toBytes().slice().reverse()) },
+    });
     expect(moveCall(data, 1)).toMatchObject({ module: 'alibi', function: 'finalize_verdict' });
     expect(moveCall(data, 1).arguments as unknown[]).toHaveLength(4);
   });
 
-  it('rejects absent verdict blobs, proofs, and malformed commitments client-side', () => {
+  it('rejects object-ID substitution, malformed proofs, and malformed commitments client-side', () => {
     const base = {
       packageId: PACKAGE_ID,
       levelConfigId: LEVEL_ID,
       sessionId: SESSION_ID,
       attemptNonce: 0n,
-      caseCommitment: Uint8Array.from({ length: 32 }, () => 0x11),
-      accusationCommitment: Uint8Array.from({ length: 32 }, () => 0x22),
-      sessionAttemptDomainCommitment: Uint8Array.from({ length: 32 }, () => 0x33),
       verdictCommitment: Uint8Array.from({ length: 32 }, () => 0x44),
-      encryptedVerdictBlobId: 1n,
+      encryptedVerdictBlobId: verdictBlobId,
       proof: Uint8Array.from({ length: 128 }, () => 1),
     };
     expect(() =>
-      buildProofBackedVerdictFinalization({ ...base, encryptedVerdictBlobId: 0n }),
-    ).toThrowError('blob ID is missing');
+      buildProofBackedVerdictFinalization({
+        ...base,
+        encryptedVerdictBlobId: SESSION_ID as never,
+      }),
+    ).toThrowError('not a Sui object ID');
     expect(() =>
       buildProofBackedVerdictFinalization({ ...base, proof: new Uint8Array() }),
     ).toThrowError('exactly 128 bytes');
     expect(() =>
       buildProofBackedVerdictFinalization({ ...base, verdictCommitment: new Uint8Array(32) }),
     ).toThrowError('all zeroes');
+  });
+
+  it('decodes only canonical nonzero Walrus content IDs without byte-order loss', () => {
+    expect(verdictBlobId.toBase64Url()).toBe(WALRUS_BLOB_ID);
+    expect(verdictBlobId.toBytes()).toEqual(
+      Uint8Array.from([
+        0x33, 0x88, 0x6c, 0x64, 0x64, 0x35, 0xa0, 0x29, 0x2d, 0x77, 0x37, 0xa0, 0x07, 0xa1, 0xe7,
+        0x23, 0xa3, 0x22, 0xdb, 0xc4, 0xb6, 0x9e, 0xa3, 0x8f, 0x1f, 0x12, 0xbe, 0x5b, 0xbf, 0xf8,
+        0x05, 0x49,
+      ]),
+    );
+    expect(verdictBlobId.toMoveU256()).toBe(
+      23308994573709855642619175826119088931643282545396843698436971920739544859977n,
+    );
+    expect(walrusContentBlobIdFromBase64Url(OTHER_WALRUS_BLOB_ID).toMoveU256()).not.toBe(
+      verdictBlobId.toMoveU256(),
+    );
+    expect(() => walrusContentBlobIdFromBase64Url(SESSION_ID)).toThrowError('not a Sui object ID');
+    expect(() =>
+      walrusContentBlobIdFromBase64Url('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
+    ).toThrowError('nonzero');
+    expect(() => walrusContentBlobIdFromBase64Url(`${WALRUS_BLOB_ID}=`)).toThrowError('canonical');
   });
 });

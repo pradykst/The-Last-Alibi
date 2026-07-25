@@ -5,6 +5,10 @@ export const LEVEL_ID = '0x00000000000000000000000000000000000000000000000000000
 export const SESSION_ID = '0x00000000000000000000000000000000000000000000000000000000005e5510';
 export const PLAYER = '0x000000000000000000000000000000000000000000000000000000000000cafe';
 export const VERIFIER_IDENTITY = Array.from({ length: 32 }, () => 0xaa);
+export const WALRUS_BLOB_ID = 'M4hsZGQ1oCktdzegB6HnI6Mi28S2nqOPHxK-W7_4BUk';
+export const WALRUS_BLOB_U256 =
+  '23308994573709855642619175826119088931643282545396843698436971920739544859977';
+export const OTHER_WALRUS_BLOB_ID = 'oehkoh0352bRGNPjuwcy0nye3OLKT649K62imdNAlXg';
 
 function commitment(byte: number): number[] {
   return Array.from({ length: 32 }, () => byte);
@@ -83,6 +87,7 @@ export function pendingAccusation() {
   return {
     attempt_nonce: '0',
     accusation_commitment: commitment(0x22),
+    expected_verdict_blob_id: WALRUS_BLOB_U256,
     session_attempt_domain_commitment: commitment(0x33),
     started_at_ms: '1000',
   };
@@ -94,7 +99,7 @@ export function verdictRecord() {
     accusation_commitment: commitment(0x22),
     session_attempt_domain_commitment: commitment(0x33),
     verdict_commitment: commitment(0x44),
-    encrypted_verdict_blob_id: '1',
+    encrypted_verdict_blob_id: WALRUS_BLOB_U256,
     verifier_identity: VERIFIER_IDENTITY,
     verifier_status: 1,
     started_at_ms: '1000',

@@ -92,6 +92,7 @@ const pendingAccusationFieldsSchema = z
   .object({
     attempt_nonce: u64StringSchema,
     accusation_commitment: commitmentSchema,
+    expected_verdict_blob_id: u256StringSchema,
     session_attempt_domain_commitment: commitmentSchema,
     started_at_ms: u64StringSchema,
   })
@@ -214,6 +215,7 @@ export type PublicPendingQuery = {
 export type PublicPendingAccusation = {
   attemptNonce: string;
   accusationCommitment: string;
+  expectedVerdictBlobId: string;
   sessionAttemptDomainCommitment: string;
   startedAtMs: string;
 };
@@ -381,9 +383,12 @@ export function decodePendingAccusation(value: unknown): PublicPendingAccusation
   if (contents === null) return null;
   const parsed = pendingAccusationFieldsSchema.safeParse(contents);
   if (!parsed.success) malformedState();
+  const expectedVerdictBlobId = parseU256(parsed.data.expected_verdict_blob_id);
+  if (expectedVerdictBlobId === 0n) malformedState();
   return {
     attemptNonce: parseU64(parsed.data.attempt_nonce).toString(),
     accusationCommitment: publicCommitment(parsed.data.accusation_commitment),
+    expectedVerdictBlobId: u256ToHex(expectedVerdictBlobId),
     sessionAttemptDomainCommitment: publicCommitment(parsed.data.session_attempt_domain_commitment),
     startedAtMs: parseU64(parsed.data.started_at_ms).toString(),
   };

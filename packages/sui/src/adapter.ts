@@ -21,6 +21,7 @@ import {
   type FutureProofResolution,
   type FutureVerdictFinalization,
 } from './transactions';
+import type { WalrusContentBlobId } from './walrus-blob-id';
 
 export type PendingTransaction = { status: 'pending'; digest: string };
 export type ConfirmedTransaction = { status: 'confirmed'; digest: string; checkpoint: string };
@@ -71,10 +72,17 @@ export class AlibiSuiAdapter {
   startAccusation(
     sessionId: string,
     accusationCommitment: Uint8Array | string,
+    expectedVerdictBlobId: WalrusContentBlobId,
     expectedAttemptNonce: bigint | string,
   ): Transaction {
     return buildStartTerminalAccusation(
-      { ...this.config, sessionId, accusationCommitment, expectedAttemptNonce },
+      {
+        ...this.config,
+        sessionId,
+        accusationCommitment,
+        expectedVerdictBlobId,
+        expectedAttemptNonce,
+      },
       this.dependencies.builder,
     );
   }

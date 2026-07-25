@@ -3,7 +3,7 @@ pragma circom 2.2.1;
 include "../node_modules/circomlib/circuits/bitify.circom";
 include "../node_modules/circomlib/circuits/comparators.circom";
 include "../node_modules/circomlib/circuits/poseidon.circom";
-include "./blake2b_256_88.circom";
+include "./blake2b_256_120.circom";
 
 function SessionAttemptDomainByte(index) {
     var domain[44] = [
@@ -80,6 +80,7 @@ template VerdictCircuit() {
 
     signal input session_id[32];
     signal input attempt_nonce;
+    signal input verdict_blob_id[32];
     signal input verdict_bit;
     signal input verdict_salt_low;
     signal input verdict_salt_high;
@@ -169,14 +170,17 @@ template VerdictCircuit() {
     public_inputs[7] <== verdictLimbs.high;
 
     component sessionBytes[32];
+    component verdictBlobBytes[32];
     component nonceBits = Num2Bits(64);
-    signal domainPreimageBits[704];
+    signal domainPreimageBits[960];
     for (var byte = 0; byte < 32; byte++) {
         sessionBytes[byte] = Num2Bits(8);
         sessionBytes[byte].in <== session_id[byte];
+        verdictBlobBytes[byte] = Num2Bits(8);
+        verdictBlobBytes[byte].in <== verdict_blob_id[byte];
     }
     nonceBits.in <== attempt_nonce;
-    for (var byte = 0; byte < 88; byte++) {
+    for (var byte = 0; byte < 120; byte++) {
         for (var bit = 0; bit < 8; bit++) {
             if (byte < 44) {
                 domainPreimageBits[byte * 8 + bit] <== (SessionAttemptDomainByte(byte) >> bit) & 1;
@@ -186,16 +190,19 @@ template VerdictCircuit() {
                 domainPreimageBits[byte * 8 + bit] <== nonceBits.out[(byte - 76) * 8 + bit];
             } else if (byte == 84 || byte == 86) {
                 domainPreimageBits[byte * 8 + bit] <== bit == 0 ? 1 : 0;
-            } else {
+            } else if (byte < 88) {
                 domainPreimageBits[byte * 8 + bit] <== 0;
+            } else {
+                domainPreimageBits[byte * 8 + bit] <==
+                    verdictBlobBytes[byte - 88].out[bit];
             }
         }
     }
 
-    component domainCommitment = Blake2b256OneBlock88();
+    component domainCommitment = Blake2b256OneBlock120();
     component domainLow = Bits2Num(128);
     component domainHigh = Bits2Num(128);
-    for (var bit = 0; bit < 704; bit++) {
+    for (var bit = 0; bit < 960; bit++) {
         domainCommitment.in[bit] <== domainPreimageBits[bit];
     }
     for (var bit = 0; bit < 128; bit++) {

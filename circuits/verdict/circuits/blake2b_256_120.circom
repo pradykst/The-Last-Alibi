@@ -165,8 +165,8 @@ template Blake2bRound(round) {
     }
 }
 
-template Blake2b256OneBlock88() {
-    signal input in[704];
+template Blake2b256OneBlock120() {
+    signal input in[960];
     signal output out[256];
 
     var initialHash[8] = [
@@ -192,7 +192,7 @@ template Blake2b256OneBlock88() {
         13503953896175478587,
         4354685564936845355,
         11912009170470909681,
-        5840696475078001289,
+        5840696475078001321,
         11170449401992604703,
         16175846103906665108,
         6620516959819538809
@@ -202,12 +202,12 @@ template Blake2b256OneBlock88() {
     component rounds[12];
     component digestXor[4];
 
-    for (var bit = 0; bit < 704; bit++) {
+    for (var bit = 0; bit < 960; bit++) {
         in[bit] * (in[bit] - 1) === 0;
     }
     for (var word = 0; word < 16; word++) {
         for (var bit = 0; bit < 64; bit++) {
-            if (word * 64 + bit < 704) {
+            if (word * 64 + bit < 960) {
                 message[word][bit] <== in[word * 64 + bit];
             } else {
                 message[word][bit] <== 0;

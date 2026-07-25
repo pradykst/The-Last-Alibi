@@ -28,7 +28,7 @@ The Move package is `contracts/alibi` and contains four modules.
 - verifier state 0 (unavailable) and an empty expected verifier identity;
 - the mechanically generated predicate definitions.
 
-The immutable level keeps the query verifier unavailable and stores no query identity. It marks the verdict verifier available and stores `57413ae2abe8025a6035cca0c5c063687827fcc56bd5f8b11126ba47072fe2c3`, the SHA-256 identity of the exact embedded Z1 verification key.
+The immutable level keeps the query verifier unavailable and stores no query identity. It marks the verdict verifier available and stores `8d33885ac91333e3ad68a2885c2f030e43a1042abb95cb68ddd2c0e59f700b8f`, the SHA-256 identity of the exact embedded Z1 verification key.
 `GameSession` is an address-owned object controlled by its `player`. It contains the level object ID, Practice mode, a 32-byte case commitment, a `u64` candidate mask, disclosure counter, 12-bit used-predicate set in a `u16`, strictly increasing `u64` query nonce, embedded optional pending query, state, and protocol/level versions.
 
 The initial candidate mask is `0xffffffffffffffff`, representing all 64 cases. Neither Move nor TypeScript routes masks through JavaScript `number` values.
@@ -75,7 +75,7 @@ Modes are 0 Practice and 1 Ranked. Only Practice creation succeeds. Session stat
 - `authorize_query(session, level, predicate_id, expected_nonce, clock)` authorizes only a registered, unused predicate whose YES and NO branches each retain at least two candidates.
 - `expire_query(session, level, clock)` clears an expired pending query without revealing a result, changing candidates, increasing disclosures, or marking the predicate used. It advances the nonce so a late receipt cannot match.
 - `verifier::verify_query_proof(...)` is a later query-proof boundary and still always aborts.
-- `verifier::verify_verdict_proof(...)` constructs the fixed eight-field public-input vector, verifies a 128-byte proof with Sui's native BN254 Groth16 API under the embedded key, and only then returns an ability-less receipt.
+- `alibi::verify_verdict_proof(...)` validates the authoritative pending attempt and exact Walrus content Blob ID, then the package-only verifier constructs the fixed eight-field public-input vector, verifies a 128-byte proof with Sui's native BN254 Groth16 API under the embedded key, and only then returns an ability-less receipt.
 - `resolve_query(session, level, receipt)` accepts only the verifier module's ability-less receipt, checks every binding, selects the stored branch, and consumes the receipt. It accepts no replacement candidate mask.
 
 There is intentionally no player cancellation function. There is no oracle, administrator, publisher, or testing bypass in production bytecode.

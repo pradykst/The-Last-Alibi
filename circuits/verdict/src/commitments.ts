@@ -210,12 +210,15 @@ function encodeU64(value: bigint): Uint8Array {
 export function sessionAttemptDomainCommitment(
   sessionId: Uint8Array,
   attemptNonce: bigint,
+  verdictBlobId: Uint8Array,
 ): Uint8Array {
   assertByteLength(sessionId, 32, 'session ID');
-  const preimage = new Uint8Array(88);
+  assertByteLength(verdictBlobId, 32, 'Walrus content blob ID');
+  const preimage = new Uint8Array(120);
   preimage.set(SESSION_ATTEMPT_DOMAIN, 0);
   preimage.set(sessionId, 44);
   preimage.set(encodeU64(attemptNonce), 76);
   preimage.set([1, 0, 1, 0], 84);
+  preimage.set(verdictBlobId, 88);
   return blake2b(preimage, { dkLen: 32 });
 }

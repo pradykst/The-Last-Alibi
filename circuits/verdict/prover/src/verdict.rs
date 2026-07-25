@@ -29,6 +29,15 @@ const SESSION_ID: [u8; 32] = [
     0x3a, 0xf7, 0x8f, 0x43, 0xec, 0xa3, 0x70, 0x1a, 0x69, 0x6f, 0x81, 0x4e, 0x96, 0x70, 0x09, 0x99,
 ];
 
+// Raw bytes decoded from the canonical URL-safe Walrus content blob ID
+// M4hsZGQ1oCktdzegB6HnI6Mi28S2nqOPHxK-W7_4BUk.
+// Walrus interprets these bytes as a big-endian u256; Sui BCS serializes
+// that numeric value in little-endian order.
+const VERDICT_BLOB_ID: [u8; 32] = [
+    0x33, 0x88, 0x6c, 0x64, 0x64, 0x35, 0xa0, 0x29, 0x2d, 0x77, 0x37, 0xa0, 0x07, 0xa1, 0xe7, 0x23,
+    0xa3, 0x22, 0xdb, 0xc4, 0xb6, 0x9e, 0xa3, 0x8f, 0x1f, 0x12, 0xbe, 0x5b, 0xbf, 0xf8, 0x05, 0x49,
+];
+
 #[derive(Clone, Copy)]
 struct Accusation {
     suspect: u64,
@@ -83,6 +92,9 @@ fn verdict_builder(
         builder.push_input("session_id", u64::from(byte));
     }
     builder.push_input("attempt_nonce", ATTEMPT_NONCE);
+    for byte in VERDICT_BLOB_ID {
+        builder.push_input("verdict_blob_id", u64::from(byte));
+    }
     builder.push_input("verdict_bit", verdict);
     builder.push_input("verdict_salt_low", verdict_salt_low);
     builder.push_input("verdict_salt_high", 0u64);
@@ -352,6 +364,15 @@ pub fn run(wasm: &str, r1cs: &str) -> Result<(), Box<dyn Error>> {
         hex::encode(SESSION_ID)
     )?;
     writeln!(manifest, "  \"attempt_nonce\": {ATTEMPT_NONCE},")?;
+    writeln!(
+        manifest,
+        "  \"verdict_blob_id_base64url\": \"M4hsZGQ1oCktdzegB6HnI6Mi28S2nqOPHxK-W7_4BUk\","
+    )?;
+    writeln!(
+        manifest,
+        "  \"verdict_blob_id_raw_hex\": \"{}\",",
+        hex::encode(VERDICT_BLOB_ID)
+    )?;
     write_fixture(&mut manifest, "yes", &yes, true);
     write_fixture(&mut manifest, "no", &no, true);
     write_fixture(&mut manifest, "wrong_key_yes", &wrong_key, false);

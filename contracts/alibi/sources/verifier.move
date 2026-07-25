@@ -59,7 +59,7 @@ public fun verify_query_proof(
 
 /// Verifies the Z1 accusation-verdict statement under the application-pinned key.
 /// The four commitments are encoded as eight little-endian u128 public scalars.
-public fun verify_verdict_proof(
+public(package) fun verify_verdict_proof(
     receipt_version: u16,
     session: ID,
     level: ID,

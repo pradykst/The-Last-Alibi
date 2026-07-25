@@ -6,3 +6,4 @@ export * from './events';
 export * from './masks';
 export * from './state';
 export * from './transactions';
+export * from './walrus-blob-id';

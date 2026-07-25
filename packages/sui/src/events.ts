@@ -55,6 +55,7 @@ const schemas = {
       level: objectId,
       attempt_nonce: u64,
       accusation_commitment: commitment,
+      expected_verdict_blob_id: z.string().regex(/^(0|[1-9][0-9]*)$/),
       session_attempt_domain_commitment: commitment,
       started_at_ms: u64,
     })
@@ -169,10 +170,10 @@ export function decodeAlibiEvent(envelope: MoveEventEnvelope, packageId: string)
     else if (key === 'player') data[key] = normalizeSuiAddress(value as string);
     else if (key.includes('commitment') || key === 'verifier_identity')
       data[key] = bytesToHex(value as number[]);
-    else if (key === 'encrypted_verdict_blob_id') {
+    else if (key.endsWith('verdict_blob_id')) {
       const blobId = parseU256(value as string);
       if (blobId === 0n)
-        throw sanitizedError('MALFORMED_EVENT', 'The encrypted verdict reference is malformed.');
+        throw sanitizedError('MALFORMED_EVENT', 'The Walrus verdict reference is malformed.');
       data[key] = u256ToHex(blobId);
     } else if (key.includes('mask') || key.endsWith('branch'))
       data[key] = u64ToHex(value as string);

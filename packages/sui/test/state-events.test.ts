@@ -14,6 +14,7 @@ import {
   LEVEL_ID,
   PACKAGE_ID,
   SESSION_ID,
+  WALRUS_BLOB_U256,
   levelEnvelope,
   pendingAccusation,
   pendingQuery,
@@ -56,7 +57,11 @@ describe('public object decoding', () => {
 
   it('decodes accusation-pending and terminal commitment-only state', () => {
     const pending = decodePendingAccusation({ vec: [pendingAccusation()] });
-    expect(pending).toMatchObject({ attemptNonce: '0', startedAtMs: '1000' });
+    expect(pending).toMatchObject({
+      attemptNonce: '0',
+      expectedVerdictBlobId: '0x33886c646435a0292d7737a007a1e723a322dbc4b69ea38f1f12be5bbff80549',
+      startedAtMs: '1000',
+    });
     const accusationPending = decodeGameSession(
       sessionEnvelope({
         state: 3,
@@ -71,7 +76,7 @@ describe('public object decoding', () => {
     const verdict = decodeVerdictRecord({ vec: [verdictRecord()] });
     expect(verdict).toMatchObject({
       attemptNonce: '0',
-      encryptedVerdictBlobId: `0x${'0'.repeat(63)}1`,
+      encryptedVerdictBlobId: pending?.expectedVerdictBlobId,
       verifierStatus: 1,
     });
     const terminal = decodeGameSession(
@@ -174,6 +179,28 @@ describe('sanitized event decoding', () => {
     });
   });
 
+  it('decodes the exact content blob bound at accusation start', () => {
+    const event = decodeAlibiEvent(
+      {
+        type: `${PACKAGE_ID}::alibi::AccusationStarted`,
+        parsedJson: {
+          session: SESSION_ID,
+          level: LEVEL_ID,
+          attempt_nonce: '0',
+          accusation_commitment: Array.from({ length: 32 }, () => 0x22),
+          expected_verdict_blob_id: WALRUS_BLOB_U256,
+          session_attempt_domain_commitment: Array.from({ length: 32 }, () => 0x33),
+          started_at_ms: '1000',
+        },
+      },
+      PACKAGE_ID,
+    );
+    expect(event.kind).toBe('AccusationStarted');
+    expect(event.data.expected_verdict_blob_id).toBe(
+      '0x33886c646435a0292d7737a007a1e723a322dbc4b69ea38f1f12be5bbff80549',
+    );
+  });
+
   it('decodes sanitized terminal events without a verdict bit', () => {
     const event = decodeAlibiEvent(
       {
@@ -185,7 +212,7 @@ describe('sanitized event decoding', () => {
           accusation_commitment: Array.from({ length: 32 }, () => 0x22),
           session_attempt_domain_commitment: Array.from({ length: 32 }, () => 0x33),
           verdict_commitment: Array.from({ length: 32 }, () => 0x44),
-          encrypted_verdict_blob_id: '1',
+          encrypted_verdict_blob_id: WALRUS_BLOB_U256,
           verifier_identity: Array.from({ length: 32 }, () => 0xaa),
           verifier_status: 1,
           finalized_at_ms: '2000',
@@ -195,7 +222,9 @@ describe('sanitized event decoding', () => {
     );
     expect(event.kind).toBe('VerdictFinalized');
     expect(event.data.verdict_commitment).toMatch(/^0x[0-9a-f]{64}$/);
-    expect(event.data.encrypted_verdict_blob_id).toBe(`0x${'0'.repeat(63)}1`);
+    expect(event.data.encrypted_verdict_blob_id).toBe(
+      '0x33886c646435a0292d7737a007a1e723a322dbc4b69ea38f1f12be5bbff80549',
+    );
     expect('result' in event.data).toBe(false);
     expect(() =>
       decodeAlibiEvent(
@@ -208,7 +237,7 @@ describe('sanitized event decoding', () => {
             accusation_commitment: Array.from({ length: 32 }, () => 0x22),
             session_attempt_domain_commitment: Array.from({ length: 32 }, () => 0x33),
             verdict_commitment: Array.from({ length: 32 }, () => 0x44),
-            encrypted_verdict_blob_id: '1',
+            encrypted_verdict_blob_id: WALRUS_BLOB_U256,
             verifier_identity: Array.from({ length: 32 }, () => 0xaa),
             verifier_status: 0,
             finalized_at_ms: '2000',

@@ -7,12 +7,12 @@ import {
   PRACTICE_MODE,
   PROTOCOL_VERSION,
   RECEIPT_VERSION,
-  VERDICT_RECEIPT_VERSION,
   VERIFIER_MOVE_MODULE,
   moveTarget,
 } from './constants';
 import { sanitizedError } from './errors';
-import { parseU256, parseU64 } from './masks';
+import { parseU64 } from './masks';
+import { WalrusContentBlobId } from './walrus-blob-id';
 
 export type TransactionFactory = () => Transaction;
 
@@ -53,6 +53,16 @@ function commitment(value: Uint8Array | string): number[] {
   return result;
 }
 
+function walrusContentBlobId(value: WalrusContentBlobId): bigint {
+  if (!(value instanceof WalrusContentBlobId)) {
+    throw sanitizedError(
+      'INVALID_INPUT',
+      'Expected a canonical Walrus content blob ID, not a Sui object ID.',
+    );
+  }
+  return value.toMoveU256();
+}
+
 function transaction(dependencies?: BuilderDependencies): Transaction {
   return dependencies?.transactionFactory?.() ?? new Transaction();
 }
@@ -85,6 +95,7 @@ export function buildStartTerminalAccusation(
   config: AlibiTransactionConfig & {
     sessionId: string;
     accusationCommitment: Uint8Array | string;
+    expectedVerdictBlobId: WalrusContentBlobId;
     expectedAttemptNonce: bigint | string;
   },
   dependencies?: BuilderDependencies,
@@ -96,6 +107,7 @@ export function buildStartTerminalAccusation(
       tx.object(objectId(config.sessionId)),
       tx.object(objectId(config.levelConfigId)),
       tx.pure.vector('u8', commitment(config.accusationCommitment)),
+      tx.pure.u256(walrusContentBlobId(config.expectedVerdictBlobId)),
       tx.pure.u64(parseU64(config.expectedAttemptNonce)),
       tx.object(SUI_CLOCK_OBJECT_ID),
     ],
@@ -193,11 +205,8 @@ export function buildProofBackedResolution(
 export type FutureVerdictFinalization = AlibiTransactionConfig & {
   sessionId: string;
   attemptNonce: bigint | string;
-  caseCommitment: Uint8Array | string;
-  accusationCommitment: Uint8Array | string;
-  sessionAttemptDomainCommitment: Uint8Array | string;
   verdictCommitment: Uint8Array | string;
-  encryptedVerdictBlobId: bigint | string;
+  encryptedVerdictBlobId: WalrusContentBlobId;
   proof: Uint8Array | string;
 };
 
@@ -213,24 +222,17 @@ export function buildProofBackedVerdictFinalization(
   const packageId = objectId(config.packageId);
   const sessionId = objectId(config.sessionId);
   const levelId = objectId(config.levelConfigId);
-  const blobId = parseU256(config.encryptedVerdictBlobId);
-  if (blobId === 0n) {
-    throw sanitizedError('INVALID_INPUT', 'The encrypted verdict blob ID is missing.');
-  }
+  const blobId = walrusContentBlobId(config.encryptedVerdictBlobId);
   const proof = bytes(config.proof);
   if (proof.length !== 128) {
     throw sanitizedError('INVALID_INPUT', 'The verdict proof must contain exactly 128 bytes.');
   }
   const receipt = tx.moveCall({
-    target: moveTarget(packageId, VERIFIER_MOVE_MODULE, 'verify_verdict_proof'),
+    target: moveTarget(packageId, ALIBI_MOVE_MODULE, 'verify_verdict_proof'),
     arguments: [
-      tx.pure.u16(VERDICT_RECEIPT_VERSION),
-      tx.pure.id(sessionId),
-      tx.pure.id(levelId),
+      tx.object(sessionId),
+      tx.object(levelId),
       tx.pure.u64(parseU64(config.attemptNonce)),
-      tx.pure.vector('u8', bytes(config.caseCommitment, 32)),
-      tx.pure.vector('u8', commitment(config.accusationCommitment)),
-      tx.pure.vector('u8', commitment(config.sessionAttemptDomainCommitment)),
       tx.pure.vector('u8', commitment(config.verdictCommitment)),
       tx.pure.u256(blobId),
       tx.pure.vector('u8', proof),
