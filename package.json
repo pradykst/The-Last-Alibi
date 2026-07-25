@@ -11,6 +11,8 @@
   "scripts": {
     "dev": "pnpm --filter @alibi/web dev",
     "assets:process": "node scripts/process-game-assets.mjs",
+    "assets:marketing": "node scripts/compose-marketing-assets.mjs",
+    "assets:build": "pnpm assets:process && pnpm assets:marketing",
     "lint": "pnpm -r --aggregate-output lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

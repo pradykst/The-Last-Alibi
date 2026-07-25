@@ -11,7 +11,7 @@
     "mappedSourceCount": 68,
     "canonicalRuntimeAssetCount": 64,
     "developmentReferenceCount": 5,
-    "derivedMarketingCompositionCount": 0,
+    "derivedMarketingCompositionCount": 2,
     "missingCount": 0,
     "unexpectedCount": 0,
     "duplicateGroupCount": 0,
@@ -4979,6 +4979,24 @@
         "transparentPixelRatio": 0.7848548889160156
       },
       "sha256": "fee763c09732ea94292f37e3eb5b15c41c25aa74a65c9edbda08386a00a4df3a"
+    }
+  ],
+  "derivedMarketingAssets": [
+    {
+      "path": "apps/web/public/assets/marketing/ethglobal-cover.png",
+      "width": 1920,
+      "height": 1080,
+      "actualFormat": "png",
+      "sha256": "89286f40311238f62363e5982443e6543359c2420f2714a5e0f98cc9954da26c",
+      "compositionPolicy": "Approved background, logo mark, and wordmark only; no synthetic copy."
+    },
+    {
+      "path": "apps/web/public/assets/marketing/social-preview.png",
+      "width": 1200,
+      "height": 630,
+      "actualFormat": "png",
+      "sha256": "505c6859c8201ad74a209d77819b5d4a4b8f5b93f701770db85467f3d287f890",
+      "compositionPolicy": "Approved background, logo mark, and wordmark only; no synthetic copy."
     }
   ]
 }
