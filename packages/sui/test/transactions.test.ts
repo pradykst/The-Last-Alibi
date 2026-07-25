@@ -121,7 +121,7 @@ describe('transaction builders', () => {
     expect(moveCall(data, 1).arguments as unknown[]).toHaveLength(3);
   });
 
-  it('prepares the fail-closed Z1 verdict receipt and terminal consumption', () => {
+  it('prepares native Z1 verification and terminal receipt consumption', () => {
     const data = buildProofBackedVerdictFinalization({
       packageId: PACKAGE_ID,
       levelConfigId: LEVEL_ID,
@@ -132,15 +132,14 @@ describe('transaction builders', () => {
       sessionAttemptDomainCommitment: Uint8Array.from({ length: 32 }, () => 0x33),
       verdictCommitment: Uint8Array.from({ length: 32 }, () => 0x44),
       encryptedVerdictBlobId: 1n,
-      expectedVerifierIdentity: Uint8Array.from({ length: 32 }, () => 0xaa),
-      proof: Uint8Array.of(1, 2, 3),
+      proof: Uint8Array.from({ length: 128 }, () => 1),
     }).getData();
     expect(data.commands).toHaveLength(2);
     expect(moveCall(data, 0)).toMatchObject({
       module: 'verifier',
       function: 'verify_verdict_proof',
     });
-    expect(moveCall(data, 0).arguments as unknown[]).toHaveLength(11);
+    expect(moveCall(data, 0).arguments as unknown[]).toHaveLength(10);
     expect(moveCall(data, 1)).toMatchObject({ module: 'alibi', function: 'finalize_verdict' });
     expect(moveCall(data, 1).arguments as unknown[]).toHaveLength(4);
   });
@@ -156,15 +155,14 @@ describe('transaction builders', () => {
       sessionAttemptDomainCommitment: Uint8Array.from({ length: 32 }, () => 0x33),
       verdictCommitment: Uint8Array.from({ length: 32 }, () => 0x44),
       encryptedVerdictBlobId: 1n,
-      expectedVerifierIdentity: Uint8Array.from({ length: 32 }, () => 0xaa),
-      proof: Uint8Array.of(1),
+      proof: Uint8Array.from({ length: 128 }, () => 1),
     };
     expect(() =>
       buildProofBackedVerdictFinalization({ ...base, encryptedVerdictBlobId: 0n }),
     ).toThrowError('blob ID is missing');
     expect(() =>
       buildProofBackedVerdictFinalization({ ...base, proof: new Uint8Array() }),
-    ).toThrowError('proof is missing');
+    ).toThrowError('exactly 128 bytes');
     expect(() =>
       buildProofBackedVerdictFinalization({ ...base, verdictCommitment: new Uint8Array(32) }),
     ).toThrowError('all zeroes');

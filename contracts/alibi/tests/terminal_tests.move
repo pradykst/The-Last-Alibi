@@ -501,24 +501,6 @@ fun unverified_finalization_is_rejected() {
     abort 255
 }
 
-#[test, expected_failure(abort_code = 20, location = verifier)]
-fun production_verdict_verifier_is_fail_closed() {
-    let _receipt = verifier::verify_verdict_proof(
-        alibi::verdict_receipt_version_for_testing(),
-        object::id_from_address(@0x1),
-        object::id_from_address(@0x2),
-        0,
-        case_commitment(),
-        accusation_commitment(),
-        other_accusation_commitment(),
-        verdict_commitment(),
-        TEST_BLOB_ID,
-        verifier_identity(),
-        vector[1],
-    );
-    abort 255
-}
-
 #[test, expected_failure(abort_code = 23, location = alibi)]
 fun missing_encrypted_verdict_reference_is_rejected() {
     let (level, mut session, clock, mut ctx) = setup(120);
