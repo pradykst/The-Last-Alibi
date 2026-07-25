@@ -1,6 +1,8 @@
 # The Last Alibi S2 terminal-verdict boundary
 
-S2 adds the canonical terminal accusation and verdict-state foundation to the S1 Practice-session package. It does **not** implement production proof verification, a circuit, trusted setup, Walrus upload or availability checks, Seal release, World authorization, UI wiring, wallet handling, publication, or deployment.
+S2 adds the canonical terminal accusation and verdict-state foundation to the S1 Practice-session package. Z1 now supplies its native BN254 Groth16 verdict verifier and development circuit parameters; see [Z1 native Groth16 verdict verification](./Z1_NATIVE_GROTH16.md). Neither lane implements a production trusted-setup ceremony, Walrus upload or availability checks, Seal release, World authorization, UI wiring, wallet handling, publication, or deployment.
+
+> **TEST/DEVELOPMENT PARAMETERS ONLY. INSECURE FOR PRODUCTION.** Z1's committed verification key is reproducible development material, not the output of a production ceremony.
 
 ## Canonical lifecycle
 
@@ -39,9 +41,9 @@ This follows the bundled BCS and hashing interfaces in `.tools/sui-pilot/.move-b
 
 ## Exact Z1 proof inputs
 
-`verifier::verify_verdict_proof` is the sole production constructor boundary for `VerdictProofReceipt`. In S2 it always aborts with `EVerifierUnavailable` (20). A submitted proof, caller assertion, fixture value, transaction success, or boolean is never treated as verification. Only `#[test_only]` constructors can produce verified/unverified receipts in Move tests; test-only code is stripped from production builds as documented in `.tools/sui-pilot/.move-book-docs/book/testing/testing-basics.md`.
+`verifier::verify_verdict_proof` is the sole production constructor boundary for `VerdictProofReceipt`. Z1 replaces S2's deliberate `EVerifierUnavailable` body with native verification under the package-pinned key. A submitted caller assertion, fixture value, transaction success, or boolean is never treated as verification. Only `#[test_only]` constructors can bypass native verification in Move tests; test-only code is stripped from production builds as documented in `.tools/sui-pilot/.move-book-docs/book/testing/testing-basics.md`.
 
-Z1 must make the circuit bind these four logical public inputs, each an exact `vector<u8>` of 32 bytes:
+The Z1 circuit binds these four logical public inputs, each an exact `vector<u8>` of 32 bytes:
 
 1. `case_commitment`
 2. `accusation_commitment`
@@ -59,7 +61,7 @@ verdict[0..16] LE-u128, verdict[16..32] LE-u128
 
 Each `u128` value is serialized as one canonical 32-byte little-endian BN254 scalar, in the order above, and concatenated for `groth16::public_proof_inputs_from_bytes`. The circuit and prover must use the same byte order and limb order. The private witness must prove openings for the case and accusation commitments, derive the verdict bit from their equality, open the verdict commitment to that derived bit, and include the supplied domain commitment in the statement. The accusation opening, case fields, salts, and verdict bit remain private.
 
-Z1 must then:
+The production Z1 boundary:
 
 - pin or verifiably identify the expected prepared verification key;
 - set `verdict_verifier_state` to available and store a nonzero 32-byte `expected_verdict_verifier_identity` in the immutable level configuration;
@@ -69,7 +71,7 @@ Z1 must then:
 - copy the already validated session, level, attempt, verifier identity, and nonzero encrypted-verdict blob ID into that receipt;
 - keep every receipt constructor private/package-owned and retain no fallback path.
 
-Sui's native interface, verification-key responsibility, and eight-input limit are documented in `.tools/sui-pilot/.sui-docs/develop/cryptography/groth16.mdx`. S2 deliberately leaves the level verdict verifier unavailable, so production finalization remains impossible until Z1 supplies this implementation and identity.
+Sui's native interface, verification-key responsibility, and eight-input limit are documented in `.tools/sui-pilot/.sui-docs/develop/cryptography/groth16.mdx`. The immutable level now records the SHA-256 identity of Z1's exact embedded key and marks only the verdict verifier available; the separate query verifier remains fail closed.
 
 ## Walrus and future Seal release
 

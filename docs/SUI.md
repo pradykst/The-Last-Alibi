@@ -1,6 +1,8 @@
 # Sui canonical state (S1)
 
-> S2 extends this frozen S1 foundation with AccusationPending and Terminal state. See [S2 terminal-verdict boundary](./S2_TERMINAL_VERDICT.md) for the current terminal lifecycle and the exact Z1 handoff. The S1 query behavior documented below remains unchanged.
+> S2 extends this frozen S1 foundation with AccusationPending and Terminal state. Z1 implements that terminal path's native verifier using test/development Groth16 parameters. See [S2 terminal-verdict boundary](./S2_TERMINAL_VERDICT.md) and [Z1 native Groth16 verdict verification](./Z1_NATIVE_GROTH16.md). The S1 query behavior documented below remains unchanged and fail closed.
+
+> **TEST/DEVELOPMENT PARAMETERS ONLY. INSECURE FOR PRODUCTION. NO TRUSTED-SETUP CEREMONY HAS BEEN PERFORMED.**
 
 S1 establishes the canonical public state and certified-disclosure transition boundary for **The Last Alibi**. It does not claim a testnet deployment. It creates no wallet, signer, key, mnemonic, keystore, credential, package ID, object ID, transaction digest, checkpoint, or explorer URL.
 
@@ -8,11 +10,12 @@ The implementation follows the repository-pinned Sui documentation in `.tools/su
 
 ## Object model and authority
 
-The Move package is `contracts/alibi` and contains three modules.
+The Move package is `contracts/alibi` and contains four modules.
 
 - `alibi::predicates` mechanically derives the 12 registered equality predicates over the fixed 4 × 4 × 2 × 2 universe.
 - `alibi::alibi` owns level initialization, Practice sessions, warrant authorization, expiry, and receipt consumption.
-- `alibi::verifier` owns the unforgeable proof receipt type. Its production verifier aborts until Z1 supplies native Groth16 verification.
+- `alibi::verifier` owns the unforgeable proof receipt types. Query verification remains unavailable; accusation-verdict verification uses native BN254 Groth16 and can mint an ability-less verdict receipt only after successful verification.
+- `alibi::verdict_verifying_key` embeds the immutable 520-byte development verification key and its SHA-256 identity.
 
 `PublisherCap` is created once by the package initializer. `create_level` consumes it, creates the sole canonical `LevelConfig`, and freezes that object. The capability grants no access to player sessions. Consuming the capability is the uniqueness rule: the same authority cannot initialize another level.
 
@@ -25,6 +28,7 @@ The Move package is `contracts/alibi` and contains three modules.
 - verifier state 0 (unavailable) and an empty expected verifier identity;
 - the mechanically generated predicate definitions.
 
+The immutable level keeps the query verifier unavailable and stores no query identity. It marks the verdict verifier available and stores `57413ae2abe8025a6035cca0c5c063687827fcc56bd5f8b11126ba47072fe2c3`, the SHA-256 identity of the exact embedded Z1 verification key.
 `GameSession` is an address-owned object controlled by its `player`. It contains the level object ID, Practice mode, a 32-byte case commitment, a `u64` candidate mask, disclosure counter, 12-bit used-predicate set in a `u16`, strictly increasing `u64` query nonce, embedded optional pending query, state, and protocol/level versions.
 
 The initial candidate mask is `0xffffffffffffffff`, representing all 64 cases. Neither Move nor TypeScript routes masks through JavaScript `number` values.
@@ -70,7 +74,8 @@ Modes are 0 Practice and 1 Ranked. Only Practice creation succeeds. Session stat
 - `create_session(level, mode, case_commitment, protocol_version, level_version)` creates an address-owned Practice session. Ranked mode aborts.
 - `authorize_query(session, level, predicate_id, expected_nonce, clock)` authorizes only a registered, unused predicate whose YES and NO branches each retain at least two candidates.
 - `expire_query(session, level, clock)` clears an expired pending query without revealing a result, changing candidates, increasing disclosures, or marking the predicate used. It advances the nonce so a late receipt cannot match.
-- `verifier::verify_query_proof(...)` is the future Z1 boundary and always aborts in production S1.
+- `verifier::verify_query_proof(...)` is a later query-proof boundary and still always aborts.
+- `verifier::verify_verdict_proof(...)` constructs the fixed eight-field public-input vector, verifies a 128-byte proof with Sui's native BN254 Groth16 API under the embedded key, and only then returns an ability-less receipt.
 - `resolve_query(session, level, receipt)` accepts only the verifier module's ability-less receipt, checks every binding, selects the stored branch, and consumes the receipt. It accepts no replacement candidate mask.
 
 There is intentionally no player cancellation function. There is no oracle, administrator, publisher, or testing bypass in production bytecode.
@@ -124,7 +129,7 @@ This separation permits future sponsored or relayed execution without placing wa
 
 ## Why resolution remains unavailable
 
-Z1 must replace the body of `verifier::verify_query_proof` with native Groth16 verification and bind verified public inputs to the exact receipt fields. Until then, the function aborts with stable code 20. Only a `#[test_only]` helper can construct receipts for invariant tests; Sui excludes test-only functions from production bytecode. Removing this fail-closed behavior without a native verifier would let a caller choose a result and is forbidden.
+Query-proof functionality is outside Z1's verdict scope. `verifier::verify_query_proof` therefore continues to abort with stable code 20. Only a `#[test_only]` helper can construct query receipts for invariant tests; Sui excludes test-only functions from production bytecode. The separate verdict receipt has no production constructor other than successful native verification.
 
 ## Local build and tests
 
@@ -186,4 +191,4 @@ After publication, the operator must execute `create_level` once with the return
 
 Configure live consumers with only `ALIBI_SUI_NETWORK`, `ALIBI_SUI_PACKAGE_ID`, and `ALIBI_SUI_LEVEL_CONFIG_ID`. Missing or invalid configuration fails closed; there is no fixture fallback. Never commit an operator client file, private key, mnemonic, keystore, recovery material, or `.env`.
 
-Remaining publication blockers are deliberate: an authorized funded testnet operator, external signer configuration, gas budget selection, execution evidence capture, and—in order to resolve warrants—Z1 native verifier implementation plus its expected verifier identity. Ranked mode additionally requires the later World/Sui permit path.
+Remaining publication blockers are deliberate: a production circuit-specific trusted-setup ceremony and key replacement, an authorized funded testnet operator, external signer configuration, gas budget selection, and execution evidence capture. Ranked mode additionally requires the later World/Sui permit path. No publication or wallet operation is part of Z1.

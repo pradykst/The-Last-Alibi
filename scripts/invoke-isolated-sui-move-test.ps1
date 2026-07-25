@@ -1,9 +1,8 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string]$TestFilter,
-
+    [string]$TestFilter = "",
+    [switch]$BuildOnly,
+    [switch]$Lint,
     [string]$SuiExecutable = "$env:LOCALAPPDATA\bin\sui.exe"
 )
 
@@ -158,20 +157,26 @@ active_address: null
     }
     Write-Host "Isolated Sui client configuration parsed without initialization."
 
-    $testOutput = Invoke-IsolatedSui @(
+    $moveArguments = @(
         "move",
         "--client.config",
         $clientConfig,
-        "test",
+        $(if ($BuildOnly) { "build" } else { "test" }),
         "--path",
         (Join-Path $repositoryRoot "contracts\alibi"),
         "--build-env",
         "testnet",
-        "--warnings-are-errors",
-        $TestFilter
-    ) $temporaryRoot
+        "--warnings-are-errors"
+    )
+    if ($Lint) {
+        $moveArguments += "--lint"
+    }
+    if (-not $BuildOnly -and $TestFilter.Length -gt 0) {
+        $moveArguments += $TestFilter
+    }
+    $moveOutput = Invoke-IsolatedSui $moveArguments $temporaryRoot
     Assert-WalletFreeDirectory $temporaryRoot $expectedConfig $expectedConfigHash
-    Write-Host $testOutput
+    Write-Host $moveOutput
     Write-Host "Isolated keystore remained exactly empty."
 } finally {
     if (Test-Path -LiteralPath $temporaryRoot) {

@@ -615,8 +615,8 @@ fun new_level(
         minimum_survivors,
         verifier_state: VERIFIER_UNAVAILABLE,
         expected_verifier_identity: vector[],
-        verdict_verifier_state: VERIFIER_UNAVAILABLE,
-        expected_verdict_verifier_identity: vector[],
+        verdict_verifier_state: VERIFIER_AVAILABLE,
+        expected_verdict_verifier_identity: verifier::verdict_verifier_identity(),
         finalized: true,
         predicates: registered_predicates,
     };
@@ -629,7 +629,7 @@ fun new_level(
         disclosure_limit,
         minimum_survivors,
         verifier_state: VERIFIER_UNAVAILABLE,
-        verdict_verifier_state: VERIFIER_UNAVAILABLE,
+        verdict_verifier_state: VERIFIER_AVAILABLE,
     });
     level
 }

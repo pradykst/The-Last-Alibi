@@ -198,13 +198,12 @@ export type FutureVerdictFinalization = AlibiTransactionConfig & {
   sessionAttemptDomainCommitment: Uint8Array | string;
   verdictCommitment: Uint8Array | string;
   encryptedVerdictBlobId: bigint | string;
-  expectedVerifierIdentity: Uint8Array | string;
   proof: Uint8Array | string;
 };
 
 /**
- * Prepares the S2-to-Z1 transaction shape. The production S2 verifier always
- * aborts with EVerifierUnavailable and cannot create a verdict receipt.
+ * Verifies the Z1 proof under the application-pinned key, then consumes its
+ * receipt through S2's terminal finalization boundary.
  */
 export function buildProofBackedVerdictFinalization(
   config: FutureVerdictFinalization,
@@ -219,8 +218,8 @@ export function buildProofBackedVerdictFinalization(
     throw sanitizedError('INVALID_INPUT', 'The encrypted verdict blob ID is missing.');
   }
   const proof = bytes(config.proof);
-  if (proof.length === 0) {
-    throw sanitizedError('INVALID_INPUT', 'The verdict proof is missing.');
+  if (proof.length !== 128) {
+    throw sanitizedError('INVALID_INPUT', 'The verdict proof must contain exactly 128 bytes.');
   }
   const receipt = tx.moveCall({
     target: moveTarget(packageId, VERIFIER_MOVE_MODULE, 'verify_verdict_proof'),
@@ -234,7 +233,6 @@ export function buildProofBackedVerdictFinalization(
       tx.pure.vector('u8', commitment(config.sessionAttemptDomainCommitment)),
       tx.pure.vector('u8', commitment(config.verdictCommitment)),
       tx.pure.u256(blobId),
-      tx.pure.vector('u8', commitment(config.expectedVerifierIdentity)),
       tx.pure.vector('u8', proof),
     ],
   });
