@@ -1,10 +1,12 @@
 module alibi::alibi;
 
+use sui::bcs;
 use sui::clock::Clock;
 use sui::event;
+use sui::hash;
 
 use alibi::predicates::{Self, PredicateDefinition};
-use alibi::verifier::{Self, QueryProofReceipt};
+use alibi::verifier::{Self, QueryProofReceipt, VerdictProofReceipt};
 
 const EUnauthorized: u64 = 0;
 const EUnsupportedVersion: u64 = 1;
@@ -26,11 +28,18 @@ const EInvalidProofReceipt: u64 = 16;
 const EReceiptReplay: u64 = 17;
 const ECandidateTransitionMismatch: u64 = 18;
 const ERankedModeUnavailable: u64 = 19;
+const EPendingAccusationMissing: u64 = 21;
+const EPendingAccusationMismatch: u64 = 22;
+const EInvalidEncryptedVerdictReference: u64 = 23;
+const EInvalidVerdictReceipt: u64 = 24;
+const EVerdictReceiptReplay: u64 = 25;
+const EUnverifiedVerdict: u64 = 26;
 
 const SCHEMA_VERSION: u16 = 1;
 const LEVEL_VERSION: u16 = 1;
 const PROTOCOL_VERSION: u16 = 1;
 const RECEIPT_VERSION: u16 = 1;
+const VERDICT_RECEIPT_VERSION: u16 = 1;
 
 const CASE_COUNT: u8 = 64;
 const PREDICATE_COUNT: u8 = 12;
@@ -43,10 +52,16 @@ const MODE_PRACTICE: u8 = 0;
 const MODE_RANKED: u8 = 1;
 const STATE_ACTIVE: u8 = 1;
 const STATE_QUERY_PENDING: u8 = 2;
+const STATE_ACCUSATION_PENDING: u8 = 3;
+const STATE_TERMINAL: u8 = 4;
 const VERIFIER_UNAVAILABLE: u8 = 0;
+const VERIFIER_AVAILABLE: u8 = 1;
+const VERIFIER_VERIFIED: u8 = 1;
 
 const PRODUCT_ID: vector<u8> = b"the-last-alibi";
 const LEVEL_ID: vector<u8> = b"the-last-exhibit";
+const SESSION_ATTEMPT_DOMAIN: vector<u8> =
+    b"the-last-alibi::verdict::session-attempt::v1";
 
 /// One-time capability consumed when the canonical level is finalized.
 public struct PublisherCap has key {
@@ -66,6 +81,8 @@ public struct LevelConfig has key {
     minimum_survivors: u8,
     verifier_state: u8,
     expected_verifier_identity: vector<u8>,
+    verdict_verifier_state: u8,
+    expected_verdict_verifier_identity: vector<u8>,
     finalized: bool,
     predicates: vector<PredicateDefinition>,
 }
@@ -81,6 +98,27 @@ public struct PendingQuery has copy, drop, store {
     expires_at_ms: u64,
 }
 
+/// Public commitment-only state for the one terminal accusation attempt.
+public struct PendingAccusation has copy, drop, store {
+    attempt_nonce: u64,
+    accusation_commitment: vector<u8>,
+    session_attempt_domain_commitment: vector<u8>,
+    started_at_ms: u64,
+}
+
+/// Public terminal metadata. It contains no verdict bit or commitment openings.
+public struct VerdictRecord has copy, drop, store {
+    attempt_nonce: u64,
+    accusation_commitment: vector<u8>,
+    session_attempt_domain_commitment: vector<u8>,
+    verdict_commitment: vector<u8>,
+    encrypted_verdict_blob_id: u256,
+    verifier_identity: vector<u8>,
+    verifier_status: u8,
+    started_at_ms: u64,
+    finalized_at_ms: u64,
+}
+
 /// Player-owned authoritative canonical state for one practice investigation.
 public struct GameSession has key {
     id: UID,
@@ -93,6 +131,9 @@ public struct GameSession has key {
     used_predicates: u16,
     query_nonce: u64,
     pending_query: Option<PendingQuery>,
+    attempt_nonce: u64,
+    pending_accusation: Option<PendingAccusation>,
+    verdict: Option<VerdictRecord>,
     state: u8,
     protocol_version: u16,
     level_version: u16,
@@ -107,6 +148,7 @@ public struct LevelCreated has copy, drop {
     disclosure_limit: u8,
     minimum_survivors: u8,
     verifier_state: u8,
+    verdict_verifier_state: u8,
 }
 
 public struct SessionCreated has copy, drop {
@@ -118,8 +160,31 @@ public struct SessionCreated has copy, drop {
     candidate_count: u8,
     disclosure_count: u8,
     query_nonce: u64,
+    attempt_nonce: u64,
     protocol_version: u16,
     level_version: u16,
+}
+
+public struct AccusationStarted has copy, drop {
+    session: ID,
+    level: ID,
+    attempt_nonce: u64,
+    accusation_commitment: vector<u8>,
+    session_attempt_domain_commitment: vector<u8>,
+    started_at_ms: u64,
+}
+
+public struct VerdictFinalized has copy, drop {
+    session: ID,
+    level: ID,
+    attempt_nonce: u64,
+    accusation_commitment: vector<u8>,
+    session_attempt_domain_commitment: vector<u8>,
+    verdict_commitment: vector<u8>,
+    encrypted_verdict_blob_id: u256,
+    verifier_identity: vector<u8>,
+    verifier_status: u8,
+    finalized_at_ms: u64,
 }
 
 public struct QueryAuthorized has copy, drop {
@@ -206,6 +271,145 @@ entry fun create_session(
     transfer::transfer(session, ctx.sender());
 }
 
+/// Starts the one terminal accusation using only its salted commitment.
+public fun start_accusation(
+    session: &mut GameSession,
+    level: &LevelConfig,
+    accusation_commitment: vector<u8>,
+    expected_attempt_nonce: u64,
+    clock: &Clock,
+    ctx: &mut TxContext,
+) {
+    assert_session_binding(session, level);
+    assert_not_terminal(session);
+    assert!(session.player == ctx.sender(), EUnauthorized);
+    assert!(session.state == STATE_ACTIVE, EInvalidSessionState);
+    assert!(session.pending_query.is_none(), EQueryAlreadyPending);
+    assert!(session.pending_accusation.is_none(), EInvalidSessionState);
+    assert!(session.verdict.is_none(), EInvalidSessionState);
+    assert!(session.attempt_nonce == expected_attempt_nonce, EStaleOrWrongNonce);
+    assert_valid_commitment(&accusation_commitment);
+
+    let domain_commitment = session_attempt_domain_commitment(session, expected_attempt_nonce);
+    let started_at_ms = clock.timestamp_ms();
+    session.pending_accusation.fill(PendingAccusation {
+        attempt_nonce: expected_attempt_nonce,
+        accusation_commitment: copy accusation_commitment,
+        session_attempt_domain_commitment: copy domain_commitment,
+        started_at_ms,
+    });
+    advance_attempt_nonce(session);
+    session.state = STATE_ACCUSATION_PENDING;
+
+    event::emit(AccusationStarted {
+        session: object::id(session),
+        level: object::id(level),
+        attempt_nonce: expected_attempt_nonce,
+        accusation_commitment,
+        session_attempt_domain_commitment: domain_commitment,
+        started_at_ms,
+    });
+}
+
+/// Consumes a verifier-owned verdict receipt and irreversibly terminates the session.
+public fun finalize_verdict(
+    session: &mut GameSession,
+    level: &LevelConfig,
+    receipt: VerdictProofReceipt,
+    clock: &Clock,
+) {
+    assert_session_binding(session, level);
+    assert_not_terminal(session);
+    assert!(session.state == STATE_ACCUSATION_PENDING, EInvalidSessionState);
+    assert!(session.pending_accusation.is_some(), EPendingAccusationMissing);
+    assert!(session.verdict.is_none(), EInvalidSessionState);
+
+    let (
+        receipt_version,
+        receipt_session,
+        receipt_level,
+        receipt_attempt_nonce,
+        receipt_case_commitment,
+        receipt_accusation_commitment,
+        receipt_domain_commitment,
+        verdict_commitment,
+        encrypted_verdict_blob_id,
+        verifier_identity,
+        verifier_status,
+    ) = verifier::consume_verdict(receipt);
+
+    assert!(receipt_version == VERDICT_RECEIPT_VERSION, EInvalidVerdictReceipt);
+    assert!(receipt_session == object::id(session), EInvalidVerdictReceipt);
+    assert!(receipt_level == object::id(level), EInvalidVerdictReceipt);
+    assert!(verifier_status == VERIFIER_VERIFIED, EUnverifiedVerdict);
+    assert!(level.verdict_verifier_state == VERIFIER_AVAILABLE, EInvalidVerifier);
+    assert_valid_verifier_identity(&verifier_identity);
+    assert!(
+        verifier_identity == level.expected_verdict_verifier_identity,
+        EInvalidVerifier,
+    );
+    assert!(
+        receipt_case_commitment.length() == COMMITMENT_LENGTH,
+        EInvalidVerdictReceipt,
+    );
+    assert!(receipt_case_commitment == session.case_commitment, EInvalidVerdictReceipt);
+    assert_valid_commitment(&receipt_accusation_commitment);
+    assert_valid_commitment(&receipt_domain_commitment);
+    assert_valid_commitment(&verdict_commitment);
+    assert!(encrypted_verdict_blob_id != 0, EInvalidEncryptedVerdictReference);
+
+    let pending = session.pending_accusation.borrow();
+    assert!(receipt_attempt_nonce >= pending.attempt_nonce, EVerdictReceiptReplay);
+    assert!(receipt_attempt_nonce == pending.attempt_nonce, EPendingAccusationMismatch);
+    assert!(
+        receipt_accusation_commitment == pending.accusation_commitment,
+        EPendingAccusationMismatch,
+    );
+    assert!(
+        receipt_domain_commitment == pending.session_attempt_domain_commitment,
+        EPendingAccusationMismatch,
+    );
+    assert!(
+        receipt_domain_commitment
+            == session_attempt_domain_commitment(session, receipt_attempt_nonce),
+        EPendingAccusationMismatch,
+    );
+    assert!(
+        session.attempt_nonce == receipt_attempt_nonce + 1,
+        EPendingAccusationMismatch,
+    );
+    let started_at_ms = pending.started_at_ms;
+    let finalized_at_ms = clock.timestamp_ms();
+    assert!(finalized_at_ms >= started_at_ms, EInvalidSessionState);
+
+    let _ = session.pending_accusation.extract();
+    session.verdict.fill(VerdictRecord {
+        attempt_nonce: receipt_attempt_nonce,
+        accusation_commitment: copy receipt_accusation_commitment,
+        session_attempt_domain_commitment: copy receipt_domain_commitment,
+        verdict_commitment: copy verdict_commitment,
+        encrypted_verdict_blob_id,
+        verifier_identity: copy verifier_identity,
+        verifier_status,
+        started_at_ms,
+        finalized_at_ms,
+    });
+    session.state = STATE_TERMINAL;
+
+    event::emit(VerdictFinalized {
+        session: object::id(session),
+        level: object::id(level),
+        attempt_nonce: receipt_attempt_nonce,
+        accusation_commitment: receipt_accusation_commitment,
+        session_attempt_domain_commitment: receipt_domain_commitment,
+        verdict_commitment,
+        encrypted_verdict_blob_id,
+        verifier_identity,
+        verifier_status,
+        finalized_at_ms,
+    });
+}
+
 /// Authorizes one safe registered query without evaluating the hidden case.
 public fun authorize_query(
     session: &mut GameSession,
@@ -216,6 +420,7 @@ public fun authorize_query(
     ctx: &mut TxContext,
 ) {
     assert_session_binding(session, level);
+    assert_not_terminal(session);
     assert!(session.player == ctx.sender(), EUnauthorized);
     assert!(session.pending_query.is_none(), EQueryAlreadyPending);
     assert!(session.state == STATE_ACTIVE, EInvalidSessionState);
@@ -271,6 +476,7 @@ public fun expire_query(
     ctx: &mut TxContext,
 ) {
     assert_session_binding(session, level);
+    assert_not_terminal(session);
     assert!(session.player == ctx.sender(), EUnauthorized);
     assert!(session.pending_query.is_some(), EPendingQueryMissing);
     assert!(session.state == STATE_QUERY_PENDING, EInvalidSessionState);
@@ -302,6 +508,7 @@ public fun resolve_query(
     receipt: QueryProofReceipt,
 ) {
     assert_session_binding(session, level);
+    assert_not_terminal(session);
     let (
         receipt_version,
         receipt_session,
@@ -406,6 +613,8 @@ fun new_level(
         minimum_survivors,
         verifier_state: VERIFIER_UNAVAILABLE,
         expected_verifier_identity: vector[],
+        verdict_verifier_state: VERIFIER_UNAVAILABLE,
+        expected_verdict_verifier_identity: vector[],
         finalized: true,
         predicates: registered_predicates,
     };
@@ -418,6 +627,7 @@ fun new_level(
         disclosure_limit,
         minimum_survivors,
         verifier_state: VERIFIER_UNAVAILABLE,
+        verdict_verifier_state: VERIFIER_UNAVAILABLE,
     });
     level
 }
@@ -448,6 +658,9 @@ fun new_session(
         used_predicates: 0,
         query_nonce: 0,
         pending_query: option::none(),
+        attempt_nonce: 0,
+        pending_accusation: option::none(),
+        verdict: option::none(),
         state: STATE_ACTIVE,
         protocol_version,
         level_version,
@@ -461,6 +674,7 @@ fun new_session(
         candidate_count: CASE_COUNT,
         disclosure_count: 0,
         query_nonce: 0,
+        attempt_nonce: 0,
         protocol_version,
         level_version,
     });
@@ -478,6 +692,12 @@ fun assert_level(level: &LevelConfig) {
     assert!(level.minimum_survivors == MINIMUM_SURVIVORS, EInvalidLevel);
     assert!(level.verifier_state == VERIFIER_UNAVAILABLE, EInvalidVerifier);
     assert!(level.expected_verifier_identity.is_empty(), EInvalidVerifier);
+    if (level.verdict_verifier_state == VERIFIER_UNAVAILABLE) {
+        assert!(level.expected_verdict_verifier_identity.is_empty(), EInvalidVerifier);
+    } else {
+        assert!(level.verdict_verifier_state == VERIFIER_AVAILABLE, EInvalidVerifier);
+        assert_valid_verifier_identity(&level.expected_verdict_verifier_identity);
+    };
     assert!(level.finalized, EInvalidLevel);
     predicates::validate(&level.predicates);
 }
@@ -488,6 +708,41 @@ fun assert_session_binding(session: &GameSession, level: &LevelConfig) {
     assert!(session.mode == MODE_PRACTICE, EInvalidSessionState);
     assert!(session.protocol_version == PROTOCOL_VERSION, EUnsupportedVersion);
     assert!(session.level_version == level.level_version, EUnsupportedVersion);
+}
+
+fun assert_not_terminal(session: &GameSession) {
+    assert!(session.state != STATE_TERMINAL, EInvalidSessionState);
+}
+
+fun assert_valid_commitment(commitment: &vector<u8>) {
+    assert!(commitment.length() == COMMITMENT_LENGTH, EInvalidCommitment);
+    assert!(contains_nonzero_byte(commitment), EInvalidCommitment);
+}
+
+fun assert_valid_verifier_identity(identity: &vector<u8>) {
+    assert!(identity.length() == COMMITMENT_LENGTH, EInvalidVerifier);
+    assert!(contains_nonzero_byte(identity), EInvalidVerifier);
+}
+
+fun contains_nonzero_byte(bytes: &vector<u8>): bool {
+    let mut index = 0;
+    while (index < bytes.length()) {
+        if (*bytes.borrow(index) != 0) return true;
+        index = index + 1;
+    };
+    false
+}
+
+fun session_attempt_domain_commitment(
+    session: &GameSession,
+    attempt_nonce: u64,
+): vector<u8> {
+    let mut input = SESSION_ATTEMPT_DOMAIN;
+    input.append(bcs::to_bytes(&object::id(session)));
+    input.append(bcs::to_bytes(&attempt_nonce));
+    input.append(bcs::to_bytes(&session.protocol_version));
+    input.append(bcs::to_bytes(&session.level_version));
+    hash::blake2b256(&input)
 }
 
 fun predicate_bit(predicate_id: u8): u16 {
@@ -507,6 +762,11 @@ fun popcount(mask: u64): u8 {
 fun advance_nonce(session: &mut GameSession) {
     assert!(session.query_nonce < std::u64::max_value!(), EInvalidSessionState);
     session.query_nonce = session.query_nonce + 1;
+}
+
+fun advance_attempt_nonce(session: &mut GameSession) {
+    assert!(session.attempt_nonce < std::u64::max_value!(), EInvalidSessionState);
+    session.attempt_nonce = session.attempt_nonce + 1;
 }
 
 /// Returns the immutable level object's ID.
@@ -559,9 +819,98 @@ public fun case_commitment(session: &GameSession): &vector<u8> {
     &session.case_commitment
 }
 
-/// Returns the expected verifier identity; empty while verification is unavailable.
+/// Returns the expected query verifier identity; empty while unavailable.
 public fun expected_verifier_identity(level: &LevelConfig): &vector<u8> {
     &level.expected_verifier_identity
+}
+
+/// Returns the expected verdict verifier identity; empty while unavailable.
+public fun expected_verdict_verifier_identity(level: &LevelConfig): &vector<u8> {
+    &level.expected_verdict_verifier_identity
+}
+
+/// Returns the next expected terminal-attempt nonce.
+public fun attempt_nonce(session: &GameSession): u64 {
+    session.attempt_nonce
+}
+
+/// Returns true while the commitment-only terminal accusation is unresolved.
+public fun has_pending_accusation(session: &GameSession): bool {
+    session.pending_accusation.is_some()
+}
+
+/// Returns true after verified irreversible terminal finalization.
+public fun has_verdict(session: &GameSession): bool {
+    session.verdict.is_some()
+}
+
+/// Returns the authorized player address for future release-policy checks.
+public fun session_player(session: &GameSession): address {
+    session.player
+}
+
+/// Returns the pending accusation attempt nonce.
+public fun pending_accusation_attempt_nonce(session: &GameSession): u64 {
+    session.pending_accusation.borrow().attempt_nonce
+}
+
+/// Returns the pending salted accusation commitment.
+public fun pending_accusation_commitment(session: &GameSession): &vector<u8> {
+    &session.pending_accusation.borrow().accusation_commitment
+}
+
+/// Returns the pending session-attempt domain commitment.
+public fun pending_session_attempt_domain_commitment(
+    session: &GameSession,
+): &vector<u8> {
+    &session.pending_accusation.borrow().session_attempt_domain_commitment
+}
+
+/// Returns the terminal attempt nonce.
+public fun verdict_attempt_nonce(session: &GameSession): u64 {
+    session.verdict.borrow().attempt_nonce
+}
+
+/// Returns the terminal accusation commitment.
+public fun verdict_accusation_commitment(session: &GameSession): &vector<u8> {
+    &session.verdict.borrow().accusation_commitment
+}
+
+/// Returns the terminal session-attempt domain commitment.
+public fun verdict_session_attempt_domain_commitment(
+    session: &GameSession,
+): &vector<u8> {
+    &session.verdict.borrow().session_attempt_domain_commitment
+}
+
+/// Returns the terminal verdict commitment, never its opening or result bit.
+public fun verdict_commitment(session: &GameSession): &vector<u8> {
+    &session.verdict.borrow().verdict_commitment
+}
+
+/// Returns the canonical Walrus encrypted-verdict blob ID as an onchain u256.
+public fun encrypted_verdict_blob_id(session: &GameSession): u256 {
+    session.verdict.borrow().encrypted_verdict_blob_id
+}
+
+/// Returns the verifier identity recorded at successful finalization.
+public fun verdict_verifier_identity(session: &GameSession): &vector<u8> {
+    &session.verdict.borrow().verifier_identity
+}
+
+/// Returns the verifier status recorded at successful finalization.
+public fun verdict_verifier_status(session: &GameSession): u8 {
+    session.verdict.borrow().verifier_status
+}
+
+/// Returns the accusation start timestamp recorded in the terminal record.
+public fun verdict_started_at_ms(session: &GameSession): u64 {
+    session.verdict.borrow().started_at_ms
+}
+
+/// Returns the terminal finalization timestamp.
+public fun verdict_finalized_at_ms(session: &GameSession): u64 {
+    session.verdict.borrow().finalized_at_ms
 }
 
 #[test_only]
@@ -612,6 +961,21 @@ public fun new_session_for_testing(
 }
 
 #[test_only]
+public fun enable_verdict_verifier_for_testing(
+    level: &mut LevelConfig,
+    verifier_identity: vector<u8>,
+) {
+    assert_valid_verifier_identity(&verifier_identity);
+    level.verdict_verifier_state = VERIFIER_AVAILABLE;
+    level.expected_verdict_verifier_identity = verifier_identity;
+}
+
+#[test_only]
+public fun set_attempt_nonce_for_testing(session: &mut GameSession, nonce: u64) {
+    session.attempt_nonce = nonce;
+}
+
+#[test_only]
 public fun set_candidate_mask_for_testing(session: &mut GameSession, mask: u64) {
     session.candidate_mask = mask;
 }
@@ -659,4 +1023,64 @@ public fun receipt_version_for_testing(): u16 {
 #[test_only]
 public fun query_ttl_ms_for_testing(): u64 {
     QUERY_TTL_MS
+}
+
+#[test_only]
+public fun accusation_pending_state_for_testing(): u8 {
+    STATE_ACCUSATION_PENDING
+}
+
+#[test_only]
+public fun terminal_state_for_testing(): u8 {
+    STATE_TERMINAL
+}
+
+#[test_only]
+public fun verdict_receipt_version_for_testing(): u16 {
+    VERDICT_RECEIPT_VERSION
+}
+
+#[test_only]
+public fun verified_verdict_status_for_testing(): u8 {
+    VERIFIER_VERIFIED
+}
+
+#[test_only]
+public fun session_attempt_domain_commitment_for_testing(
+    session: &GameSession,
+    attempt_nonce: u64,
+): vector<u8> {
+    session_attempt_domain_commitment(session, attempt_nonce)
+}
+
+#[test_only]
+public fun accusation_started_fields_for_testing(
+    emitted: &AccusationStarted,
+): (ID, ID, u64, vector<u8>, vector<u8>, u64) {
+    (
+        emitted.session,
+        emitted.level,
+        emitted.attempt_nonce,
+        emitted.accusation_commitment,
+        emitted.session_attempt_domain_commitment,
+        emitted.started_at_ms,
+    )
+}
+
+#[test_only]
+public fun verdict_finalized_fields_for_testing(
+    emitted: &VerdictFinalized,
+): (ID, ID, u64, vector<u8>, vector<u8>, vector<u8>, u256, vector<u8>, u8, u64) {
+    (
+        emitted.session,
+        emitted.level,
+        emitted.attempt_nonce,
+        emitted.accusation_commitment,
+        emitted.session_attempt_domain_commitment,
+        emitted.verdict_commitment,
+        emitted.encrypted_verdict_blob_id,
+        emitted.verifier_identity,
+        emitted.verifier_status,
+        emitted.finalized_at_ms,
+    )
 }
