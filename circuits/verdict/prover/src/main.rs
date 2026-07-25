@@ -1,3 +1,5 @@
+mod verdict;
+
 use ark_bn254::{Bn254, Fr};
 use ark_circom::{CircomBuilder, CircomConfig};
 use ark_groth16::Groth16;
@@ -23,8 +25,12 @@ fn quoted_hex(bytes: &[u8]) -> String {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let arguments = env::args().collect::<Vec<_>>();
+    if arguments.len() == 4 && arguments[1] == "verdict" {
+        return verdict::run(&arguments[2], &arguments[3]);
+    }
+
     if arguments.len() != 4 || arguments[1] != "smoke" {
-        return Err("usage: alibi-verdict-prover smoke <wasm> <r1cs>".into());
+        return Err("usage: alibi-verdict-prover <smoke|verdict> <wasm> <r1cs>".into());
     }
 
     let config = CircomConfig::<Fr>::new(&arguments[2], &arguments[3])?;

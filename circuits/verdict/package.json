@@ -2,15 +2,25 @@
   "name": "@alibi/verdict-circuit",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Pinned circuit libraries for the Z1 accusation-verdict proof",
+  "main": "./dist/commitments.js",
+  "types": "./src/commitments.ts",
+  "exports": {
+    ".": {
+      "types": "./src/commitments.ts",
+      "import": "./src/commitments.ts"
+    }
+  },
   "scripts": {
-    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/compile.ps1",
+    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/compile.ps1 && tsc --project tsconfig.build.json",
     "clean": "node -e \"require('node:fs').rmSync('build', { recursive: true, force: true })\"",
-    "lint": "node ../../scripts/verify-z1-dependencies.mjs",
-    "typecheck": "node ../../scripts/verify-z1-dependencies.mjs",
-    "test": "node ../../scripts/verify-z1-dependencies.mjs"
+    "lint": "node ../../scripts/verify-z1-dependencies.mjs && eslint src test --max-warnings=0",
+    "typecheck": "node ../../scripts/verify-z1-dependencies.mjs && tsc --project tsconfig.json --noEmit",
+    "test": "pnpm run build && vitest run --pool=forks"
   },
   "dependencies": {
+    "@noble/hashes": "2.2.0",
     "circomlib": "2.0.5",
     "circomlibjs": "0.1.7"
   }
