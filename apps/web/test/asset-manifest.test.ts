@@ -12,6 +12,7 @@ import {
   accusationAssets,
   canonicalRuntimeAssetPaths,
   characterAssets,
+  derivedMarketingAssetPaths,
   evidenceAssets,
   proofAssets,
   resolveCharacterSprite,
@@ -70,6 +71,19 @@ describe('approved game asset manifest', () => {
       const metadata = await sharp(diskPath(runtimePath)).metadata();
       expect(metadata.format).toBe(extname(runtimePath).slice(1));
       expect((await readFile(diskPath(runtimePath))).byteLength).toBeGreaterThan(0);
+    }
+  });
+
+  test('validates both deterministic marketing compositions', async () => {
+    expect(derivedMarketingAssetPaths).toHaveLength(2);
+    const expectedDimensions = [
+      [1920, 1080],
+      [1200, 630],
+    ];
+    for (const [index, runtimePath] of derivedMarketingAssetPaths.entries()) {
+      const metadata = await sharp(diskPath(runtimePath)).metadata();
+      expect(metadata.format).toBe('png');
+      expect([metadata.width, metadata.height]).toEqual(expectedDimensions[index]);
     }
   });
 

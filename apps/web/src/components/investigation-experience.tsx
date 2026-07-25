@@ -1325,8 +1325,8 @@ export function VerdictExperience({
         <img
           className="verdict-brand"
           src={brandAssets.wordmark}
-          width="1024"
-          height="1024"
+          width="745"
+          height="142"
           alt="The Last Alibi"
         />
         <p className="game-eyebrow">Fixture verdict · terminal</p>

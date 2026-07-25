@@ -100,6 +100,9 @@ describe('B3 opening state', () => {
     expect(markup).toContain('The Last Alibi');
     expect(markup).toContain('The Last Exhibit');
     expect(markup).toContain('Begin Investigation');
+    expect(markup).toContain('/assets/screens/landing-key-art.webp');
+    expect(markup).toContain('/assets/brand/alibi-logo-mark.png');
+    expect(markup).toContain('/assets/brand/the-last-alibi-wordmark.png');
   });
 
   it('skips the opening deterministically', () => {
@@ -178,6 +181,8 @@ describe('B3 investigation semantics', () => {
       expect(markup).toContain(room.name);
     }
     expect((markup.match(/class="map-room"/g) ?? []).length).toBe(4);
+    expect((markup.match(/class="map-scene-hotspot"/g) ?? []).length).toBe(4);
+    expect(markup).toContain('/assets/map/museum-map-base.png');
   });
 
   it.each(['room_gallery', 'room_restoration', 'room_archive', 'room_conservatory'] as const)(
@@ -200,6 +205,10 @@ describe('B3 investigation semantics', () => {
       expect(markup).toContain(room.name);
       expect(markup).toContain(suspect.name);
       expect(markup).toContain('Available to interview');
+      expect(markup).toContain(`/assets/rooms/`);
+      expect(markup).toContain('/background.png');
+      expect(markup).toContain('/foreground.png');
+      expect(markup).toContain('/sprites/neutral.png');
     },
   );
 
@@ -300,7 +309,9 @@ describe('B3 investigation semantics', () => {
       />,
     );
     expect((markup.match(/Unverified testimony/g) ?? []).length).toBeGreaterThan(0);
-    expect(markup).not.toContain('certified-disclosure');
+    expect(longSession.certifiedDisclosures).toHaveLength(0);
+    expect(markup).toContain('No certified YES or NO result requested.');
+    expect(markup).not.toContain('Fixture certified simulation · confirmed');
   });
 });
 
@@ -345,6 +356,7 @@ describe('B3 warrant and accusation state', () => {
     expect(markup).toContain('Budget remaining');
     expect(markup).toContain('Worst case');
     expect(markup).toContain('No certified result yet');
+    expect(markup).toContain('/assets/ui/warrant-request.png');
   });
 
   it('requires all four accusation dimensions', () => {
@@ -372,6 +384,8 @@ describe('B3 warrant and accusation state', () => {
     expect(markup).toContain('With what?');
     expect(markup).toContain('When?');
     expect(markup).toContain('This action is terminal');
+    expect(markup).toContain('/assets/evidence/weapon-ceremonial-dagger.png');
+    expect(markup).toContain('/assets/evidence/time-before-blackout.png');
   });
 
   it('prevents duplicate terminal submission while pending or terminal', () => {
@@ -421,6 +435,10 @@ describe('B3 warrant and accusation state', () => {
       expect(markup).not.toContain('hiddenCase');
       expect(markup).not.toContain('suspect_archivist');
       expect(markup).not.toContain('room_gallery');
+      expect(markup).toContain(
+        result === 'YES' ? '/assets/ui/verdict-yes.png' : '/assets/ui/verdict-no.png',
+      );
+      expect(markup).toContain(`/assets/screens/verdict-${result.toLowerCase()}-background.webp`);
       if (result === 'NO') expect(markup).toContain('solution remains sealed');
     },
   );

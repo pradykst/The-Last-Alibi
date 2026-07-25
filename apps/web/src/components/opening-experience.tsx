@@ -181,8 +181,8 @@ export default function OpeningExperience({
           <img
             className="title-wordmark"
             src={brandAssets.wordmark}
-            width="1024"
-            height="1024"
+            width="745"
+            height="142"
             alt="The Last Alibi"
           />
         </div>
@@ -222,8 +222,8 @@ export default function OpeningExperience({
             <img
               className="menu-wordmark"
               src={brandAssets.wordmark}
-              width="1024"
-              height="1024"
+              width="745"
+              height="142"
               alt="The Last Alibi"
             />
           </div>

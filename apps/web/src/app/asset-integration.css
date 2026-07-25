@@ -47,7 +47,7 @@
 
 .title-wordmark,
 .menu-wordmark {
-  aspect-ratio: 3 / 1;
+  aspect-ratio: 745 / 142;
 }
 
 .menu-brand-lockup {
@@ -481,7 +481,7 @@
 .verdict-brand {
   width: min(13rem, 55vw);
   height: auto;
-  aspect-ratio: 3 / 1;
+  aspect-ratio: 745 / 142;
   object-fit: contain;
 }
 
