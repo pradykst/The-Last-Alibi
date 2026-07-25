@@ -61,6 +61,12 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.17)
 
+  packages/game-engine:
+    dependencies:
+      '@alibi/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+
   packages/protocol:
     dependencies:
       zod:
