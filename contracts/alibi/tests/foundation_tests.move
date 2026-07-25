@@ -148,7 +148,7 @@ fun another_sender_cannot_authorize() {
         player_ctx,
     );
     let clock = clock::create_for_testing(player_ctx);
-    let other_ctx = &context(OTHER, 7);
+    let other_ctx = &mut context(OTHER, 7);
     alibi::authorize_query(&mut session, &level, 0, 0, &clock, other_ctx);
     abort 255
 }

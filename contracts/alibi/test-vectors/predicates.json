@@ -1,0 +1,143 @@
+{
+  "generatedFrom": "@alibi/game-engine",
+  "schemaVersion": 1,
+  "caseCount": 64,
+  "predicateCount": 12,
+  "initialCandidateMask": "0xffffffffffffffff",
+  "disclosureLimit": 5,
+  "minimumSurvivors": 2,
+  "predicates": [
+    {
+      "numericId": 0,
+      "browserId": "predicate_suspect_archivist",
+      "dimension": "suspect",
+      "dimensionId": 0,
+      "valueId": "suspect_archivist",
+      "valueIndex": 0,
+      "mask": "0x000000000000ffff",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 1,
+      "browserId": "predicate_suspect_security",
+      "dimension": "suspect",
+      "dimensionId": 0,
+      "valueId": "suspect_security",
+      "valueIndex": 1,
+      "mask": "0x00000000ffff0000",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 2,
+      "browserId": "predicate_suspect_patron",
+      "dimension": "suspect",
+      "dimensionId": 0,
+      "valueId": "suspect_patron",
+      "valueIndex": 2,
+      "mask": "0x0000ffff00000000",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 3,
+      "browserId": "predicate_suspect_restorer",
+      "dimension": "suspect",
+      "dimensionId": 0,
+      "valueId": "suspect_restorer",
+      "valueIndex": 3,
+      "mask": "0xffff000000000000",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 4,
+      "browserId": "predicate_room_gallery",
+      "dimension": "room",
+      "dimensionId": 1,
+      "valueId": "room_gallery",
+      "valueIndex": 0,
+      "mask": "0x000f000f000f000f",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 5,
+      "browserId": "predicate_room_restoration",
+      "dimension": "room",
+      "dimensionId": 1,
+      "valueId": "room_restoration",
+      "valueIndex": 1,
+      "mask": "0x00f000f000f000f0",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 6,
+      "browserId": "predicate_room_archive",
+      "dimension": "room",
+      "dimensionId": 1,
+      "valueId": "room_archive",
+      "valueIndex": 2,
+      "mask": "0x0f000f000f000f00",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 7,
+      "browserId": "predicate_room_conservatory",
+      "dimension": "room",
+      "dimensionId": 1,
+      "valueId": "room_conservatory",
+      "valueIndex": 3,
+      "mask": "0xf000f000f000f000",
+      "yesInitialCount": 16,
+      "noInitialCount": 48
+    },
+    {
+      "numericId": 8,
+      "browserId": "predicate_weapon_dagger",
+      "dimension": "weapon",
+      "dimensionId": 2,
+      "valueId": "weapon_dagger",
+      "valueIndex": 0,
+      "mask": "0x3333333333333333",
+      "yesInitialCount": 32,
+      "noInitialCount": 32
+    },
+    {
+      "numericId": 9,
+      "browserId": "predicate_weapon_bust",
+      "dimension": "weapon",
+      "dimensionId": 2,
+      "valueId": "weapon_bust",
+      "valueIndex": 1,
+      "mask": "0xcccccccccccccccc",
+      "yesInitialCount": 32,
+      "noInitialCount": 32
+    },
+    {
+      "numericId": 10,
+      "browserId": "predicate_time_pre_blackout",
+      "dimension": "time",
+      "dimensionId": 3,
+      "valueId": "time_pre_blackout",
+      "valueIndex": 0,
+      "mask": "0x5555555555555555",
+      "yesInitialCount": 32,
+      "noInitialCount": 32
+    },
+    {
+      "numericId": 11,
+      "browserId": "predicate_time_post_blackout",
+      "dimension": "time",
+      "dimensionId": 3,
+      "valueId": "time_post_blackout",
+      "valueIndex": 1,
+      "mask": "0xaaaaaaaaaaaaaaaa",
+      "yesInitialCount": 32,
+      "noInitialCount": 32
+    }
+  ]
+}

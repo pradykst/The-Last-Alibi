@@ -213,7 +213,7 @@ public fun authorize_query(
     predicate_id: u8,
     expected_nonce: u64,
     clock: &Clock,
-    ctx: &TxContext,
+    ctx: &mut TxContext,
 ) {
     assert_session_binding(session, level);
     assert!(session.player == ctx.sender(), EUnauthorized);
@@ -268,7 +268,7 @@ public fun expire_query(
     session: &mut GameSession,
     level: &LevelConfig,
     clock: &Clock,
-    ctx: &TxContext,
+    ctx: &mut TxContext,
 ) {
     assert_session_binding(session, level);
     assert!(session.player == ctx.sender(), EUnauthorized);
