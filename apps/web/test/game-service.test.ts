@@ -34,9 +34,11 @@ function createService(
   hiddenCaseIndex = 0,
   evaluatePredicate?: (predicate: RegisteredPredicate, hiddenIndex: number) => WarrantOutcome,
 ): FixtureGameService {
+  const fixedNow = new Date('2026-07-25T01:00:00.000Z');
   return new FixtureGameService({
+    store: new FixtureSessionStore({ now: () => fixedNow.getTime() }),
     random: deterministicRandom(hiddenCaseIndex),
-    now: () => new Date('2026-07-25T01:00:00.000Z'),
+    now: () => fixedNow,
     evaluatePredicate,
   });
 }

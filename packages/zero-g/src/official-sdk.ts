@@ -1,10 +1,8 @@
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import {
-  createZGComputeNetworkBroker,
-  type ZGComputeNetworkBroker,
-} from '@0gfoundation/0g-compute-ts-sdk';
+import type { ZGComputeNetworkBroker } from '@0gfoundation/0g-compute-ts-sdk';
 import { JsonRpcProvider, Wallet, type JsonRpcSigner } from 'ethers';
 
 import { ZeroGError } from './errors';
@@ -16,6 +14,11 @@ import type {
   ZeroGProviderVerification,
   ZeroGService,
 } from './types';
+
+const require = createRequire(import.meta.url);
+const { createZGComputeNetworkBroker } = require('@0gfoundation/0g-compute-ts-sdk') as {
+  createZGComputeNetworkBroker: (signer: JsonRpcSigner | Wallet) => Promise<ZGComputeNetworkBroker>;
+};
 
 type SupportedSigner = JsonRpcSigner | Wallet;
 type OfficialInference = ZGComputeNetworkBroker['inference'];
