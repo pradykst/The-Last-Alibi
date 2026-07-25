@@ -42,7 +42,7 @@ public struct VerdictProofReceipt {
     verifier_status: u8,
 }
 
-/// Z1 will replace this fail-closed boundary with native Groth16 verification.
+/// The separate query-proof lane remains deliberately fail closed.
 public fun verify_query_proof(
     _receipt_version: u16,
     _session: ID,
