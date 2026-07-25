@@ -6,6 +6,7 @@ import {
   exploreResponseSchema,
   gameErrorResponseSchema,
   testimonyResponseSchema,
+  getSessionResponseSchema,
   warrantResponseSchema,
 } from '@alibi/protocol';
 import type {
@@ -23,9 +24,12 @@ import type { z } from 'zod';
 
 import { separateEvidence, submissionsAreDisabled } from './game-shell-helpers';
 import type { PendingAction } from './game-shell-helpers';
+import OpeningExperience from './opening-experience';
+import type { MotionPreference, SessionCreationStage } from './opening-experience';
 
 type GameShellProps = {
   runtimeLabel: string;
+  runtimeMode?: 'fixture' | 'live' | null;
   runtimeAvailable: boolean;
 };
 
@@ -132,7 +136,7 @@ export function TerminalView({
   );
 }
 
-function Intro({
+export function Intro({
   runtimeLabel,
   runtimeAvailable,
   pending,
@@ -188,9 +192,28 @@ function Intro({
   );
 }
 
-export default function GameShell({ runtimeLabel, runtimeAvailable }: GameShellProps) {
+const SAVED_SESSION_KEY = 'the-last-alibi.fixture-session.v1';
+const MOTION_PREFERENCE_KEY = 'the-last-alibi.motion.v1';
+
+type SavedFixtureSession = {
+  sessionId: string;
+  content: PublicGameContent;
+};
+
+export default function GameShell({
+  runtimeLabel,
+  runtimeAvailable,
+  runtimeMode = runtimeLabel === 'Fixture' ? 'fixture' : null,
+}: GameShellProps) {
   const [session, setSession] = useState<PublicGameSession | null>(null);
   const [content, setContent] = useState<PublicGameContent | null>(null);
+  const [resumableSession, setResumableSession] = useState<{
+    session: PublicGameSession;
+    content: PublicGameContent;
+  } | null>(null);
+  const [resumeChecking, setResumeChecking] = useState(true);
+  const [creationStage, setCreationStage] = useState<SessionCreationStage>('idle');
+  const [motionPreference, setMotionPreference] = useState<MotionPreference>('system');
   const [selectedRoomId, setSelectedRoomId] = useState<RoomId>('room_gallery');
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [error, setError] = useState<string | null>(null);
@@ -205,25 +228,89 @@ export default function GameShell({ runtimeLabel, runtimeAvailable }: GameShellP
     weaponId: '',
     timeWindowId: '',
   });
+  useEffect(() => {
+    const savedMotion = window.localStorage.getItem(MOTION_PREFERENCE_KEY);
+    if (savedMotion === 'reduce' || savedMotion === 'system') {
+      window.queueMicrotask(() => setMotionPreference(savedMotion));
+    }
+
+    if (runtimeMode !== 'fixture') {
+      window.queueMicrotask(() => setResumeChecking(false));
+      return;
+    }
+
+    const rawSaved = window.localStorage.getItem(SAVED_SESSION_KEY);
+    if (rawSaved === null) {
+      window.queueMicrotask(() => setResumeChecking(false));
+      return;
+    }
+
+    let saved: SavedFixtureSession;
+    try {
+      saved = JSON.parse(rawSaved) as SavedFixtureSession;
+    } catch {
+      window.localStorage.removeItem(SAVED_SESSION_KEY);
+      window.queueMicrotask(() => setResumeChecking(false));
+      return;
+    }
+
+    void requestGame(
+      `/api/game/sessions/${encodeURIComponent(saved.sessionId)}`,
+      getSessionResponseSchema,
+    )
+      .then((response) => {
+        if (response.session.state === 'active') {
+          setResumableSession({ session: response.session, content: saved.content });
+        } else {
+          window.localStorage.removeItem(SAVED_SESSION_KEY);
+        }
+      })
+      .catch(() => window.localStorage.removeItem(SAVED_SESSION_KEY))
+      .finally(() => setResumeChecking(false));
+  }, [runtimeMode]);
+
+  const saveSession = (nextSession: PublicGameSession, nextContent: PublicGameContent) => {
+    if (nextSession.state !== 'active') {
+      window.localStorage.removeItem(SAVED_SESSION_KEY);
+      return;
+    }
+    window.localStorage.setItem(
+      SAVED_SESSION_KEY,
+      JSON.stringify({ sessionId: nextSession.sessionId, content: nextContent }),
+    );
+  };
+
+  const changeMotionPreference = (preference: MotionPreference) => {
+    setMotionPreference(preference);
+    window.localStorage.setItem(MOTION_PREFERENCE_KEY, preference);
+  };
 
   const begin = async () => {
     setPendingAction('create');
+    setCreationStage('preparing');
     setError(null);
-    setAnnouncement('Creating a new fixture session.');
+    setAnnouncement('Preparing a new fixture session.');
     try {
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 120));
+      setCreationStage('committing');
+      setAnnouncement('Generating a local fixture commitment.');
       const response = await requestGame('/api/game/sessions', createSessionResponseSchema, {
         method: 'POST',
       });
+      setSelectedRoomId(response.content.manifest.rooms[0]!.id);
+      saveSession(response.session, response.content);
+      setCreationStage('confirmed');
+      setAnnouncement('Investigation opened with 64 candidate cases.');
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 520));
       setSession(response.session);
       setContent(response.content);
-      setSelectedRoomId(response.content.manifest.rooms[0]!.id);
-      setAnnouncement('Investigation opened with 64 candidate cases.');
     } catch (requestError: unknown) {
       setError(
         requestError instanceof Error
           ? requestError.message
           : 'The investigation could not be started.',
       );
+      setCreationStage('failed');
       setAnnouncement('Session creation failed.');
     } finally {
       setPendingAction(null);
@@ -361,10 +448,13 @@ export default function GameShell({ runtimeLabel, runtimeAvailable }: GameShellP
   };
 
   const restart = () => {
+    window.localStorage.removeItem(SAVED_SESSION_KEY);
     setSession(null);
     setContent(null);
+    setResumableSession(null);
     setError(null);
     setPendingAction(null);
+    setCreationStage('idle');
     setConfirmTerminal(false);
     setHypothesis({
       suspectId: '',
@@ -381,12 +471,27 @@ export default function GameShell({ runtimeLabel, runtimeAvailable }: GameShellP
 
   if (session === null || content === null) {
     return (
-      <Intro
+      <OpeningExperience
         runtimeLabel={runtimeLabel}
+        runtimeMode={runtimeMode}
         runtimeAvailable={runtimeAvailable}
-        pending={pendingAction === 'create'}
+        resumable={resumableSession !== null}
+        resumeChecking={resumeChecking}
+        creationStage={creationStage}
         error={error}
-        onBegin={() => void begin()}
+        motionPreference={motionPreference}
+        onMotionPreferenceChange={changeMotionPreference}
+        onBegin={begin}
+        onContinue={() => {
+          if (resumableSession === null) return;
+          setSession(resumableSession.session);
+          setContent(resumableSession.content);
+          setSelectedRoomId(
+            resumableSession.session.exploredRoomIds.at(-1) ??
+              resumableSession.content.manifest.rooms[0]!.id,
+          );
+          setAnnouncement('Saved fixture investigation resumed.');
+        }}
       />
     );
   }
