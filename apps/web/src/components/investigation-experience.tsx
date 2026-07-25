@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Approved game sprites and paired scene layers require stable native-image sizing. */
 'use client';
 
 import type {
@@ -11,6 +12,24 @@ import type {
 import { useEffect, useId, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 
+import {
+  accusationAssets,
+  brandAssets,
+  characterAssets,
+  evidenceAssets,
+  interfaceAssets,
+  mapAssets,
+  proofAssets,
+  roomAssetIdByProtocolId,
+  roomAssets,
+  screenAssets,
+  suspectAssetIdByProtocolId,
+  timeAssetIdByProtocolId,
+  verdictAssets,
+  weaponAssetIdByProtocolId,
+} from '../assets/game-assets';
+import type { CharacterEmotion, EvidenceType } from '../assets/game-assets';
+import { designPointToPercent } from '../assets/scene-coordinates';
 import type { PendingAction } from './game-shell-helpers';
 import type { MotionPreference } from './opening-experience';
 import {
@@ -79,21 +98,40 @@ const SUSPECT_INITIALS: Record<SuspectId, string> = {
   suspect_restorer: 'TL',
 };
 
+const EVIDENCE_KIND: Record<
+  'observation' | 'testimony' | 'certified' | 'hypothesis',
+  EvidenceType
+> = {
+  observation: 'public-observation',
+  testimony: 'unverified-testimony',
+  certified: 'certified-disclosure',
+  hypothesis: 'player-hypothesis',
+};
+
 function EvidenceGlyph({
   kind,
 }: {
   kind: 'observation' | 'testimony' | 'certified' | 'hypothesis';
 }) {
-  const glyph = {
-    observation: '◇',
-    testimony: '“',
-    certified: '✓',
-    hypothesis: '?',
-  }[kind];
+  const semanticType = EVIDENCE_KIND[kind];
   return (
     <span className={`evidence-glyph evidence-glyph-${kind}`} aria-hidden="true">
-      {glyph}
+      <img src={evidenceAssets[semanticType]} width="1024" height="1024" alt="" />
     </span>
+  );
+}
+
+function getPresentationEmotion(
+  transcriptLength: number,
+  interviewOpen: boolean,
+  pendingAction: PendingAction,
+): CharacterEmotion {
+  if (!interviewOpen) return 'neutral';
+  if (pendingAction === 'testimony') return 'anxious';
+  if (transcriptLength === 0) return 'guarded';
+  return (
+    (['guarded', 'anxious', 'angry', 'relieved'] as const)[Math.min(transcriptLength, 4) - 1] ??
+    'relieved'
   );
 }
 
@@ -155,6 +193,14 @@ export function TechnicalDetails({
 }) {
   return (
     <Modal eyebrow="Optional receipt" title="Technical details" onClose={onClose}>
+      <img
+        className="technical-drawer-mark"
+        src={interfaceAssets.technicalDrawer}
+        width="1024"
+        height="1024"
+        alt=""
+        aria-hidden="true"
+      />
       <dl className="receipt-list">
         <div>
           <dt>Runtime mode</dt>
@@ -436,43 +482,80 @@ export function MuseumMap({
         </p>
       </header>
       <div className="museum-map" aria-label="Museum rooms">
-        <div className="map-spine" aria-hidden="true">
-          <span />
-        </div>
-        {content.manifest.rooms.map((room, index) => {
-          const suspect = content.manifest.suspects.find(
-            (entry) => entry.primaryRoomId === room.id,
-          )!;
-          const explored = session.exploredRoomIds.includes(room.id);
-          return (
-            <button
-              key={room.id}
-              className="map-room"
-              data-room={room.id}
-              data-current={selectedRoomId === room.id}
-              type="button"
-              disabled={disabled}
-              onClick={() => onEnterRoom(room.id)}
-            >
-              <span className="map-room-number" aria-hidden="true">
-                0{index + 1}
-              </span>
-              <span className="map-room-art" data-tone={ROOM_TONES[room.id]} aria-hidden="true">
-                <i>{ROOM_MARKS[room.id]}</i>
-              </span>
-              <span className="map-room-copy">
-                <small>{explored ? 'Explored' : 'Unexplored'}</small>
+        <div className="museum-map-scene">
+          <img
+            className="museum-map-image"
+            src={mapAssets.base}
+            width="1920"
+            height="1080"
+            alt="Illustrated floor plan of the museum's four investigation rooms"
+          />
+          {content.manifest.rooms.map((room) => {
+            const assetRoom = roomAssets[roomAssetIdByProtocolId[room.id]];
+            const explored = session.exploredRoomIds.includes(room.id);
+            return (
+              <button
+                key={`hotspot-${room.id}`}
+                className="map-scene-hotspot"
+                style={designPointToPercent(assetRoom.mapHotspot)}
+                type="button"
+                disabled={disabled}
+                aria-label={`Enter ${room.name}. ${explored ? 'Explored' : 'Unexplored'}.`}
+                onClick={() => onEnterRoom(room.id)}
+              >
+                <span aria-hidden="true">{ROOM_MARKS[room.id]}</span>
                 <strong>{room.name}</strong>
-                <span>
-                  {suspect.name} · {suspect.role}
+                <small>{explored ? 'Explored' : 'Enter room'}</small>
+              </button>
+            );
+          })}
+        </div>
+        <div className="map-room-list">
+          <div className="map-spine" aria-hidden="true">
+            <span />
+          </div>
+          {content.manifest.rooms.map((room, index) => {
+            const suspect = content.manifest.suspects.find(
+              (entry) => entry.primaryRoomId === room.id,
+            )!;
+            const explored = session.exploredRoomIds.includes(room.id);
+            return (
+              <button
+                key={room.id}
+                className="map-room"
+                data-room={room.id}
+                data-current={selectedRoomId === room.id}
+                type="button"
+                disabled={disabled}
+                onClick={() => onEnterRoom(room.id)}
+              >
+                <span className="map-room-number" aria-hidden="true">
+                  0{index + 1}
                 </span>
-              </span>
-              <span className="map-enter">
-                Enter <i aria-hidden="true">→</i>
-              </span>
-            </button>
-          );
-        })}
+                <span className="map-room-art" data-tone={ROOM_TONES[room.id]} aria-hidden="true">
+                  <img
+                    src={roomAssets[roomAssetIdByProtocolId[room.id]].thumbnail}
+                    width="960"
+                    height="540"
+                    alt=""
+                    loading="lazy"
+                  />
+                  <i>{ROOM_MARKS[room.id]}</i>
+                </span>
+                <span className="map-room-copy">
+                  <small>{explored ? 'Explored' : 'Unexplored'}</small>
+                  <strong>{room.name}</strong>
+                  <span>
+                    {suspect.name} · {suspect.role}
+                  </span>
+                </span>
+                <span className="map-enter">
+                  Enter <i aria-hidden="true">→</i>
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -505,6 +588,15 @@ export function RoomScene({
   const selectedQuestionAlreadyAsked = isDuplicateTestimonyQuestion(transcript, selectedQuestionId);
   const [interviewOpen, setInterviewOpen] = useState(false);
   const disabled = pendingAction !== null;
+  const assetRoom = roomAssets[roomAssetIdByProtocolId[room.id]];
+  const assetCharacterId = suspectAssetIdByProtocolId[suspect.id];
+  const assetCharacter = characterAssets[assetCharacterId];
+  const presentationEmotion = getPresentationEmotion(
+    transcript.length,
+    interviewOpen,
+    pendingAction,
+  );
+  const presentationSprite = assetCharacter.sprites[presentationEmotion];
 
   const askQuestion = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -520,16 +612,30 @@ export function RoomScene({
       aria-labelledby="room-scene-title"
     >
       <div className="room-artwork" aria-hidden="true">
+        <img
+          className="room-layer room-background-layer"
+          src={assetRoom.background}
+          width="1920"
+          height="1080"
+          alt=""
+        />
         <div className="room-light room-light-left" />
         <div className="room-light room-light-right" />
-        <div className="room-architecture">
-          <span />
-          <span />
-          <span />
-        </div>
-        <div className="room-object">
-          <i />
-        </div>
+        <img
+          className="room-character-sprite"
+          src={presentationSprite}
+          width="1024"
+          height="1024"
+          alt=""
+          data-emotion={presentationEmotion}
+        />
+        <img
+          className="room-layer room-foreground-layer"
+          src={assetRoom.foreground}
+          width="1920"
+          height="1080"
+          alt=""
+        />
       </div>
 
       <header className="room-heading">
@@ -547,11 +653,15 @@ export function RoomScene({
       <div className="scene-hotspots" aria-label="Inspectable observations">
         {room.observations.map((observation, index) => {
           const collected = session.collectedObservationIds.includes(observation.id);
+          const hotspot = (
+            assetRoom.observationHotspots as Record<string, { x: number; y: number }>
+          )[observation.id];
           return (
             <button
               key={observation.id}
               className="observation-hotspot"
               data-index={index}
+              style={hotspot ? designPointToPercent(hotspot) : undefined}
               type="button"
               disabled={disabled || collected}
               onClick={() => onCollectObservation(observation.id)}
@@ -577,6 +687,7 @@ export function RoomScene({
           onClick={() => setInterviewOpen((current) => !current)}
         >
           <span className="suspect-portrait" aria-hidden="true">
+            <img src={assetCharacter.portrait} width="1024" height="1024" alt="" loading="lazy" />
             <i>{SUSPECT_INITIALS[suspect.id]}</i>
           </span>
           <span className="suspect-copy">
@@ -590,6 +701,9 @@ export function RoomScene({
         {interviewOpen ? (
           <div className="interview-dossier">
             <div className="demeanor-line">
+              <small className="presentation-mood">
+                Presentation mood · {presentationEmotion} · not evidence
+              </small>
               <span>Demeanor</span>
               <p>{suspect.publicDirection}</p>
             </div>
@@ -690,6 +804,14 @@ export function WarrantDesk({
           <span aria-hidden="true">←</span>
           Return to investigation
         </button>
+        <img
+          className="desk-emblem"
+          src={interfaceAssets.warrantRequest}
+          width="1024"
+          height="1024"
+          alt=""
+          aria-hidden="true"
+        />
         <div>
           <p className="game-eyebrow">Certified disclosure channel</p>
           <h1 id="warrant-desk-title">Warrant Desk</h1>
@@ -731,6 +853,20 @@ export function WarrantDesk({
               </span>
               <div className="file-copy">
                 <span className="file-state">
+                  <img
+                    src={
+                      pendingAction === 'warrant'
+                        ? proofAssets.pending
+                        : state === 'unavailable'
+                          ? proofAssets.failed
+                          : state === 'confirmed'
+                            ? proofAssets.verified
+                            : interfaceAssets.warrantRequest
+                    }
+                    width="1024"
+                    height="1024"
+                    alt=""
+                  />
                   <i aria-hidden="true">
                     {state === 'safe'
                       ? '◇'
@@ -792,7 +928,8 @@ export function WarrantDesk({
       {latest ? (
         <div className="warrant-result" role="status">
           <div className="wax-seal" aria-hidden="true">
-            {latest.result}
+            <img src={proofAssets.verified} width="1024" height="1024" alt="" />
+            <span>{latest.result}</span>
           </div>
           <div>
             <p className="game-eyebrow">Fixture certified simulation · confirmed</p>
@@ -803,7 +940,16 @@ export function WarrantDesk({
         </div>
       ) : (
         <div className="warrant-empty" role="note">
-          <span aria-hidden="true">◇</span>
+          <span aria-hidden="true">
+            <img
+              src={
+                pendingAction === 'warrant' ? proofAssets.pending : interfaceAssets.warrantRequest
+              }
+              width="1024"
+              height="1024"
+              alt=""
+            />
+          </span>
           <p>
             <strong>No certified result yet.</strong>
             Review both branches before spending the limited disclosure budget.
@@ -886,6 +1032,14 @@ export function AccusationBuilder({
                     onChange={() => onHypothesisChange('suspectId', suspect.id)}
                   />
                   <span>
+                    <img
+                      className="choice-portrait"
+                      src={characterAssets[suspectAssetIdByProtocolId[suspect.id]].portrait}
+                      width="1024"
+                      height="1024"
+                      alt=""
+                      loading="lazy"
+                    />
                     <i aria-hidden="true">{SUSPECT_INITIALS[suspect.id]}</i>
                     <strong>{suspect.name}</strong>
                     <small>{suspect.role}</small>
@@ -910,6 +1064,14 @@ export function AccusationBuilder({
                     onChange={() => onHypothesisChange('roomId', room.id)}
                   />
                   <span>
+                    <img
+                      className="choice-room"
+                      src={roomAssets[roomAssetIdByProtocolId[room.id]].thumbnail}
+                      width="960"
+                      height="540"
+                      alt=""
+                      loading="lazy"
+                    />
                     <i aria-hidden="true">{ROOM_MARKS[room.id]}</i>
                     <strong>{room.name}</strong>
                   </span>
@@ -934,6 +1096,14 @@ export function AccusationBuilder({
                       onChange={() => onHypothesisChange('weaponId', weapon.id)}
                     />
                     <span>
+                      <img
+                        className="choice-icon"
+                        src={accusationAssets.weapons[weaponAssetIdByProtocolId[weapon.id]]}
+                        width="1024"
+                        height="1024"
+                        alt=""
+                        loading="lazy"
+                      />
                       <strong>{weapon.name}</strong>
                       <small>{weapon.description}</small>
                     </span>
@@ -957,6 +1127,14 @@ export function AccusationBuilder({
                       onChange={() => onHypothesisChange('timeWindowId', timeWindow.id)}
                     />
                     <span>
+                      <img
+                        className="choice-icon"
+                        src={accusationAssets.times[timeAssetIdByProtocolId[timeWindow.id]]}
+                        width="1024"
+                        height="1024"
+                        alt=""
+                        loading="lazy"
+                      />
                       <strong>{timeWindow.name}</strong>
                       <small>{timeWindow.description}</small>
                     </span>
@@ -1020,6 +1198,14 @@ export function AccusationBuilder({
             You accuse <strong>{labels.suspect}</strong>, in the <strong>{labels.room}</strong>,
             with the <strong>{labels.weapon}</strong>, <strong>{labels.time.toLowerCase()}</strong>.
           </p>
+          <img
+            className="accusation-seal-art"
+            src={verdictAssets.sealed}
+            width="1024"
+            height="1024"
+            alt=""
+            aria-hidden="true"
+          />
           <div className="binary-promise">
             <span>Result</span>
             <strong>YES or NO only</strong>
@@ -1124,14 +1310,33 @@ export function VerdictExperience({
   return (
     <main className="verdict-screen" data-result={result}>
       <div className="verdict-atmosphere" aria-hidden="true">
+        <img
+          className="verdict-background"
+          src={result === 'YES' ? screenAssets.verdictYes : screenAssets.verdictNo}
+          width="1920"
+          height="1080"
+          alt=""
+        />
         <span />
         <span />
         <span />
       </div>
       <section className="verdict-card">
+        <img
+          className="verdict-brand"
+          src={brandAssets.wordmark}
+          width="1024"
+          height="1024"
+          alt="The Last Alibi"
+        />
         <p className="game-eyebrow">Fixture verdict · terminal</p>
         <div className="verdict-mark" aria-hidden="true">
-          {result === 'YES' ? '✓' : '×'}
+          <img
+            src={result === 'YES' ? verdictAssets.yes : verdictAssets.no}
+            width="1024"
+            height="1024"
+            alt=""
+          />
         </div>
         <h1 ref={headingRef} tabIndex={-1}>
           {result}
@@ -1240,7 +1445,9 @@ export default function InvestigationExperience({
           aria-label="Open museum map"
           onClick={() => setView('map')}
         >
-          <span aria-hidden="true">TLA</span>
+          <span aria-hidden="true">
+            <img src={brandAssets.logoMark} width="1024" height="1024" alt="" />
+          </span>
           <div>
             <small>Case 001</small>
             <strong>The Last Exhibit</strong>
@@ -1280,7 +1487,7 @@ export default function InvestigationExperience({
             aria-label="Open detective notebook"
             onClick={() => setDrawer('notebook')}
           >
-            <span aria-hidden="true">▤</span>
+            <img src={evidenceAssets['player-hypothesis']} width="1024" height="1024" alt="" />
           </button>
           <button
             className="square-control"
@@ -1296,7 +1503,7 @@ export default function InvestigationExperience({
             aria-label="Open technical details"
             onClick={() => setDrawer('technical')}
           >
-            <span aria-hidden="true">i</span>
+            <img src={interfaceAssets.technicalDrawer} width="1024" height="1024" alt="" />
           </button>
         </div>
       </header>
@@ -1332,7 +1539,9 @@ export default function InvestigationExperience({
           aria-current={view === 'warrants' ? 'page' : undefined}
           onClick={openWarrants}
         >
-          <span aria-hidden="true">⌁</span>
+          <span aria-hidden="true">
+            <img src={interfaceAssets.warrantRequest} width="1024" height="1024" alt="" />
+          </span>
           <strong>Warrant Desk</strong>
         </button>
       </nav>

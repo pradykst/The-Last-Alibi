@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element -- Approved cinematic art is preprocessed and uses explicit intrinsic dimensions. */
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
+import { brandAssets, interfaceAssets, proofAssets, screenAssets } from '../assets/game-assets';
 import { GUARANTEES } from '../lib/page-content';
 
 import { advanceOpeningPhase, getCreationHeading, getModeAvailability } from './game-ui-state';
@@ -138,6 +140,14 @@ export default function OpeningExperience({
       data-motion={reduceMotion ? 'reduced' : 'full'}
     >
       <div className="opening-ambient" aria-hidden="true">
+        <img
+          className="opening-key-art"
+          src={screenAssets.landing}
+          width="1920"
+          height="1080"
+          alt=""
+          fetchPriority="high"
+        />
         <div className="museum-arch museum-arch-left" />
         <div className="museum-arch museum-arch-right" />
         <p className="opening-status-copy">
@@ -161,8 +171,20 @@ export default function OpeningExperience({
       <section className="title-reveal" aria-hidden={introPhase !== 'title'}>
         <p className="title-kicker">A mystery in four rooms</p>
         <div className="title-lockup">
-          <span>The</span>
-          <h1>Last Alibi</h1>
+          <img
+            className="title-logo-mark"
+            src={brandAssets.logoMark}
+            width="1024"
+            height="1024"
+            alt=""
+          />
+          <img
+            className="title-wordmark"
+            src={brandAssets.wordmark}
+            width="1024"
+            height="1024"
+            alt="The Last Alibi"
+          />
         </div>
         <div className="case-title-card">
           <span>Case 001</span>
@@ -189,10 +211,22 @@ export default function OpeningExperience({
       >
         <div className="menu-brand">
           <p className="title-kicker">Every suspect can lie. The truth cannot.</p>
-          <h1>
-            The Last
-            <span>Alibi</span>
-          </h1>
+          <div className="menu-brand-lockup">
+            <img
+              className="menu-logo-mark"
+              src={brandAssets.logoMark}
+              width="1024"
+              height="1024"
+              alt=""
+            />
+            <img
+              className="menu-wordmark"
+              src={brandAssets.wordmark}
+              width="1024"
+              height="1024"
+              alt="The Last Alibi"
+            />
+          </div>
           <div className="case-rule" aria-hidden="true">
             <span />
             <i />
@@ -272,7 +306,13 @@ export default function OpeningExperience({
             </button>
             <div className="mode-card mode-ranked" aria-disabled="true">
               <span className="mode-number" aria-hidden="true">
-                II
+                <img
+                  src={interfaceAssets.rankedAgent}
+                  width="1024"
+                  height="1024"
+                  alt=""
+                  loading="lazy"
+                />
               </span>
               <span className="mode-copy">
                 <small>Unavailable in this runtime</small>
@@ -301,6 +341,14 @@ export default function OpeningExperience({
           </button>
           <div className="briefing-layout">
             <div className="briefing-copy">
+              <img
+                className="briefing-key-art"
+                src={screenAssets.caseIntroduction}
+                width="1920"
+                height="1080"
+                alt="The museum during the private exhibition"
+                loading="lazy"
+              />
               <p className="eyebrow">Case file · 001</p>
               <h1 id="briefing-title">The Last Exhibit</h1>
               <p className="briefing-lede">
@@ -358,6 +406,12 @@ export default function OpeningExperience({
       {(introPhase === 'ready' || creationStage === 'failed') && screen === 'creating' ? (
         <section className="session-creation" aria-labelledby="creation-title">
           <div className="commitment-animation" aria-hidden="true">
+            <img
+              src={creationStage === 'failed' ? proofAssets.failed : proofAssets.pending}
+              width="1024"
+              height="1024"
+              alt=""
+            />
             <span />
             <span />
             <span />
@@ -468,6 +522,14 @@ export default function OpeningExperience({
           eyebrow="Secondary information"
           onClose={closeOverlay}
         >
+          <img
+            className="technical-drawer-mark"
+            src={interfaceAssets.technicalDrawer}
+            width="1024"
+            height="1024"
+            alt=""
+            loading="lazy"
+          />
           <dl className="technical-list">
             <div>
               <dt>Runtime</dt>
