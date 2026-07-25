@@ -1,0 +1,9 @@
+[package]
+name = "ranked_permit"
+edition = "2024"
+
+[dependencies]
+alibi = { local = "../alibi" }
+
+[addresses]
+ranked_permit = "0x0"

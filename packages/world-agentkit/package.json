@@ -1,0 +1,32 @@
+{
+  "name": "@alibi/world-agentkit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "evidence:live": "tsx src/live-evidence.ts",
+    "lint": "eslint src test --max-warnings=0",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run --pool=threads"
+  },
+  "dependencies": {
+    "@mysten/sui": "2.22.1",
+    "@worldcoin/agentkit": "0.2.0",
+    "ethers": "6.15.0",
+    "viem": "2.38.6",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "tsx": "4.23.1"
+  }
+}

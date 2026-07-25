@@ -38,13 +38,15 @@ Editable architecture and trust material:
 | 0G                 | Planned verified suspect-agent inference                                                                              | Never receives the hidden case and cannot eliminate candidates  |
 | Walrus             | Planned encrypted artifact persistence                                                                                | Stores ciphertext; does not authorize access or establish truth |
 | Seal               | Planned decryption under Sui-defined policy                                                                           | Does not prove plaintext truthfulness                           |
-| World AgentKit     | Planned human-backed authorization for a scarce Ranked Agent attempt                                                  | Cannot determine the game outcome                               |
+| World AgentKit     | Human-backed authorization boundary for one level-bound Ranked Agent attempt                                          | Never exposes human identity or determines the game outcome      |
 | Game API / relayer | Orchestration, idempotency, proof jobs, finality waiting, permit handling                                             | Cannot choose the case or verdict                               |
 | Web application    | Presentation and local interaction                                                                                    | Cannot establish case truth or proof validity                   |
 
 ## Target partner tracks
 
-The planned architecture targets Sui, 0G, World AgentKit, Walrus, Seal, and zero-knowledge proof integrations. These are intended roles, not claims of completed or live partner integrations.
+The architecture targets Sui, 0G, World AgentKit, Walrus, Seal, and zero-knowledge proof integrations. The World AgentKit authorization and isolated Sui ranked-permit boundaries are implemented, but human-backed live authorization is claimed only when a redacted live evidence record exists. Other intended roles are not claims of completed or live partner integrations.
+
+See [`docs/WORLD_AGENTKIT.md`](docs/WORLD_AGENTKIT.md) for the fail-closed flow, configuration, tests, and redacted evidence command.
 
 ## Local development
 
