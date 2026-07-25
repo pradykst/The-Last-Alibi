@@ -33,12 +33,15 @@ pnpm install --frozen-lockfile
 pnpm --filter @alibi/verdict-circuit build
 cargo build --locked --manifest-path circuits/verdict/prover/Cargo.toml
 ./scripts/invoke-isolated-sui-move-test.ps1 `
-  -TestFilter deterministic_arkworks_bn254_proof_passes_native_verification
+  -TestFilter verdict_native_tests
 ```
 
 The Move-test wrapper creates a unique wallet-free configuration outside the repository, explicitly
-passes it to the Sui child process, rejects every initialization prompt, verifies that its keystore
-remains exactly empty, and removes only its own validated temporary directory.
+passes it to the Sui child process, streams and checks output continuously, sends only a negative
+initialization response, and kills the child immediately on wallet/configuration or recovery text.
+It verifies that its keystore remains exactly empty. It removes only its own fully revalidated
+temporary directory; unexpected files or initialization evidence are preserved with a redacted
+file-name-and-size inventory.
 
 The Rust prover serializes BN254 verification keys, proof points, and each public scalar with
 Arkworks `CanonicalSerialize::serialize_compressed`, matching

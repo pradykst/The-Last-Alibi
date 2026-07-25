@@ -18,6 +18,10 @@ $temporaryRoot = Join-Path $temporaryParent (
 $clientConfig = Join-Path $temporaryRoot "client.yaml"
 $keystore = Join-Path $temporaryRoot "sui.keystore"
 $utf8NoBom = New-Object Text.UTF8Encoding($false)
+$script:temporaryDirectoryValidated = $false
+$script:unexpectedInitializationDetected = $false
+$expectedConfig = $null
+$expectedConfigHash = $null
 
 function Quote-NativeArgument {
     param([Parameter(Mandatory)][string]$Value)
@@ -66,6 +70,28 @@ function Assert-WalletFreeDirectory {
     }
 }
 
+function Write-RedactedInventory {
+    param([Parameter(Mandatory)][string]$Root)
+
+    Write-Warning "[isolated-sui] Redacted preserved-directory inventory follows."
+    $rootPrefix = [IO.Path]::GetFullPath($Root).TrimEnd("\") + "\"
+    Get-ChildItem -LiteralPath $Root -Recurse -Force | ForEach-Object {
+        $fullName = [IO.Path]::GetFullPath($_.FullName)
+        if (-not $fullName.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+            Write-Warning "[isolated-sui] <redacted-path-escape>"
+            return
+        }
+        $relative = $fullName.Substring($rootPrefix.Length).Replace("\", "/")
+        $relative = $relative -replace '(?i)[0-9a-f]{32,}', '<redacted-token>'
+        $relative = $relative -replace '(?i)(mnemonic|recovery|secret|keypair|address|alias)[^/]*', '<redacted-sensitive-name>'
+        if ($_.PSIsContainer) {
+            Write-Warning "[isolated-sui] directory: $relative"
+        } else {
+            Write-Warning "[isolated-sui] file: $relative ($($_.Length) bytes)"
+        }
+    }
+}
+
 function Invoke-IsolatedSui {
     param(
         [Parameter(Mandatory)][string[]]$Arguments,
@@ -80,35 +106,111 @@ function Invoke-IsolatedSui {
     $processInfo.RedirectStandardOutput = $true
     $processInfo.RedirectStandardError = $true
     $processInfo.CreateNoWindow = $true
-    $processInfo.EnvironmentVariables["SUI_CONFIG_DIR"] = $ConfigurationRoot
-    $processInfo.EnvironmentVariables["CI"] = "1"
+    $previousSuiConfigDir = [Environment]::GetEnvironmentVariable("SUI_CONFIG_DIR", "Process")
+    $previousCi = [Environment]::GetEnvironmentVariable("CI", "Process")
 
     $process = New-Object Diagnostics.Process
     $process.StartInfo = $processInfo
-    if (-not $process.Start()) {
-        throw "[isolated-sui] Failed to start the Sui child process."
+    $forbiddenOutput = '(?i)(create one \[[Yy]/[Nn]\]|(?:created|generated) (?:a |an )?(?:new )?(?:keypair|address|alias)|new keypair|secret recovery phrase|recovery phrase|created .*client\.yaml|alias for address)'
+    $output = New-Object Text.StringBuilder
+    $observeChunk = {
+        param([Parameter(Mandatory)][AllowEmptyString()][string]$Chunk)
+        if ($script:unexpectedInitializationDetected) {
+            return
+        }
+        $candidate = $output.ToString() + $Chunk
+        if ([Text.RegularExpressions.Regex]::IsMatch($candidate, $forbiddenOutput)) {
+            [void]$output.Append("<redacted-forbidden-initialization-output>")
+            $script:unexpectedInitializationDetected = $true
+        } else {
+            [void]$output.Append($Chunk)
+        }
     }
 
-    $stdoutTask = $process.StandardOutput.ReadToEndAsync()
-    $stderrTask = $process.StandardError.ReadToEndAsync()
-    # An initialization prompt can never accept its default affirmative response.
-    $process.StandardInput.WriteLine("n")
-    $process.StandardInput.Close()
-    $process.WaitForExit()
-    $stdout = $stdoutTask.GetAwaiter().GetResult()
-    $stderr = $stderrTask.GetAwaiter().GetResult()
-    $combined = "$stdout`n$stderr"
+    try {
+        # Set isolation only while starting the child, then restore this wrapper process.
+        try {
+            [Environment]::SetEnvironmentVariable("SUI_CONFIG_DIR", $ConfigurationRoot, "Process")
+            [Environment]::SetEnvironmentVariable("CI", "1", "Process")
+            if (-not $process.Start()) {
+                throw "[isolated-sui] Failed to start the Sui child process."
+            }
+        } finally {
+            [Environment]::SetEnvironmentVariable("SUI_CONFIG_DIR", $previousSuiConfigDir, "Process")
+            [Environment]::SetEnvironmentVariable("CI", $previousCi, "Process")
+        }
 
-    $forbiddenOutput = '(?i)(create one \[[Yy]/[Nn]\]|generated new keypair|secret recovery phrase|recovery phrase|created .*client\.yaml|alias for address)'
-    if ($combined -match $forbiddenOutput) {
-        throw "[isolated-sui] Sui attempted client or key initialization; output redacted."
-    }
-    if ($process.ExitCode -ne 0) {
-        $sanitized = ($combined -replace '(?i)\b0x[0-9a-f]{40,}\b', '<redacted-hex>')
-        throw "[isolated-sui] Sui exited with code $($process.ExitCode).`n$sanitized"
-    }
+        $stdoutDone = $false
+        $stderrDone = $false
+        $stdoutBuffer = New-Object 'char[]' 512
+        $stderrBuffer = New-Object 'char[]' 512
+        $stdoutTask = $process.StandardOutput.ReadAsync($stdoutBuffer, 0, $stdoutBuffer.Length)
+        $stderrTask = $process.StandardError.ReadAsync($stderrBuffer, 0, $stderrBuffer.Length)
 
-    return $combined.Trim()
+        # Stdin can never accept an affirmative initialization response.
+        try {
+            if (-not $process.HasExited) {
+                $process.StandardInput.WriteLine("n")
+            }
+        } catch {
+            # A child that exits before stdin is written cannot initialize anything.
+        } finally {
+            $process.StandardInput.Close()
+        }
+
+        while (-not ($process.HasExited -and $stdoutDone -and $stderrDone)) {
+            $observedOutput = $false
+            if (-not $stdoutDone -and $stdoutTask.IsCompleted) {
+                $count = $stdoutTask.GetAwaiter().GetResult()
+                if ($count -eq 0) {
+                    $stdoutDone = $true
+                } else {
+                    & $observeChunk ([string]::new($stdoutBuffer, 0, $count))
+                    $stdoutTask = $process.StandardOutput.ReadAsync(
+                        $stdoutBuffer,
+                        0,
+                        $stdoutBuffer.Length
+                    )
+                }
+                $observedOutput = $true
+            }
+            if (-not $stderrDone -and $stderrTask.IsCompleted) {
+                $count = $stderrTask.GetAwaiter().GetResult()
+                if ($count -eq 0) {
+                    $stderrDone = $true
+                } else {
+                    & $observeChunk ([string]::new($stderrBuffer, 0, $count))
+                    $stderrTask = $process.StandardError.ReadAsync(
+                        $stderrBuffer,
+                        0,
+                        $stderrBuffer.Length
+                    )
+                }
+                $observedOutput = $true
+            }
+
+            if ($script:unexpectedInitializationDetected -and -not $process.HasExited) {
+                $process.Kill()
+            }
+            if (-not $observedOutput) {
+                Start-Sleep -Milliseconds 25
+            }
+        }
+        $process.WaitForExit()
+        $combined = $output.ToString()
+        if ($script:unexpectedInitializationDetected -or $combined -match $forbiddenOutput) {
+            $script:unexpectedInitializationDetected = $true
+            throw "[isolated-sui] Sui attempted client or key initialization; output redacted."
+        }
+        if ($process.ExitCode -ne 0) {
+            $sanitized = ($combined -replace '(?i)\b0x[0-9a-f]{40,}\b', '<redacted-hex>')
+            throw "[isolated-sui] Sui exited with code $($process.ExitCode).`n$sanitized"
+        }
+
+        return $combined.Trim()
+    } finally {
+        $process.Dispose()
+    }
 }
 
 if (-not (Test-Path -LiteralPath $SuiExecutable -PathType Leaf)) {
@@ -176,6 +278,7 @@ active_address: null
     }
     $moveOutput = Invoke-IsolatedSui $moveArguments $temporaryRoot
     Assert-WalletFreeDirectory $temporaryRoot $expectedConfig $expectedConfigHash
+    $script:temporaryDirectoryValidated = $true
     Write-Host $moveOutput
     Write-Host "Isolated keystore remained exactly empty."
 } finally {
@@ -185,6 +288,31 @@ active_address: null
         if (-not $resolvedForRemoval.StartsWith($expectedPrefix, [StringComparison]::OrdinalIgnoreCase)) {
             throw "[isolated-sui] Refusing to remove an unexpected temporary path."
         }
-        Remove-Item -LiteralPath $resolvedForRemoval -Recurse -Force
+
+        $preserveReason = $null
+        $script:temporaryDirectoryValidated = $false
+        if ($script:unexpectedInitializationDetected) {
+            $preserveReason = "forbidden initialization output was detected"
+        } else {
+            try {
+                if ([string]::IsNullOrEmpty($expectedConfig) -or
+                    [string]::IsNullOrEmpty($expectedConfigHash)) {
+                    throw "Expected wallet-free configuration metadata is unavailable."
+                }
+                Assert-WalletFreeDirectory $temporaryRoot $expectedConfig $expectedConfigHash
+                $script:temporaryDirectoryValidated = $true
+            } catch {
+                $preserveReason = "wallet-free directory validation failed"
+            }
+        }
+
+        if ($script:temporaryDirectoryValidated -and
+            -not $script:unexpectedInitializationDetected) {
+            Remove-Item -LiteralPath $resolvedForRemoval -Recurse -Force
+        } else {
+            Write-Warning "[isolated-sui] Preserving the temporary directory because $preserveReason."
+            Write-RedactedInventory $resolvedForRemoval
+            throw "[isolated-sui] Unsafe temporary Sui state was preserved for review; contents were not deleted."
+        }
     }
 }
