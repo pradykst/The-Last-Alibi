@@ -5,6 +5,9 @@ import type { ReactNode } from 'react';
 
 import { GUARANTEES } from '../lib/page-content';
 
+import { advanceOpeningPhase, getCreationHeading, getModeAvailability } from './game-ui-state';
+import type { OpeningPhase } from './game-ui-state';
+import { useDialogFocusTrap } from './use-dialog-focus-trap';
 export type MotionPreference = 'system' | 'reduce';
 export type SessionCreationStage = 'idle' | 'preparing' | 'committing' | 'confirmed' | 'failed';
 
@@ -23,7 +26,6 @@ type OpeningExperienceProps = {
 };
 
 type MenuScreen = 'menu' | 'mode' | 'briefing' | 'settings' | 'technical' | 'creating';
-type IntroPhase = 'black' | 'title' | 'ready';
 
 function CloseButton({ onClick, label = 'Close' }: { onClick: () => void; label?: string }) {
   return (
@@ -47,17 +49,7 @@ function OpeningDialog({
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog === null) return;
-    dialog.querySelector<HTMLElement>('button, input, select, [tabindex="0"]')?.focus();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  useDialogFocusTrap(dialogRef, onClose);
 
   return (
     <div className="opening-modal-backdrop" role="presentation">
@@ -94,8 +86,10 @@ export default function OpeningExperience({
   onBegin,
   onContinue,
 }: OpeningExperienceProps) {
-  const [introPhase, setIntroPhase] = useState<IntroPhase>('black');
-  const [screen, setScreen] = useState<MenuScreen>('menu');
+  const [introPhase, setIntroPhase] = useState<OpeningPhase>('black');
+  const [screen, setScreen] = useState<MenuScreen>(
+    creationStage === 'failed' ? 'creating' : 'menu',
+  );
   const [systemReducedMotion, setSystemReducedMotion] = useState(false);
   const reduceMotion = motionPreference === 'reduce' || systemReducedMotion;
 
@@ -106,14 +100,24 @@ export default function OpeningExperience({
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
+  const modeAvailability = getModeAvailability(runtimeMode);
 
   useEffect(() => {
     if (reduceMotion) {
-      const readyTimer = window.setTimeout(() => setIntroPhase('ready'), 0);
+      const readyTimer = window.setTimeout(
+        () => setIntroPhase((current) => advanceOpeningPhase(current, 'reduce-motion')),
+        0,
+      );
       return () => window.clearTimeout(readyTimer);
     }
-    const titleTimer = window.setTimeout(() => setIntroPhase('title'), 420);
-    const menuTimer = window.setTimeout(() => setIntroPhase('ready'), 3300);
+    const titleTimer = window.setTimeout(
+      () => setIntroPhase((current) => advanceOpeningPhase(current, 'title-timer')),
+      420,
+    );
+    const menuTimer = window.setTimeout(
+      () => setIntroPhase((current) => advanceOpeningPhase(current, 'menu-timer')),
+      3300,
+    );
     return () => {
       window.clearTimeout(titleTimer);
       window.clearTimeout(menuTimer);
@@ -137,7 +141,10 @@ export default function OpeningExperience({
         <div className="museum-arch museum-arch-left" />
         <div className="museum-arch museum-arch-right" />
         <p className="opening-status-copy">
-          The Last Alibi · Fixture mode · Begin investigation from the main menu.
+          The Last Alibi ·{' '}
+          {runtimeMode === 'fixture'
+            ? 'Fixture mode · Begin investigation from the main menu.'
+            : 'Live mode · Runtime capabilities unavailable.'}
         </p>
         <div className="museum-floor" />
         <div className="museum-clock">
@@ -170,7 +177,7 @@ export default function OpeningExperience({
         className="skip-intro"
         type="button"
         hidden={introPhase === 'ready'}
-        onClick={() => setIntroPhase('ready')}
+        onClick={() => setIntroPhase((current) => advanceOpeningPhase(current, 'skip'))}
       >
         Skip opening
       </button>
@@ -246,7 +253,7 @@ export default function OpeningExperience({
             <button
               className="mode-card mode-practice"
               type="button"
-              disabled={!runtimeAvailable || runtimeMode !== 'fixture'}
+              disabled={!runtimeAvailable || modeAvailability.practice !== 'available'}
               onClick={() => setScreen('briefing')}
             >
               <span className="mode-number" aria-hidden="true">
@@ -348,7 +355,7 @@ export default function OpeningExperience({
         </section>
       ) : null}
 
-      {introPhase === 'ready' && screen === 'creating' ? (
+      {(introPhase === 'ready' || creationStage === 'failed') && screen === 'creating' ? (
         <section className="session-creation" aria-labelledby="creation-title">
           <div className="commitment-animation" aria-hidden="true">
             <span />
@@ -356,17 +363,7 @@ export default function OpeningExperience({
             <span />
           </div>
           <p className="eyebrow">Practice investigation</p>
-          <h1 id="creation-title">
-            {creationStage === 'preparing'
-              ? 'Preparing case'
-              : creationStage === 'committing'
-                ? 'Committing case'
-                : creationStage === 'confirmed'
-                  ? 'Case confirmed'
-                  : creationStage === 'failed'
-                    ? 'Case preparation failed'
-                    : 'Preparing case'}
-          </h1>
+          <h1 id="creation-title">{getCreationHeading(creationStage)}</h1>
           <ol className="creation-steps">
             <li data-state={creationStage === 'preparing' ? 'active' : 'complete'}>
               <span aria-hidden="true">1</span>

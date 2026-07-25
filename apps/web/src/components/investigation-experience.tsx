@@ -13,7 +13,15 @@ import type { FormEvent, ReactNode } from 'react';
 
 import type { PendingAction } from './game-shell-helpers';
 import type { MotionPreference } from './opening-experience';
+import {
+  getWarrantPresentationState,
+  getWorstCaseSurvivorCount,
+  isAccusationComplete,
+  isDuplicateTestimonyQuestion,
+  terminalSubmissionDisabled,
+} from './game-ui-state';
 
+import { useDialogFocusTrap } from './use-dialog-focus-trap';
 export type InvestigationHypothesis = {
   suspectId: SuspectId | '';
   roomId: RoomId | '';
@@ -105,19 +113,7 @@ function Modal({
   const titleId = useId();
   const modalRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const modal = modalRef.current;
-    if (modal === null) return;
-    const focusable = modal.querySelector<HTMLElement>(
-      'button:not(:disabled), input:not(:disabled), select:not(:disabled), [tabindex="0"]',
-    );
-    focusable?.focus();
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [onClose]);
+  useDialogFocusTrap(modalRef, onClose);
 
   return (
     <div className="game-modal-backdrop" role="presentation">
@@ -148,7 +144,7 @@ function Modal({
   );
 }
 
-function TechnicalDetails({
+export function TechnicalDetails({
   session,
   runtimeLabel,
   onClose,
@@ -205,7 +201,7 @@ function TechnicalDetails({
   );
 }
 
-function Settings({
+export function Settings({
   motionPreference,
   onMotionPreferenceChange,
   onClose,
@@ -254,7 +250,7 @@ function Settings({
   );
 }
 
-function Notebook({
+export function Notebook({
   session,
   content,
   hypothesis,
@@ -414,7 +410,7 @@ function Notebook({
   );
 }
 
-function MuseumMap({
+export function MuseumMap({
   session,
   content,
   selectedRoomId,
@@ -482,7 +478,7 @@ function MuseumMap({
   );
 }
 
-function RoomScene({
+export function RoomScene({
   session,
   content,
   selectedRoomId,
@@ -506,9 +502,7 @@ function RoomScene({
   const questions = content.testimonyQuestions.filter((entry) => entry.suspectId === suspect.id);
   const transcript = session.testimonyEntries.filter((entry) => entry.suspectId === suspect.id);
   const [selectedQuestionId, setSelectedQuestionId] = useState(questions[0]?.id ?? '');
-  const selectedQuestionAlreadyAsked = transcript.some(
-    (entry) => entry.questionId === selectedQuestionId,
-  );
+  const selectedQuestionAlreadyAsked = isDuplicateTestimonyQuestion(transcript, selectedQuestionId);
   const [interviewOpen, setInterviewOpen] = useState(false);
   const disabled = pendingAction !== null;
 
@@ -673,7 +667,7 @@ function RoomScene({
   );
 }
 
-function WarrantDesk({
+export function WarrantDesk({
   session,
   pendingAction,
   onRequestWarrant,
@@ -727,18 +721,9 @@ function WarrantDesk({
 
       <div className="warrant-files">
         {predicates.map((predicate, index) => {
-          const implied =
-            predicate.yesCandidateCount === session.currentCandidateCount ||
-            predicate.noCandidateCount === session.currentCandidateCount;
-          const state =
-            predicate.availability === 'used'
-              ? 'confirmed'
-              : predicate.availability === 'unsafe'
-                ? 'unavailable'
-                : implied
-                  ? 'implied'
-                  : 'safe';
-          const worstCase = Math.max(predicate.yesCandidateCount, predicate.noCandidateCount);
+          const state = getWarrantPresentationState(predicate, session.currentCandidateCount);
+          const implied = state === 'implied';
+          const worstCase = getWorstCaseSurvivorCount(predicate);
           return (
             <article key={predicate.predicateId} className="warrant-file" data-state={state}>
               <span className="file-index" aria-hidden="true">
@@ -828,8 +813,8 @@ function WarrantDesk({
     </section>
   );
 }
-
-function AccusationBuilder({
+export function AccusationBuilder({
+  session,
   content,
   hypothesis,
   confirmTerminal,
@@ -841,6 +826,7 @@ function AccusationBuilder({
 }: Pick<
   InvestigationExperienceProps,
   | 'content'
+  | 'session'
   | 'hypothesis'
   | 'confirmTerminal'
   | 'pendingAction'
@@ -849,7 +835,7 @@ function AccusationBuilder({
   | 'onSubmitAccusation'
 > & { onReturn: () => void }) {
   const [reviewOpen, setReviewOpen] = useState(false);
-  const complete = Object.values(hypothesis).every((value) => value !== '');
+  const complete = isAccusationComplete(hypothesis);
   const labels = {
     suspect:
       content.manifest.suspects.find((entry) => entry.id === hypothesis.suspectId)?.name ??
@@ -1052,7 +1038,12 @@ function AccusationBuilder({
             <button
               className="commit-accusation"
               type="submit"
-              disabled={!confirmTerminal || pendingAction !== null}
+              disabled={terminalSubmissionDisabled({
+                hypothesis,
+                confirmed: confirmTerminal,
+                pendingAction,
+                session,
+              })}
             >
               {pendingAction === 'accusation' ? (
                 <>
@@ -1069,6 +1060,46 @@ function AccusationBuilder({
         </Modal>
       ) : null}
     </section>
+  );
+}
+
+function NotebookOverlay({
+  session,
+  content,
+  hypothesis,
+  onClose,
+  onWarrants,
+  onAccusation,
+}: {
+  session: PublicGameSession;
+  content: PublicGameContent;
+  hypothesis: InvestigationHypothesis;
+  onClose: () => void;
+  onWarrants: () => void;
+  onAccusation: () => void;
+}) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useDialogFocusTrap(overlayRef, onClose);
+
+  return (
+    <div className="drawer-backdrop" role="presentation">
+      <div
+        ref={overlayRef}
+        className="notebook-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Detective’s notebook"
+      >
+        <Notebook
+          session={session}
+          content={content}
+          hypothesis={hypothesis}
+          onClose={onClose}
+          onWarrants={onWarrants}
+          onAccusation={onAccusation}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -1340,6 +1371,7 @@ export default function InvestigationExperience({
           <AccusationBuilder
             content={content}
             hypothesis={hypothesis}
+            session={session}
             confirmTerminal={confirmTerminal}
             pendingAction={pendingAction}
             onHypothesisChange={onHypothesisChange}
@@ -1385,16 +1417,14 @@ export default function InvestigationExperience({
       </footer>
 
       {drawer === 'notebook' ? (
-        <div className="drawer-backdrop" role="presentation">
-          <Notebook
-            session={session}
-            content={content}
-            hypothesis={hypothesis}
-            onClose={() => setDrawer(null)}
-            onWarrants={openWarrants}
-            onAccusation={openAccusation}
-          />
-        </div>
+        <NotebookOverlay
+          session={session}
+          content={content}
+          hypothesis={hypothesis}
+          onClose={() => setDrawer(null)}
+          onWarrants={openWarrants}
+          onAccusation={openAccusation}
+        />
       ) : null}
       {drawer === 'technical' ? (
         <TechnicalDetails
