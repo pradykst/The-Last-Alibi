@@ -5,7 +5,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'The Last Alibi',
-  description: 'A verifiable AI detective game where the truth remains outside the model.',
+  description: 'Investigate The Last Exhibit in a deterministic 64-case detective game.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

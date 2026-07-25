@@ -59,14 +59,20 @@ pnpm dev
 The application runs at `http://localhost:3000`; its sanitized public health route is
 `http://localhost:3000/api/health`.
 
+Select **Begin investigation**, visit each museum room, record public observations, question the
+room's suspect, and use registered binary warrants to reduce the 64-case candidate set. Complete
+all four accusation fields only when ready to end the session. Fixture sessions use bounded
+in-memory storage and reset whenever the web process restarts.
+
 ## Workspace
 
-| Path                | Responsibility                                                |
-| ------------------- | ------------------------------------------------------------- |
-| `apps/web`          | Next.js App Router application and server-only route handlers |
-| `packages/protocol` | Browser-safe public constants, schemas, and inferred types    |
-| `packages/runtime`  | Fixture/live mode enforcement and capability status handling  |
-| `docs/architecture` | Canonical architecture diagrams and trust boundaries          |
+| Path                   | Responsibility                                                |
+| ---------------------- | ------------------------------------------------------------- |
+| `apps/web`             | Next.js App Router application and server-only route handlers |
+| `packages/game-engine` | Pure 64-case universe, predicates, masks, and transitions     |
+| `packages/protocol`    | Browser-safe public constants, schemas, and inferred types    |
+| `packages/runtime`     | Fixture/live mode enforcement and capability status handling  |
+| `docs/architecture`    | Canonical architecture diagrams and trust boundaries          |
 
 Quality and build commands:
 
@@ -84,16 +90,17 @@ full local workflow and runtime rules.
 
 ## Current status
 
-Checkpoint B1 adds the first runnable product baseline:
+Checkpoint B2 delivers the first playable local investigation:
 
-- a pnpm workspace with strict TypeScript and repository-local quality gates;
-- a deployable Next.js application shell with a sanitized health endpoint;
-- browser-safe protocol schemas and a fail-closed fixture/live runtime boundary;
+- a deterministic 64-case engine and validated `The Last Exhibit` level manifest;
+- four explorable rooms, public observations, and scripted fixture testimony;
+- five safety-checked registered binary disclosures and a terminal binary accusation;
+- bounded server-only fixture sessions and a responsive, accessible browser shell;
 - the preserved D1 architecture package and pinned sui-pilot development tooling.
 
-No playable case engine, Move contract, circuit, wallet flow, deployment, package address, live
-partner integration, or production proof setup exists yet. Fixture mode is visibly labelled and
-is not evidence that any partner integration is working.
+Fixture testimony is not 0G inference. Fixture disclosures are not Sui or Groth16 verification,
+and fixture verdicts do not use Walrus or Seal. No Move contract, circuit, wallet flow, deployment,
+package address, live partner integration, or production proof setup exists yet.
 
 ## Product work and reused tooling
 
@@ -101,8 +108,8 @@ The architecture, game rules, trust model, and future Alibi implementation are n
 
 ## Immediate roadmap
 
-1. **B2: Playable investigation shell:** implement the deterministic 64-case engine and level manifest.
-2. Define typed predicates, commitment encodings, and proof public inputs.
+1. **S1: Sui canonical state:** implement the canonical session and disclosure state machine in Move.
+2. Bind the deterministic predicates, candidate transitions, and fixture commitment vocabulary to explicit public inputs.
 3. Scaffold the smallest testable Sui Move package and circuit only after the baseline is approved.
 4. Introduce each partner adapter with official documentation, fail-closed tests, and honest status reporting.
 5. Revalidate the canonical diagrams against deployed reality before submission.
