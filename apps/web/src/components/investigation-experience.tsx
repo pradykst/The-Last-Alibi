@@ -193,6 +193,12 @@ export function TechnicalDetails({
   runtimeLabel: string;
   onClose: () => void;
 }) {
+  const suiEvidence = {
+    packageId: '0x3e2aa9c08186046a6653326bcf46e0c4454f643dc132aef229001d739194d3ea',
+    levelId: '0x1198846e70f62c06eaeee181f16bd641d752111306b19ddc62b368826e266818',
+    proofDigest: 'CFJgdKZZYyWuLiCLQ477DqCyZ9UY73gVbofeVZMBeFYT',
+  } as const;
+
   return (
     <Modal eyebrow="Optional receipt" title="Technical details" onClose={onClose}>
       <img
@@ -238,12 +244,53 @@ export function TechnicalDetails({
         </div>
         <div>
           <dt>Live partners</dt>
-          <dd>Unavailable · no live identifiers exist</dd>
+          <dd>Unavailable for this session</dd>
         </div>
+        <div>
+          <dt>Separate Sui testnet evidence</dt>
+          <dd>Native Groth16 accepted · replay rejected</dd>
+        </div>
+        <div>
+          <dt>Published package</dt>
+          <dd>
+            <a
+              href={`https://suiscan.xyz/testnet/object/${suiEvidence.packageId}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View package
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt>Immutable level</dt>
+          <dd>
+            <a
+              href={`https://suiscan.xyz/testnet/object/${suiEvidence.levelId}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View level
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt>Accepted proof transaction</dt>
+          <dd>
+            <a
+              href={`https://suiscan.xyz/testnet/tx/${suiEvidence.proofDigest}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View transaction
+            </a>
+          </dd>
+        </div>{' '}
       </dl>
       <p className="receipt-note">
         No Sui transaction, proof, 0G response, Walrus blob, Seal release, explorer link, or partner
-        receipt is claimed by this fixture session.
+        receipt is claimed by this fixture session. The Sui links above document a separate Gate 3A
+        testnet acceptance run.
       </p>
     </Modal>
   );

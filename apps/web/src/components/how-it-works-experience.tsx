@@ -96,13 +96,13 @@ const CAPABILITIES = [
   ],
   [
     'Sui canonical Move state',
-    'Integrated, not deployed',
-    'The Move package and typed adapter are present; deployed IDs, a transaction signer, and live web orchestration are not configured.',
+    'Published on testnet; web unwired',
+    'The package and immutable level are live on Sui testnet. Practice sessions remain fixture-backed and do not submit transactions.',
   ],
   [
     'Groth16 verdict proof',
-    'Integrated, not active',
-    'The circuit and native verifier sources are present; the production setup, prover runtime, and live web path are not active.',
+    'Testnet accepted; web unwired',
+    'Native Groth16 acceptance and replay rejection are separately evidenced on testnet. Parameters are hackathon/testnet-only, and Practice does not invoke the prover.',
   ],
   [
     '0G verified inference',

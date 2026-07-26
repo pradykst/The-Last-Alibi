@@ -17,6 +17,7 @@ out/
 # production and generated output
 build/
 dist/
+.open-next/
 
 # misc
 .DS_Store
