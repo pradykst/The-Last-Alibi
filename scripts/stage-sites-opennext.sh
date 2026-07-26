@@ -15,6 +15,7 @@ fi
 mkdir -p "$dist/server"
 cp -a "$open_next/." "$dist/server/"
 mv "$dist/server/worker.js" "$dist/server/index.js"
+rm -rf "$dist/server/assets"
 cp -a "$open_next/assets" "$dist/client"
 
 runtime="$dist/server/server-functions/default"
