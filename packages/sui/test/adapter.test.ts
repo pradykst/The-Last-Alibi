@@ -5,13 +5,28 @@ import { AlibiSuiAdapter, AlibiSuiError, parseSuiPublicConfig } from '../src';
 import { LEVEL_ID, PACKAGE_ID, SESSION_ID, levelEnvelope, sessionEnvelope } from './fixtures';
 
 const DIGEST = toBase58(new Uint8Array(32).fill(7));
+const SESSION_EXPECTATION = {
+  eventKind: 'SessionCreated',
+  createdObjectType: 'GameSession',
+} as const;
+const EXPIRED_EXPECTATION = { eventKind: 'QueryExpired' } as const;
 
 function adapter(overrides: Partial<ConstructorParameters<typeof AlibiSuiAdapter>[1]> = {}) {
   return new AlibiSuiAdapter(
     parseSuiPublicConfig({ network: 'testnet', packageId: PACKAGE_ID, levelConfigId: LEVEL_ID }),
     {
       submitter: { submit: async () => ({ digest: DIGEST }) },
-      confirmer: { confirm: async (digest) => ({ digest, success: true, checkpoint: '42' }) },
+      confirmer: {
+        confirm: async (digest) => ({
+          digest,
+          success: true,
+          checkpoint: '42',
+          events: [{ kind: 'SessionCreated' as const, data: {} }],
+          createdObjects: [
+            { objectId: SESSION_ID, objectType: PACKAGE_ID + '::alibi::GameSession' },
+          ],
+        }),
+      },
       reader: {
         readObject: async (id) =>
           id.endsWith(SESSION_ID.slice(2)) ? sessionEnvelope() : levelEnvelope(),
@@ -25,22 +40,35 @@ describe('typed adapter lifecycle', () => {
   it('keeps construction, pending submission, and confirmed execution distinct', async () => {
     const client = adapter();
     const transaction = client.createPracticeSession(new Uint8Array(32));
-    const pending = await client.submit(transaction);
-    expect(pending).toEqual({ status: 'pending', digest: DIGEST });
+    const pending = await client.submit(transaction, SESSION_EXPECTATION);
+    expect(pending).toEqual({
+      status: 'pending',
+      digest: DIGEST,
+      expectation: SESSION_EXPECTATION,
+    });
     const confirmed = await client.confirm(pending);
-    expect(confirmed).toEqual({ status: 'confirmed', digest: DIGEST, checkpoint: '42' });
+    expect(confirmed).toEqual({
+      status: 'confirmed',
+      digest: DIGEST,
+      checkpoint: '42',
+      events: [{ kind: 'SessionCreated', data: {} }],
+      createdObjects: [{ objectId: SESSION_ID, objectType: PACKAGE_ID + '::alibi::GameSession' }],
+    });
   });
 
   it('requires actual valid digests and successful confirmed execution', async () => {
     await expect(
       adapter({ submitter: { submit: async () => ({ digest: 'fake-digest' }) } }).submit(
         adapter().expireQuery(SESSION_ID),
+        EXPIRED_EXPECTATION,
       ),
     ).rejects.toMatchObject({ code: 'SUBMISSION_FAILED' });
     const client = adapter({
       confirmer: { confirm: async (digest) => ({ digest, success: false }) },
     });
-    await expect(client.confirm({ status: 'pending', digest: DIGEST })).rejects.toMatchObject({
+    await expect(
+      client.confirm({ status: 'pending', digest: DIGEST, expectation: EXPIRED_EXPECTATION }),
+    ).rejects.toMatchObject({
       code: 'CONFIRMATION_FAILED',
     });
   });

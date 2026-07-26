@@ -31,7 +31,8 @@ describe('public object decoding', () => {
       REGISTERED_PREDICATES.map((predicate) => predicate.id),
     );
     expect(level.predicates[0]!.truthMask).toMatch(/^0x[0-9a-f]{16}$/);
-    expect(level.verifierAvailable).toBe(false);
+    expect(level.verifierAvailable).toBe(true);
+    expect(level.expectedVerifierIdentity).toMatch(/^0x[0-9a-f]{64}$/);
   });
 
   it('decodes lossless session and pending public state', () => {

@@ -195,7 +195,8 @@ export type PublicLevelConfig = {
   predicateCount: 12;
   disclosureLimit: typeof CERTIFIED_DISCLOSURE_LIMIT;
   minimumSurvivors: typeof MINIMUM_SURVIVING_CANDIDATES;
-  verifierAvailable: false;
+  verifierAvailable: true;
+  expectedVerifierIdentity: string;
   verdictVerifierAvailable: boolean;
   expectedVerdictVerifierIdentity: string | null;
   finalized: true;
@@ -294,8 +295,9 @@ export function decodeLevelConfig(
     predicates.length !== 12 ||
     smallInteger(fields.disclosure_limit) !== CERTIFIED_DISCLOSURE_LIMIT ||
     smallInteger(fields.minimum_survivors) !== MINIMUM_SURVIVING_CANDIDATES ||
-    smallInteger(fields.verifier_state) !== VERIFIER_UNAVAILABLE_STATE ||
-    fields.expected_verifier_identity.length !== 0 ||
+    smallInteger(fields.verifier_state) !== VERIFIER_AVAILABLE_STATE ||
+    fields.expected_verifier_identity.length !== 32 ||
+    fields.expected_verifier_identity.every((byte) => byte === 0) ||
     (smallInteger(fields.verdict_verifier_state) !== VERIFIER_UNAVAILABLE_STATE &&
       smallInteger(fields.verdict_verifier_state) !== VERIFIER_AVAILABLE_STATE) ||
     (smallInteger(fields.verdict_verifier_state) === VERIFIER_UNAVAILABLE_STATE &&
@@ -317,7 +319,8 @@ export function decodeLevelConfig(
     predicateCount: 12,
     disclosureLimit: CERTIFIED_DISCLOSURE_LIMIT,
     minimumSurvivors: MINIMUM_SURVIVING_CANDIDATES,
-    verifierAvailable: false,
+    verifierAvailable: true,
+    expectedVerifierIdentity: bytesToHex(fields.expected_verifier_identity),
     verdictVerifierAvailable:
       smallInteger(fields.verdict_verifier_state) === VERIFIER_AVAILABLE_STATE,
     expectedVerdictVerifierIdentity:

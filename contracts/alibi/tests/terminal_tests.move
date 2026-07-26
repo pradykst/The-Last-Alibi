@@ -635,7 +635,7 @@ fun s1_query_lifecycle_remains_available_before_accusation() {
         0,
         pre_mask,
         true,
-        vector[],
+        *alibi::expected_verifier_identity(&level),
     );
     alibi::resolve_query(&mut session, &level, receipt);
     assert_eq!(alibi::candidate_mask(&session), predicates::predicate_mask(0));

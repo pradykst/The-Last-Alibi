@@ -120,11 +120,10 @@ describe('transaction builders', () => {
       queryNonce: 0n,
       preCandidateMask: '18446744073709551615',
       result: true,
-      expectedVerifierIdentity: new Uint8Array(),
       proof: Uint8Array.of(1, 2, 3),
     }).getData();
     expect(data.commands).toHaveLength(2);
-    expect(moveCall(data, 0)).toMatchObject({ module: 'verifier', function: 'verify_query_proof' });
+    expect(moveCall(data, 0)).toMatchObject({ module: 'alibi', function: 'verify_query_proof' });
     expect(moveCall(data, 1)).toMatchObject({ module: 'alibi', function: 'resolve_query' });
     expect(moveCall(data, 1).arguments as unknown[]).toHaveLength(3);
   });

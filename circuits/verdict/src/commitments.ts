@@ -16,6 +16,10 @@ export const VERDICT_DOMAIN = 1000681195498610548960066585840724n;
 export const SESSION_ATTEMPT_DOMAIN = new TextEncoder().encode(
   'the-last-alibi::verdict::session-attempt::v1',
 );
+export const QUERY_SESSION_DOMAIN = new TextEncoder().encode(
+  'the-last-alibi::query::session-context::v1',
+);
+export const QUERY_PREDICATE_DOMAIN = 1975982988003200902785731916559921n;
 
 export interface CaseOpening {
   suspect: bigint;
@@ -35,6 +39,13 @@ export interface PublicCommitments {
 export interface PublicInputEncoding {
   fields: readonly bigint[];
   bytes: Uint8Array;
+}
+
+export interface QueryPublicCommitments {
+  caseCommitment: Uint8Array;
+  sessionQueryDomainCommitment: Uint8Array;
+  predicateCommitment: Uint8Array;
+  result: boolean;
 }
 
 function assertByteLength(value: Uint8Array, expected: number, label: string): void {
@@ -136,6 +147,27 @@ export function encodePublicInputs(commitments: PublicCommitments): PublicInputE
   return { fields, bytes };
 }
 
+export function encodeQueryPublicInputs(commitments: QueryPublicCommitments): PublicInputEncoding {
+  canonicalFieldFromBytes(commitments.caseCommitment, 'case commitment');
+  assertByteLength(
+    commitments.sessionQueryDomainCommitment,
+    COMMITMENT_BYTE_LENGTH,
+    'session-query domain commitment',
+  );
+  canonicalFieldFromBytes(commitments.predicateCommitment, 'predicate commitment');
+  const orderedCommitments = [
+    commitments.caseCommitment,
+    commitments.sessionQueryDomainCommitment,
+    commitments.predicateCommitment,
+  ] as const;
+  const fields = [
+    ...orderedCommitments.flatMap((commitment) => [...commitmentToLimbs(commitment)]),
+    commitments.result ? 1n : 0n,
+  ];
+  const bytes = new Uint8Array(fields.length * COMMITMENT_BYTE_LENGTH);
+  fields.forEach((field, index) => bytes.set(limbScalarBytes(field), index * 32));
+  return { fields, bytes };
+}
 export function decodePublicInputBytes(bytes: Uint8Array): readonly bigint[] {
   assertByteLength(bytes, PUBLIC_INPUT_BYTE_LENGTH, 'public proof inputs');
   const fields: bigint[] = [];
@@ -221,4 +253,57 @@ export function sessionAttemptDomainCommitment(
   preimage.set([1, 0, 1, 0], 84);
   preimage.set(verdictBlobId, 88);
   return blake2b(preimage, { dkLen: 32 });
+}
+function encodeU16(value: bigint): Uint8Array {
+  assertRange(value, 0n, 0xffffn, 'version');
+  return bigIntToLittleEndianBytes(value, 2, 'version');
+}
+
+export function sessionQueryDomainCommitment(
+  sessionId: Uint8Array,
+  levelId: Uint8Array,
+  queryNonce: bigint,
+): Uint8Array {
+  assertByteLength(sessionId, 32, 'session ID');
+  assertByteLength(levelId, 32, 'level ID');
+  assertRange(queryNonce, 0n, (1n << 64n) - 1n, 'query nonce');
+  const preimage = new Uint8Array(120);
+  preimage.set(QUERY_SESSION_DOMAIN, 0);
+  preimage.set(sessionId, 44);
+  preimage.set(levelId, 76);
+  preimage.set(bigIntToLittleEndianBytes(queryNonce, 8, 'query nonce'), 108);
+  preimage.set(encodeU16(PROTOCOL_VERSION), 116);
+  preimage.set(encodeU16(LEVEL_VERSION), 118);
+  return blake2b(preimage, { dkLen: 32 });
+}
+
+export async function registeredPredicateCommitment(
+  predicateId: bigint,
+  dimension: bigint,
+  value: bigint,
+): Promise<Uint8Array> {
+  assertRange(predicateId, 0n, 11n, 'predicate ID');
+  assertRange(dimension, 0n, 3n, 'predicate dimension');
+  assertRange(value, 0n, 3n, 'predicate value');
+  const expectedDimension =
+    predicateId < 4n ? 0n : predicateId < 8n ? 1n : predicateId < 10n ? 2n : 3n;
+  const expectedValue =
+    predicateId < 4n
+      ? predicateId
+      : predicateId < 8n
+        ? predicateId - 4n
+        : predicateId < 10n
+          ? predicateId - 8n
+          : predicateId - 10n;
+  if (dimension !== expectedDimension || value !== expectedValue) {
+    throw new RangeError('predicate fields do not identify a registered predicate');
+  }
+  return poseidonCommitment([
+    QUERY_PREDICATE_DOMAIN,
+    PROTOCOL_VERSION,
+    LEVEL_VERSION,
+    predicateId,
+    dimension,
+    value,
+  ]);
 }

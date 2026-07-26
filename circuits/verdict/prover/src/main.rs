@@ -1,3 +1,4 @@
+mod application;
 mod verdict;
 
 use ark_bn254::{Bn254, Fr};
@@ -25,6 +26,12 @@ fn quoted_hex(bytes: &[u8]) -> String {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let arguments = env::args().collect::<Vec<_>>();
+    if arguments
+        .get(1)
+        .is_some_and(|command| application::handles(command))
+    {
+        return application::run(&arguments);
+    }
     if arguments.len() == 4 && arguments[1] == "verdict" {
         return verdict::run(&arguments[2], &arguments[3]);
     }

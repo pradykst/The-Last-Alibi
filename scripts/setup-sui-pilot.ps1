@@ -117,6 +117,7 @@ if (-not (Test-Path $compatibilityPatch -PathType Leaf)) {
 $git = Get-RequiredCommand "git" "Install Git and make it available on PATH."
 $node = Get-RequiredCommand "node" "Install Node.js $MinimumNodeMajor or newer and make it available on PATH."
 $pnpm = Get-RequiredCommand "pnpm" "Install pnpm and make it available on PATH."
+$corepack = Get-RequiredCommand "corepack" "Install Node.js with Corepack support and make corepack available on PATH."
 $sui = Get-RequiredCommand "sui" "Install the Sui CLI with your preferred explicit toolchain manager and make it available on PATH."
 $moveAnalyzer = Get-RequiredCommand "move-analyzer" "Install move-analyzer at the same version as the Sui CLI and make it available on PATH."
 
@@ -268,14 +269,18 @@ foreach ($component in @(
     @{ Name = "move-lsp-mcp"; Path = $moveLspRoot },
     @{ Name = "sui-prover-mcp"; Path = $suiProverRoot }
 )) {
-    Invoke-Checked $pnpm @(
+    Invoke-Checked $corepack @(
+        "pnpm",
+        "--ignore-workspace",
         "--dir",
         $component.Path,
         "install",
         "--frozen-lockfile"
     ) "Installing $($component.Name) dependencies"
 
-    Invoke-Checked $pnpm @(
+    Invoke-Checked $corepack @(
+        "pnpm",
+        "--ignore-workspace",
         "--dir",
         $component.Path,
         "run",

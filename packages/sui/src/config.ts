@@ -6,6 +6,10 @@ import { sanitizedError } from './errors';
 const objectIdSchema = z
   .string()
   .refine(isValidSuiObjectId, 'Invalid Sui object ID')
+  .refine(
+    (value) => normalizeSuiObjectId(value) !== normalizeSuiObjectId('0x0'),
+    'Zero Sui object ID',
+  )
   .transform((value) => normalizeSuiObjectId(value));
 
 export const suiPublicConfigSchema = z

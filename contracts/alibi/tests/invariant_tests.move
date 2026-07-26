@@ -49,7 +49,7 @@ fun receipt(
         query_nonce,
         pre_candidate_mask,
         result,
-        vector[],
+        *alibi::expected_verifier_identity(level),
     )
 }
 
@@ -207,7 +207,7 @@ fun wrong_session_receipt_is_rejected() {
         0,
         pre_mask,
         true,
-        vector[],
+        *alibi::expected_verifier_identity(&level),
     );
     alibi::resolve_query(&mut session, &level, proof_receipt);
     abort 255

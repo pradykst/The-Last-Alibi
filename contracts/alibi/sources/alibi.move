@@ -648,6 +648,45 @@ public fun expire_query(
     });
 }
 
+/// Verifies the exact authoritative pending query without exposing the case opening.
+public fun verify_query_proof(
+    session: &GameSession,
+    level: &LevelConfig,
+    predicate_id: u8,
+    query_nonce: u64,
+    pre_candidate_mask: u64,
+    result: bool,
+    proof: vector<u8>,
+): QueryProofReceipt {
+    assert_session_binding(session, level);
+    assert_not_terminal(session);
+    assert!(session.state == STATE_QUERY_PENDING, EInvalidSessionState);
+    assert!(session.pending_query.is_some(), EPendingQueryMissing);
+    assert!(level.verifier_state == VERIFIER_AVAILABLE, EInvalidVerifier);
+    assert!(
+        verifier::query_verifier_identity() == level.expected_verifier_identity,
+        EInvalidVerifier,
+    );
+    let pending = session.pending_query.borrow();
+    assert!(predicate_id == pending.predicate_id, EPendingQueryMismatch);
+    assert!(query_nonce == pending.query_nonce, EPendingQueryMismatch);
+    assert!(query_nonce == session.query_nonce, EPendingQueryMismatch);
+    assert!(pre_candidate_mask == pending.pre_candidate_mask, EPendingQueryMismatch);
+    assert!(pre_candidate_mask == session.candidate_mask, ECandidateTransitionMismatch);
+
+    verifier::verify_query_proof(
+        RECEIPT_VERSION,
+        object::id(session),
+        object::id(level),
+        session.case_commitment,
+        predicate_id,
+        query_nonce,
+        pre_candidate_mask,
+        result,
+        level.expected_verifier_identity,
+        proof,
+    )
+}
 /// Consumes a verifier-owned receipt and applies exactly its stored authorized branch.
 public fun resolve_query(
     session: &mut GameSession,
@@ -758,8 +797,8 @@ fun new_level(
         predicate_count: PREDICATE_COUNT,
         disclosure_limit,
         minimum_survivors,
-        verifier_state: VERIFIER_UNAVAILABLE,
-        expected_verifier_identity: vector[],
+        verifier_state: VERIFIER_AVAILABLE,
+        expected_verifier_identity: verifier::query_verifier_identity(),
         verdict_verifier_state: VERIFIER_AVAILABLE,
         expected_verdict_verifier_identity: verifier::verdict_verifier_identity(),
         finalized: true,
@@ -773,7 +812,7 @@ fun new_level(
         predicate_count: PREDICATE_COUNT,
         disclosure_limit,
         minimum_survivors,
-        verifier_state: VERIFIER_UNAVAILABLE,
+        verifier_state: VERIFIER_AVAILABLE,
         verdict_verifier_state: VERIFIER_AVAILABLE,
     });
     level
@@ -837,8 +876,9 @@ fun assert_level(level: &LevelConfig) {
     assert!(level.predicate_count == PREDICATE_COUNT, EInvalidLevel);
     assert!(level.disclosure_limit == DISCLOSURE_LIMIT, EInvalidLevel);
     assert!(level.minimum_survivors == MINIMUM_SURVIVORS, EInvalidLevel);
-    assert!(level.verifier_state == VERIFIER_UNAVAILABLE, EInvalidVerifier);
-    assert!(level.expected_verifier_identity.is_empty(), EInvalidVerifier);
+    assert!(level.verifier_state == VERIFIER_AVAILABLE, EInvalidVerifier);
+    assert_valid_verifier_identity(&level.expected_verifier_identity);
+    assert!(level.expected_verifier_identity == verifier::query_verifier_identity(), EInvalidVerifier);
     if (level.verdict_verifier_state == VERIFIER_UNAVAILABLE) {
         assert!(level.expected_verdict_verifier_identity.is_empty(), EInvalidVerifier);
     } else {
@@ -970,12 +1010,12 @@ public fun case_commitment(session: &GameSession): &vector<u8> {
     &session.case_commitment
 }
 
-/// Returns the expected query verifier identity; empty while unavailable.
+/// Returns the pinned query verifier identity.
 public fun expected_verifier_identity(level: &LevelConfig): &vector<u8> {
     &level.expected_verifier_identity
 }
 
-/// Returns the expected verdict verifier identity; empty while unavailable.
+/// Returns the pinned verdict verifier identity.
 public fun expected_verdict_verifier_identity(level: &LevelConfig): &vector<u8> {
     &level.expected_verdict_verifier_identity
 }

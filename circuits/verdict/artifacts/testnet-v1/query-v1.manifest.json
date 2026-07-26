@@ -1,0 +1,15 @@
+{
+  "warning": "Hackathon/testnet single-party trusted setup. Non-production. No multiparty ceremony occurred.",
+  "circuit": "query",
+  "circuitVersion": "1",
+  "generatedAtUnixSeconds": 1785033272,
+  "randomnessSource": "operating-system CSPRNG via rand::rngs::OsRng",
+  "provingKeyFile": "query-v1.pk",
+  "provingKeySha256": "02e9c95714656adca2bcb332f737572f8aa8d8d4871213fb095fd7e445460fa5",
+  "verifyingKeyFile": "query-v1.vk",
+  "verifyingKeySha256": "16f341db81cc4a598510081ebe924699358c658cf8dc4618fdb8c924305b237e",
+  "suiVerifierIdentitySha256": "16f341db81cc4a598510081ebe924699358c658cf8dc4618fdb8c924305b237e",
+  "r1csSha256": "90b8392dc89a20a98bc5c6a0b192f4f5fc8896f48175378e533c3fa4eff1af13",
+  "wasmSha256": "00fce1bc1551b1564ee03ac8613201ceee6bef6267f20c52c3153252505de48c",
+  "publicInputFields": 7
+}

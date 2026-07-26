@@ -6,7 +6,8 @@ export type AlibiSuiErrorCode =
   | 'MALFORMED_EVENT'
   | 'RPC_UNAVAILABLE'
   | 'SUBMISSION_FAILED'
-  | 'CONFIRMATION_FAILED';
+  | 'CONFIRMATION_FAILED'
+  | 'PROVER_FAILED';
 
 export class AlibiSuiError extends Error {
   readonly code: AlibiSuiErrorCode;

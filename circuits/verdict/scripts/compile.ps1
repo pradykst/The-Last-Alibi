@@ -26,6 +26,7 @@ function Invoke-CircuitCompilation {
 }
 
 Invoke-CircuitCompilation -Name "smoke"
+Invoke-CircuitCompilation -Name "query"
 Invoke-CircuitCompilation -Name "verdict"
 
 $witnessCalculator = Join-Path $packageRoot "build\verdict\verdict_js\witness_calculator.js"

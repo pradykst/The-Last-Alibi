@@ -90,7 +90,7 @@ fun safe_query_authorizes_and_resolves_exact_yes_branch() {
         0,
         predicates::universe_mask(),
         true,
-        vector[],
+        *alibi::expected_verifier_identity(&level),
     );
     alibi::resolve_query(&mut session, &level, receipt);
     assert_eq!(alibi::candidate_mask(&session), predicates::predicate_mask(0));
@@ -153,17 +153,18 @@ fun another_sender_cannot_authorize() {
     abort 255
 }
 
-#[test, expected_failure(abort_code = 20, location = verifier)]
-fun production_verifier_is_unavailable() {
+#[test, expected_failure(abort_code = 21, location = verifier)]
+fun malformed_query_commitment_is_rejected() {
     let _receipt = verifier::verify_query_proof(
         1,
         object::id_from_address(@0x1),
         object::id_from_address(@0x2),
+        vector[],
         0,
         0,
         predicates::universe_mask(),
         true,
-        vector[],
+        verifier::query_verifier_identity(),
         vector[],
     );
     abort 255

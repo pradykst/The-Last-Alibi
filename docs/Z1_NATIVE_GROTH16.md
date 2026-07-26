@@ -1,10 +1,8 @@
 # Z1 native Groth16 verdict verification
 
-> **TEST/DEVELOPMENT PARAMETERS ONLY. INSECURE FOR PRODUCTION. NO TRUSTED-SETUP CEREMONY HAS
-> BEEN PERFORMED.** The public deterministic seeds are reproducibility inputs, not secrets. A
-> production release must replace these parameters with a reviewed circuit-specific ceremony.
+> **HACKATHON/TESTNET SINGLE-PARTY TRUSTED SETUP. NON-PRODUCTION.** The committed deployment keys were generated with operating-system cryptographic randomness. No multiparty ceremony occurred. Deterministic parameters remain test fixtures only; production requires an appropriate ceremony or accepted production parameters.
 
-Z1 replaces only S2's terminal-verdict fail-closed seam. Query proofs remain unavailable. The
+Gate 3A generalizes the verdict prover and adds the registered-query circuit and native verifier. The
 accepted lifecycle remains `Active -> AccusationPending -> Terminal`, and `finalize_verdict` still
 compares every receipt field with the immutable level and pending session state.
 
@@ -123,7 +121,7 @@ VK before verification.
 
 ```text
 SHA-256(compressed_verifying_key) =
-8d33885ac91333e3ad68a2885c2f030e43a1042abb95cb68ddd2c0e59f700b8f
+04809b4e07e23854492d78f3efbb7b275168b507459d4ff425bd5f99c28451e3
 ```
 
 The public `alibi::verify_verdict_proof` boundary reads the immutable level and authoritative
@@ -166,7 +164,7 @@ fixture manifest, proofs, commitments, VKs, seeds, and hashes are committed in
 | Rust verdict prover source                | `3ada9ca3953414b4e65471aa86a25f69b103a676bd9ef746d5a9b5aa052483b3` |
 | Verdict R1CS                              | `65e21cc257d150fd42184fed626ca9a905d9f641168e3b01602b3ee006fd99a2` |
 | Verdict WASM                              | `28db2c5b2d5652456c337c5ba8519563a8435c07b9233f2eb009a9870de94764` |
-| Compressed verification key / verifier ID | `8d33885ac91333e3ad68a2885c2f030e43a1042abb95cb68ddd2c0e59f700b8f` |
+| Compressed verification key / verifier ID | `04809b4e07e23854492d78f3efbb7b275168b507459d4ff425bd5f99c28451e3` |
 | Different-key negative-test VK            | `b5b6d0a37bf6a0c51b948dc184db0fab5425a3cab1261858ea662e6ea8d4508f` |
 | Fixture manifest                          | `1d8a1b34ad0830c7991d90c845ccb8e15edc32a031a576d1f8dd56d53139a21e` |
 

@@ -3,6 +3,7 @@ import { isValidTransactionDigest } from '@mysten/sui/utils';
 
 import type { SuiPublicConfig } from './config';
 import { sanitizedError } from './errors';
+import type { PublicAlibiEvent } from './events';
 import {
   decodeGameSession,
   decodeLevelConfig,
@@ -23,15 +24,39 @@ import {
 } from './transactions';
 import type { WalrusContentBlobId } from './walrus-blob-id';
 
-export type PendingTransaction = { status: 'pending'; digest: string };
-export type ConfirmedTransaction = { status: 'confirmed'; digest: string; checkpoint: string };
-
+export type ProtocolEvent = PublicAlibiEvent;
+export type ProtocolConfirmationExpectation = {
+  eventKind: ProtocolEvent['kind'];
+  createdObjectType?: 'LevelConfig' | 'GameSession';
+};
+export type ProtocolConfirmationResult = {
+  digest: string;
+  success: boolean;
+  checkpoint?: string;
+  events?: readonly ProtocolEvent[];
+  createdObjects?: readonly { objectId: string; objectType: string }[];
+};
+export type PendingTransaction = {
+  status: 'pending';
+  digest: string;
+  expectation: ProtocolConfirmationExpectation;
+};
+export type ConfirmedTransaction = {
+  status: 'confirmed';
+  digest: string;
+  checkpoint: string;
+  events: readonly ProtocolEvent[];
+  createdObjects: readonly { objectId: string; objectType: string }[];
+};
 export interface TransactionSubmitter {
   submit(transaction: Transaction): Promise<{ digest: string }>;
 }
 
 export interface TransactionConfirmer {
-  confirm(digest: string): Promise<{ digest: string; success: boolean; checkpoint?: string }>;
+  confirm(
+    digest: string,
+    expectation: ProtocolConfirmationExpectation,
+  ): Promise<ProtocolConfirmationResult>;
 }
 
 export interface PublicObjectReader {
@@ -106,11 +131,14 @@ export class AlibiSuiAdapter {
     );
   }
 
-  async submit(transaction: Transaction): Promise<PendingTransaction> {
+  async submit(
+    transaction: Transaction,
+    expectation: ProtocolConfirmationExpectation,
+  ): Promise<PendingTransaction> {
     try {
       const result = await this.dependencies.submitter.submit(transaction);
       if (!isValidTransactionDigest(result.digest)) throw new Error('invalid digest');
-      return { status: 'pending', digest: result.digest };
+      return { status: 'pending', digest: result.digest, expectation };
     } catch {
       throw sanitizedError(
         'SUBMISSION_FAILED',
@@ -123,16 +151,24 @@ export class AlibiSuiAdapter {
   async confirm(pending: PendingTransaction): Promise<ConfirmedTransaction> {
     try {
       if (!isValidTransactionDigest(pending.digest)) throw new Error('invalid digest');
-      const result = await this.dependencies.confirmer.confirm(pending.digest);
+      const result = await this.dependencies.confirmer.confirm(pending.digest, pending.expectation);
       if (
         result.digest !== pending.digest ||
         !result.success ||
         typeof result.checkpoint !== 'string' ||
-        result.checkpoint.length === 0
+        result.checkpoint.length === 0 ||
+        !Array.isArray(result.events) ||
+        !Array.isArray(result.createdObjects)
       ) {
         throw new Error('not confirmed');
       }
-      return { status: 'confirmed', digest: result.digest, checkpoint: result.checkpoint };
+      return {
+        status: 'confirmed',
+        digest: result.digest,
+        checkpoint: result.checkpoint,
+        events: result.events,
+        createdObjects: result.createdObjects,
+      };
     } catch {
       throw sanitizedError(
         'CONFIRMATION_FAILED',

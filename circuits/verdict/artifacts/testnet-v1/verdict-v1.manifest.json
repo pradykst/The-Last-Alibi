@@ -1,0 +1,15 @@
+{
+  "warning": "Hackathon/testnet single-party trusted setup. Non-production. No multiparty ceremony occurred.",
+  "circuit": "verdict",
+  "circuitVersion": "1",
+  "generatedAtUnixSeconds": 1785033273,
+  "randomnessSource": "operating-system CSPRNG via rand::rngs::OsRng",
+  "provingKeyFile": "verdict-v1.pk",
+  "provingKeySha256": "56cc02579fddc801b6c7960aab1db5ce9241014487268af9fd41e361459c68d6",
+  "verifyingKeyFile": "verdict-v1.vk",
+  "verifyingKeySha256": "04809b4e07e23854492d78f3efbb7b275168b507459d4ff425bd5f99c28451e3",
+  "suiVerifierIdentitySha256": "04809b4e07e23854492d78f3efbb7b275168b507459d4ff425bd5f99c28451e3",
+  "r1csSha256": "65e21cc257d150fd42184fed626ca9a905d9f641168e3b01602b3ee006fd99a2",
+  "wasmSha256": "28db2c5b2d5652456c337c5ba8519563a8435c07b9233f2eb009a9870de94764",
+  "publicInputFields": 8
+}

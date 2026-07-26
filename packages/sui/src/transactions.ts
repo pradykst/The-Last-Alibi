@@ -6,8 +6,6 @@ import {
   LEVEL_VERSION,
   PRACTICE_MODE,
   PROTOCOL_VERSION,
-  RECEIPT_VERSION,
-  VERIFIER_MOVE_MODULE,
   moveTarget,
 } from './constants';
 import { sanitizedError } from './errors';
@@ -162,13 +160,11 @@ export type FutureProofResolution = AlibiTransactionConfig & {
   queryNonce: bigint | string;
   preCandidateMask: bigint | string;
   result: boolean;
-  expectedVerifierIdentity: Uint8Array | string;
   proof: Uint8Array | string;
 };
 
 /**
- * Prepares the Z1 transaction shape. On S1 bytecode the first call always aborts
- * with EVerifierUnavailable, so this builder cannot produce a confirmed mutation.
+ * Verifies a proof against the canonical pending query, then resolves it atomically.
  */
 export function buildProofBackedResolution(
   config: FutureProofResolution,
@@ -182,16 +178,14 @@ export function buildProofBackedResolution(
   const sessionId = objectId(config.sessionId);
   const levelId = objectId(config.levelConfigId);
   const receipt = tx.moveCall({
-    target: moveTarget(packageId, VERIFIER_MOVE_MODULE, 'verify_query_proof'),
+    target: moveTarget(packageId, ALIBI_MOVE_MODULE, 'verify_query_proof'),
     arguments: [
-      tx.pure.u16(RECEIPT_VERSION),
-      tx.pure.id(sessionId),
-      tx.pure.id(levelId),
+      tx.object(sessionId),
+      tx.object(levelId),
       tx.pure.u8(config.predicateId),
       tx.pure.u64(parseU64(config.queryNonce)),
       tx.pure.u64(parseU64(config.preCandidateMask)),
       tx.pure.bool(config.result),
-      tx.pure.vector('u8', bytes(config.expectedVerifierIdentity)),
       tx.pure.vector('u8', bytes(config.proof)),
     ],
   });
