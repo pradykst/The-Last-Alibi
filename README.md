@@ -2,173 +2,240 @@
 
 > Every suspect can lie. The truth cannot.
 
-**The Last Alibi** is a cinematic AI detective game built for ETHGlobal Lisbon 2026. Players investigate a private museum, interrogate suspects, request privacy-preserving certified warrants, and make one final accusation. Natural-language characters can persuade or misdirect; they cannot rewrite the committed case, authorize disclosures, or decide the verdict.
+**The Last Alibi** is a cinematic, privacy-preserving AI detective game where characters can improvise, persuade, and deceive—but they cannot rewrite the truth.
 
-## Demo status
+Players investigate a murder inside a private museum, interrogate autonomous suspects, collect evidence, request certified warrants, and commit one final accusation. Beneath the mystery, Sui, zero-knowledge proofs, 0G, Walrus, Seal, and World AgentKit establish a clean boundary between **narrative intelligence** and **canonical truth**.
 
-| Capability                           | Current status                                                                                                                  |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| Practice Investigation               | **Playable end to end** in the browser                                                                                          |
-| Cinematic UI and audio               | **Implemented**: opening, four rooms, interviews, notebook, warrants, accusation, YES/NO endings, and 23 validated audio assets |
-| Sui Move protocol                    | **Published on Sui testnet**                                                                                                    |
-| Native Groth16 query verification    | **Accepted on Sui testnet**, including replay rejection                                                                         |
-| Application query and verdict prover | **Implemented** with hackathon/testnet parameters                                                                               |
-| Browser-to-Sui live orchestration    | **Not yet wired**; current Practice sessions are fixture-backed                                                                 |
-| Verified 0G testimony                | Adapter and verification package implemented; browser path unavailable                                                          |
-| Walrus + Seal terminal capsule       | SDK lifecycle implemented; browser path unavailable                                                                             |
-| World AgentKit ranked authorization  | Authorization and ranked-permit packages implemented; Ranked mode unavailable in the public build                               |
+## The mystery
 
-The public game labels Practice behavior as fixture-backed. It never fabricates transaction digests, proof acceptance, provider verification, Walrus Blob IDs, Seal decisions, or World authorizations.
+During an invitation-only exhibition, the museum curator is killed as a security blackout fractures the timeline.
 
-## The game
+Four suspects were present:
 
-A session begins with one hidden combination drawn from a fixed universe:
+- **Ada Vale** — the museum conservator;
+- **Marcus Reed** — the head of security;
+- **Celeste Moreau** — the exhibition patron;
+- **Theo Lin** — the investigative journalist.
+
+The hidden case is one combination of:
 
 - 4 suspects;
 - 4 rooms;
 - 2 weapons;
 - 2 time windows;
-- **64 possible cases** in total.
+- **64 possible realities**.
 
-The player explores the Grand Gallery, Restoration Lab, Archive Vault, and Rooftop Conservatory. Each room contains public observations, a suspect with expressive testimony, and notebook material. The player may request at most five registered binary warrants. A warrant is permitted only when both possible branches retain at least two candidates, preventing the certified-query system from becoming an exact-case oracle.
+The player explores the Grand Gallery, Restoration Lab, Archive Vault, and Rooftop Conservatory, comparing public evidence with expressive AI testimony. Every conversation can influence the detective. None of those conversations can alter the committed solution.
 
-The investigation ends with a private accusation over suspect, room, weapon, and time. The designed terminal protocol reveals only **YES** or **NO**, never the hidden case.
+## The player experience
 
-## Core guarantees
+1. **Enter the museum.** Experience a cinematic opening and receive the case briefing.
+2. **Explore four rooms.** Inspect public observations, environmental clues, and character behavior.
+3. **Interrogate autonomous suspects.** Ask natural-language questions and evaluate responses that may be helpful, evasive, or misleading.
+4. **Build a notebook.** Separate observations, testimony, certified evidence, and personal hypotheses.
+5. **Request certified warrants.** Spend a limited query budget on registered binary predicates.
+6. **Narrow the candidate universe.** Follow proof-backed YES/NO branches without exposing the hidden case.
+7. **Commit one accusation.** Select the suspect, room, weapon, and time.
+8. **Receive a private verdict.** Learn only whether the accusation is correct: **YES** or **NO**.
 
-1. **AI cannot rewrite the truth.** Testimony is narrative and non-canonical. Only accepted protocol transitions may change canonical case state.
-2. **The detective cannot extract unlimited hidden information.** Warrants are registered, bounded, safety-checked, nonce-bound, and replay-protected.
-3. **The publisher cannot change the ending after commitment.** The verdict proof binds the accusation result to the original committed case.
-4. **Live mode fails closed.** Missing or failed live adapters never silently fall back to fixtures.
-5. **Private material stays server-side.** Hidden cases, salts, witnesses, signer keys, provider credentials, and plaintext verdict capsules are not browser responses.
+The intended result feels like a detective game first. Cryptography remains behind the curtain until the player asks to inspect a technical receipt.
+
+## Three guarantees
+
+### 1. AI cannot rewrite the truth
+
+Suspect dialogue is narrative, not authority. A language model may persuade the player, but it cannot change the case commitment, candidate set, warrant history, or verdict.
+
+### 2. The detective cannot extract unlimited hidden information
+
+Certified warrants are selected from a registered predicate manifest. Before any private evaluation occurs, the protocol checks that both possible branches preserve at least two candidates. Warrants are nonce-bound, replay-protected, and capped at five disclosures.
+
+### 3. The ending cannot change after commitment
+
+The hidden case is committed before the investigation. The terminal proof binds the accusation and binary verdict back to that same committed case without revealing the losing solution.
 
 ## Authority and execution
 
 ![The Last Alibi authority and execution architecture](apps/web/public/assets/architecture/authority-execution.png)
 
-Solid green paths show the implemented Practice experience. Dashed paths show browser composition that remains unavailable. Separately, the Sui package, immutable level, and native Groth16 accepted path are already deployed and inspectable on testnet; the diagram's right-hand status describes application wiring, not the existence of those testnet artifacts.
-
-The governing rule is simple:
+The architecture follows one rule:
 
 > Narrative can persuade; only an accepted canonical transition may change case state.
 
-| Component         | Authoritative for                                                                              | Explicitly not authoritative for                    |
-| ----------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| Game UI           | Presentation and player interaction                                                            | Case truth, proof validity, or partner verification |
-| API / relayer     | Orchestration, idempotency, signing, and finality waiting                                      | Choosing the case or verdict                        |
-| Sui Move          | Canonical session state, query policy, proof acceptance, replay protection, and terminal state | Natural-language testimony                          |
-| Private ZK prover | Witness processing and Groth16 proof generation                                                | Disclosure policy, eligibility, or state mutation   |
-| 0G                | Verified suspect inference                                                                     | Candidate elimination or verdict authority          |
-| Walrus            | Ciphertext availability                                                                        | Plaintext truth or access authorization             |
-| Seal              | Decryption under Sui-defined policy                                                            | Verdict correctness                                 |
-| World AgentKit    | Human-backed ranked eligibility                                                                | Case truth or game outcome                          |
+| System                | Intended authority                                                                    | What it can never decide                    |
+| --------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Game UI**           | Presentation, exploration, notebook, and player choices                               | Case truth or proof validity                |
+| **API / relayer**     | Orchestration, idempotency, signing, and finality                                     | Which accusation is correct                 |
+| **Sui Move**          | Canonical sessions, warrants, proof acceptance, replay protection, and terminal state | Natural-language testimony                  |
+| **Private ZK prover** | Witness processing and Groth16 proof generation                                       | Policy, eligibility, or state authorization |
+| **0G**                | Private and verifiable suspect inference                                              | Canonical evidence or verdict state         |
+| **Walrus**            | Encrypted artifact availability                                                       | Plaintext truth or access rights            |
+| **Seal**              | Decryption under Sui-defined policy                                                   | Verdict correctness                         |
+| **World AgentKit**    | Human-backed Ranked Agent eligibility                                                 | Case outcome                                |
 
-Further diagrams and boundary documentation are in [`docs/architecture`](docs/architecture/).
+## How the protocol works
 
-## Verified Sui testnet evidence
+### Session creation
 
-The Gate 3A acceptance run published the package, created the immutable level, created a canonical session, authorized a registered query, generated a genuine query proof, verified it off-chain, submitted it to native Sui Groth16 verification, confirmed the canonical state transition, and demonstrated replay rejection.
+The trusted game boundary selects one case from the fixed 64-case universe and derives its canonical commitment. Private case material and salts remain server-side. The intended live flow creates a canonical Sui `GameSession` and binds encrypted terminal artifacts to that session.
 
-| Artifact                            | Identifier                                                           |
-| ----------------------------------- | -------------------------------------------------------------------- |
-| Network                             | Sui testnet                                                          |
-| Chain identifier                    | `69WiPg3DAQiwdxfncX6wYQ2siKwAe6L9BZthQea3JNMD`                       |
-| Package                             | `0x3e2aa9c08186046a6653326bcf46e0c4454f643dc132aef229001d739194d3ea` |
-| Immutable level                     | `0x1198846e70f62c06eaeee181f16bd641d752111306b19ddc62b368826e266818` |
-| Accepted session                    | `0xb93f874b84c8f292653f22b95edfce4e597e2b41d6bdeb13e953db593d866131` |
-| Package publication transaction     | `GbtU8Re1D2aG2fzAyazuiecX6quKLQbDF3pQL1JdbXRL`                       |
-| Level creation transaction          | `3B1TzML47YsuBfT6Hg6D9gdpwd45yMpdocDdHJ9YZE2D`                       |
-| Native proof-resolution transaction | `CFJgdKZZYyWuLiCLQ477DqCyZ9UY73gVbofeVZMBeFYT`                       |
+### Verifiable suspect testimony
 
-Explorer links:
+Suspect dialogue is routed through 0G Compute. The prompt contains only the selected suspect's permitted persona context, public room state, collected evidence, and bounded conversation history. A response is rendered only after the configured verification boundary succeeds.
 
-- [Published package](https://suiscan.xyz/testnet/object/0x3e2aa9c08186046a6653326bcf46e0c4454f643dc132aef229001d739194d3ea)
-- [Immutable level](https://suiscan.xyz/testnet/object/0x1198846e70f62c06eaeee181f16bd641d752111306b19ddc62b368826e266818)
-- [Package publication](https://suiscan.xyz/testnet/tx/GbtU8Re1D2aG2fzAyazuiecX6quKLQbDF3pQL1JdbXRL)
-- [Level creation](https://suiscan.xyz/testnet/tx/3B1TzML47YsuBfT6Hg6D9gdpwd45yMpdocDdHJ9YZE2D)
-- [Native Groth16 acceptance](https://suiscan.xyz/testnet/tx/CFJgdKZZYyWuLiCLQ477DqCyZ9UY73gVbofeVZMBeFYT)
+0G has no case authority. Testimony can guide the detective, but it cannot eliminate candidates or alter a verdict.
 
-The complete sanitized record, commands, hashes, checkpoints, and negative-path result are in [`docs/evidence/GATE3A_SUI_TESTNET_2026-07-26.md`](docs/evidence/GATE3A_SUI_TESTNET_2026-07-26.md).
+### Certified warrants
+
+A warrant selects one registered typed predicate such as:
+
+- “Was the culprit Ada Vale?”
+- “Did the murder occur in the Grand Gallery?”
+- “Was the Ceremonial Dagger used?”
+- “Did it happen before the blackout?”
+
+The public candidate mask is partitioned into YES and NO branches before the secret is read:
+
+```text
+YES survivors = current mask ∩ predicate YES mask
+NO survivors  = current mask ∩ predicate NO mask
+```
+
+The warrant is authorized only when both branches retain at least two candidates. A private Groth16 proof then binds the result to the exact session, level, case commitment, predicate, query nonce, and result bit. Sui verifies the proof natively before updating canonical state.
+
+### Private accusation and verdict
+
+The player's accusation remains inside the trusted boundary. A verdict proof establishes whether it matches the committed case and binds the binary result to the terminal attempt nonce.
+
+The designed release sequence is:
+
+1. generate and verify the verdict proof;
+2. confirm the terminal transition on Sui;
+3. retrieve the matching encrypted capsule from Walrus;
+4. evaluate the Sui-defined Seal policy;
+5. decrypt only for the authorized terminal session;
+6. return only **YES** or **NO**.
+
+The hidden case, private accusation opening, witness, and verdict plaintext are never public receipts.
+
+## Partner integrations
+
+### Sui — canonical truth
+
+Sui objects map naturally to investigations, pending warrants, proof receipts, replay protection, one-time permits, and terminal records. Move independently enforces query limits, registered predicates, candidate-mask transitions, nonces, and post-terminal immutability.
+
+The package uses native BN254 Groth16 verification with pinned query and verdict verifying keys.
+
+### 0G — autonomous suspects
+
+0G provides private, verifiable inference for interactive suspect dialogue. Provider identity, model metadata, request authentication, response identity, and verification status are checked before testimony can reach the player.
+
+### Walrus — encrypted evidence availability
+
+Walrus stores the exact Seal ciphertext—not the hidden case or plaintext verdict. The client computes the content Blob ID locally, verifies the publisher result, confirms certification, retrieves the blob, and checks byte-for-byte integrity.
+
+### Seal — terminal disclosure
+
+Seal binds encrypted verdict material to the Sui session, attempt nonce, protocol version, level version, accusation commitment, and verdict commitment. Decryption is possible only when the Sui policy recognizes the correct player and terminal session state.
+
+### World AgentKit — accountable ranked play
+
+World AgentKit distinguishes ordinary Practice sessions from human-backed Ranked Agent attempts. Authorization is resource-bound, level-bound, recipient-bound, expiring, nonce-protected, and consumable once. The raw human identifier is never published onchain.
+
+## Verifiable Sui testnet evidence
+
+The protocol has an inspectable Sui testnet acceptance path covering package publication, immutable level creation, canonical session creation, safe query authorization, genuine proof generation, native Groth16 verification, canonical state mutation, and replay rejection.
+
+| Artifact                 | Identifier                                                           |
+| ------------------------ | -------------------------------------------------------------------- |
+| Package                  | `0x3e2aa9c08186046a6653326bcf46e0c4454f643dc132aef229001d739194d3ea` |
+| Immutable level          | `0x1198846e70f62c06eaeee181f16bd641d752111306b19ddc62b368826e266818` |
+| Accepted session         | `0xb93f874b84c8f292653f22b95edfce4e597e2b41d6bdeb13e953db593d866131` |
+| Native proof transaction | `CFJgdKZZYyWuLiCLQ477DqCyZ9UY73gVbofeVZMBeFYT`                       |
+
+- [Published Sui package](https://suiscan.xyz/testnet/object/0x3e2aa9c08186046a6653326bcf46e0c4454f643dc132aef229001d739194d3ea)
+- [Immutable level configuration](https://suiscan.xyz/testnet/object/0x1198846e70f62c06eaeee181f16bd641d752111306b19ddc62b368826e266818)
+- [Native Groth16 proof acceptance](https://suiscan.xyz/testnet/tx/CFJgdKZZYyWuLiCLQ477DqCyZ9UY73gVbofeVZMBeFYT)
+- [Complete sanitized Gate 3A evidence](docs/evidence/GATE3A_SUI_TESTNET_2026-07-26.md)
 
 ### Cryptographic trust statement
 
-The query and verdict parameters are a **hackathon/testnet single-party trusted setup. Non-production.** Setup randomness and toxic-waste material were not retained. No multiparty ceremony occurred. Production use requires an appropriate ceremony or independently accepted production parameters.
+The query and verdict parameters are a **hackathon/testnet single-party trusted setup. Non-production.** No multiparty ceremony occurred. Production use requires an appropriate ceremony or independently accepted production parameters.
 
-The verifier is genuine: valid proofs are accepted and altered, malformed, wrongly bound, stale, or replayed proofs are rejected. Deterministic fixed fixtures are used only in tests, not as the deployed testnet parameter generation model.
+## Ranked Agent mode
 
-## Protocol flow
+Ranked Agent mode is designed as a scarce, accountable attempt rather than an unrestricted bot endpoint.
 
-### Practice path available today
+1. The agent signs a resource- and level-bound authorization message.
+2. World AgentKit validates the signature and confirms human backing through AgentBook.
+3. Replay and one-human-per-level entitlement rules are consumed atomically.
+4. A scoped permit binds the level, Sui recipient, resource, expiration, and nonce.
+5. Sui consumes the permit once before ranked gameplay begins.
 
-1. The server creates a bounded fixture session and persists it atomically when configured.
-2. The deterministic engine selects one of 64 cases and maintains a 64-bit candidate mask.
-3. Public observations and explicitly labelled fixture testimony feed the notebook.
-4. Registered warrants enforce the five-query limit and two-survivor rule.
-5. The final accusation returns only a sanitized YES/NO result.
+Human identity establishes eligibility—not truth. Sui and the proof system remain responsible for canonical game state.
 
-### Designed live path
+## Privacy model
 
-1. The trusted server commits a hidden case and creates a canonical Sui `GameSession`.
-2. Suspect dialogue is requested through 0G and rendered only after existing verification succeeds.
-3. A safe registered predicate is authorized against canonical session state.
-4. The private prover creates a session-, nonce-, predicate-, result-, and commitment-bound Groth16 proof.
-5. Sui verifies the proof natively and updates the candidate branch exactly once.
-6. The terminal accusation is proven and finalized on Sui.
-7. Walrus retrieves the matching ciphertext, and Seal releases it only when the Sui terminal policy authorizes the player.
-8. The browser receives only the designed binary verdict and sanitized public receipts.
+The browser may receive:
 
-The protocol packages and execution primitives exist; the full browser composition in steps 1–8 remains future integration work.
+- public room observations;
+- non-canonical suspect testimony;
+- candidate counts and public masks;
+- sanitized transaction and provider receipts;
+- the final binary verdict.
+
+The browser never needs:
+
+- hidden case fields or salts;
+- private witnesses or raw proofs;
+- signer keys or provider credentials;
+- private accusation openings;
+- plaintext verdict capsules;
+- raw World human identifiers.
 
 ## Technology
 
-- **Application:** Next.js App Router, React, TypeScript
-- **Validation:** Zod, Vitest, Testing Library, ESLint, Prettier
-- **Game engine:** deterministic TypeScript case universe, predicates, masks, and transitions
-- **Canonical state:** Sui Move 2024
-- **Proofs:** Circom-compatible artifacts and an arkworks Rust Groth16 application prover
-- **Sui execution:** official `@mysten/sui` server-side client, signer, confirmation, event, and object-change decoding
-- **Storage and access:** official Walrus and Seal SDK adapters
-- **Inference:** verified 0G inference adapter
-- **Ranked authorization:** World AgentKit with scoped, replay-protected permits
-- **Tooling:** pnpm workspaces, Node.js 22, pinned Sui CLI and pinned Sui Pilot documentation
+- **Frontend:** Next.js App Router, React, TypeScript
+- **Game engine:** deterministic 64-case universe and registered predicate masks
+- **Canonical execution:** Sui Move 2024 and the official Sui TypeScript SDK
+- **Zero knowledge:** Groth16, Circom-compatible artifacts, and an arkworks Rust application prover
+- **Inference:** 0G Compute
+- **Encrypted storage:** Walrus
+- **Policy-controlled disclosure:** Seal
+- **Ranked authorization:** World AgentKit and AgentBook
+- **Validation:** Vitest, Testing Library, Zod, ESLint, Prettier, Move tests, and cross-language vectors
 
 ## Repository map
 
-| Path                      | Responsibility                                                                                     |
-| ------------------------- | -------------------------------------------------------------------------------------------------- |
-| `apps/web`                | Next.js game, How It Works experience, API routes, and server-only fixture runtime                 |
-| `packages/game-engine`    | Pure 64-case universe, predicates, candidate masks, and transitions                                |
-| `packages/protocol`       | Shared schemas, manifests, public constants, and browser-safe types                                |
-| `packages/runtime`        | Strict fixture/live mode selection and fail-closed capability status                               |
-| `packages/sui`            | Move transaction builders, Sui execution, prover wrapper, Walrus, Seal, and terminal release logic |
-| `packages/zero-g`         | Private prompt boundary, verified inference, response verification, and live smoke harness         |
-| `packages/world-agentkit` | World authorization, entitlement persistence, and ranked permits                                   |
-| `circuits/verdict`        | Query and verdict circuits, Rust prover, test vectors, and testnet parameter artifacts             |
-| `contracts/alibi`         | Sui Move package, canonical state machine, native Groth16 verification, and Move tests             |
-| `docs/evidence`           | Sanitized, inspectable live acceptance evidence                                                    |
-| `docs/architecture`       | Trust boundaries and sequence diagrams                                                             |
+| Path                      | Responsibility                                                             |
+| ------------------------- | -------------------------------------------------------------------------- |
+| `apps/web`                | Cinematic game, API routes, runtime status, and technical receipts         |
+| `packages/game-engine`    | Case universe, predicates, candidate masks, and transitions                |
+| `packages/protocol`       | Shared schemas, constants, and manifests                                   |
+| `packages/sui`            | Transactions, execution, prover wrapper, Walrus, Seal, and verdict release |
+| `packages/zero-g`         | Verified inference and private prompt boundaries                           |
+| `packages/world-agentkit` | Human-backed authorization and ranked permits                              |
+| `circuits/verdict`        | Query and verdict circuits, prover, vectors, and testnet parameters        |
+| `contracts/alibi`         | Canonical Sui state machine and native proof verification                  |
+| `contracts/ranked_permit` | One-time level-bound ranked authorization                                  |
+| `docs/evidence`           | Sanitized testnet acceptance records                                       |
 
-## Run locally
+## Run the game
 
-### Requirements
+Requirements:
 
 - Node.js `>=22.13.1 <23`
 - pnpm `9.15.4`
-- Windows PowerShell for the supplied Sui scripts
-- Sui `1.76.0-6effb4523834` only when running Move or testnet workflows
-
-### Install and develop
 
 ```powershell
-cd D:\projects\The-Last-Alibi
 corepack enable
 corepack pnpm install --frozen-lockfile
 corepack pnpm dev
 ```
 
-Open `http://localhost:3000`. The How It Works experience is at `/how-it-works`, and the sanitized health endpoint is `/api/health`.
+Open `http://localhost:3000` and choose **Begin Investigation**.
 
-### Production Practice build
+Production Practice build:
 
 ```powershell
 $env:ALIBI_RUNTIME_MODE = 'fixture'
@@ -177,85 +244,22 @@ corepack pnpm build
 corepack pnpm --filter @alibi/web exec next start --port 3100
 ```
 
-A single full-stack Next.js service is sufficient for Practice. Keep the configured fixture-store parent directory writable and persistent when session resume must survive process restarts.
+## Explore the implementation
 
-## Environment policy
-
-Copy [`.env.example`](.env.example) to `apps/web/.env.local` for local server configuration. Keep `ALIBI_RUNTIME_MODE=fixture` unless the live web composition has been completed. Never commit `.env.local`.
-
-- Variables beginning with `NEXT_PUBLIC_` may reach the browser and must never contain secrets.
-- Sui signer keys, 0G credentials, World keys, entitlement secrets, hidden cases, salts, and witnesses are server-only.
-- Live mode rejects missing, blank, malformed, placeholder, zero, and network-mismatched configuration.
-- Live mode never silently falls back to fixtures.
-- The recommended hosted persistent mount is `/var/lib/the-last-alibi`.
-
-See [`docs/ENVIRONMENT.md`](docs/ENVIRONMENT.md), [`docs/GATE3A_TESTNET_PROTOCOL.md`](docs/GATE3A_TESTNET_PROTOCOL.md), [`docs/0G.md`](docs/0G.md), and [`docs/WORLD_AGENTKIT.md`](docs/WORLD_AGENTKIT.md).
-
-## Real testnet proof acceptance
-
-With the Sui CLI explicitly configured for testnet and a funded active address:
-
-```powershell
-sui client active-env
-sui client active-address
-sui client gas
-
-.\scripts\run-gate3a-testnet-query.ps1 `
-  -PackageId 0x3e2aa9c08186046a6653326bcf46e0c4454f643dc132aef229001d739194d3ea `
-  -LevelId 0x1198846e70f62c06eaeee181f16bd641d752111306b19ddc62b368826e266818
-```
-
-This creates a fresh synthetic test case in memory, submits real testnet transactions, generates and verifies a genuine query proof, confirms native Sui acceptance, and requires replay rejection. It spends testnet gas. Do not run it merely to reproduce already-recorded evidence.
-
-## Validation
-
-Common commands:
-
-```powershell
-corepack pnpm format:check
-corepack pnpm lint
-corepack pnpm typecheck
-corepack pnpm test
-corepack pnpm audio:validate
-corepack pnpm build
-```
-
-Protocol-specific validation is documented in [`docs/GATE3A_TESTNET_PROTOCOL.md`](docs/GATE3A_TESTNET_PROTOCOL.md). Move and prover runs intentionally remain separate from ordinary web development because they require pinned native tooling and may be substantially slower.
-
-## Security and privacy boundaries
-
-- Hidden cases, salts, witnesses, accusation openings, signer secrets, and decrypted verdict material are never public receipts.
-- 0G receives only the context permitted by its server-side prompt boundary and has no canonical case authority.
-- Walrus stores ciphertext only.
-- Seal authorization is bound to the intended Sui terminal session and active player.
-- Proof public inputs are canonically serialized and verifier identities are pinned.
-- Mutations are session- and nonce-bound; replayed or ambiguous operations cannot blindly resubmit.
-- External errors returned to browsers are sanitized.
-- Health responses expose readiness booleans and runtime mode, never credentials or hidden game state.
-
-For the detailed threat model, see [`docs/architecture/TRUST_BOUNDARIES.md`](docs/architecture/TRUST_BOUNDARIES.md).
-
-## Current limitations
-
-- The public Practice Investigation is fixture-backed and must not be presented as a live on-chain browser session.
-- Sui and native Groth16 testnet evidence is genuine but currently separate from the browser gameplay path.
-- 0G, Walrus, Seal, and World AgentKit are not active in the public Practice session.
-- Ranked Agent mode remains unavailable.
-- The Groth16 setup is suitable only for an honestly labelled hackathon/testnet demonstration.
-- Cloudflare Quick Tunnel links are temporary and depend on the local production server remaining online.
-
-## Documentation
-
-- [Development workflow](docs/DEVELOPMENT.md)
-- [Environment policy](docs/ENVIRONMENT.md)
-- [Gate 3A protocol and prover contract](docs/GATE3A_TESTNET_PROTOCOL.md)
-- [Sui integration](docs/SUI.md)
-- [0G verified inference](docs/0G.md)
-- [World AgentKit](docs/WORLD_AGENTKIT.md)
-- [Walrus and Seal verdict capsule](docs/W1_WALRUS_SEAL_VERDICT_CAPSULE.md)
+- [Native Sui Groth16 verification](contracts/alibi/sources/verifier.move)
+- [Sui transaction submission and finality](packages/sui/src/server/execution.ts)
+- [Verified 0G inference](packages/zero-g/src/adapter.ts)
+- [Walrus ciphertext lifecycle](packages/sui/src/walrus-verdict.ts)
+- [Seal encryption and policy release](packages/sui/src/seal-verdict.ts)
+- [World AgentKit authorization](packages/world-agentkit/src/authorization.ts)
 - [Trust boundaries](docs/architecture/TRUST_BOUNDARIES.md)
-- [Third-party components](docs/THIRD_PARTY_COMPONENTS.md)
+
+## Build disclosure
+
+The repository includes a complete fixture-backed Practice Investigation and separately inspectable Sui testnet proof evidence. Full browser orchestration across every live partner boundary remains the next integration stage; the architecture above describes the intended complete experience.
 
 ---
 
-**The Last Alibi** demonstrates a clean authority boundary for AI-native games: characters may improvise, but truth, disclosure, and outcomes remain verifiable.
+**The Last Alibi** asks a simple question for the age of autonomous characters:
+
+> If an AI can say anything, what guarantees that the ending is still true?
