@@ -4,13 +4,13 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { POST as testimonyRoute } from '../src/app/api/game/sessions/[sessionId]/testimony/route';
 import { fixtureGameService } from '../src/server/game/instance';
 
-const originalMode = process.env['ALIBI_RUNTIME_MODE'];
+const originalMode = process.env['ALIBI_ZERO_G_MODE'];
 
 afterEach(() => {
   if (originalMode === undefined) {
-    delete process.env['ALIBI_RUNTIME_MODE'];
+    delete process.env['ALIBI_ZERO_G_MODE'];
   } else {
-    process.env['ALIBI_RUNTIME_MODE'] = originalMode;
+    process.env['ALIBI_ZERO_G_MODE'] = originalMode;
   }
 });
 
@@ -27,7 +27,7 @@ function request(): Request {
 
 describe('testimony route contract', () => {
   it('keeps B2 scripted testimony available only in fixture mode', async () => {
-    process.env['ALIBI_RUNTIME_MODE'] = 'fixture';
+    process.env['ALIBI_ZERO_G_MODE'] = 'disabled';
     const session = fixtureGameService.createSession().session;
     const response = await testimonyRoute(request(), {
       params: Promise.resolve({ sessionId: session.sessionId }),
@@ -41,18 +41,19 @@ describe('testimony route contract', () => {
   });
 
   it('returns a sanitized blocking 503 in live mode without creating a fixture session', async () => {
-    process.env['ALIBI_RUNTIME_MODE'] = 'live';
+    process.env['ALIBI_ZERO_G_MODE'] = 'live';
+    const session = fixtureGameService.createSession().session;
     const response = await testimonyRoute(request(), {
-      params: Promise.resolve({ sessionId: 'live-session-public-1' }),
+      params: Promise.resolve({ sessionId: session.sessionId }),
     });
     const body: unknown = await response.json();
     expect(response.status).toBe(503);
     expect(gameErrorResponseSchema.parse(body)).toMatchObject({
       ok: false,
-      error: { code: 'ZERO_G_LIVE_CONTEXT_UNAVAILABLE' },
+      error: { code: 'ZERO_G_CONFIGURATION_INVALID' },
     });
     const serialized = JSON.stringify(body);
     expect(serialized).not.toContain('fixture-response_');
-    expect(serialized).not.toContain('ALIBI_RUNTIME_MODE');
+    expect(serialized).not.toContain('ZERO_G_PRIVATE_KEY');
   });
 });

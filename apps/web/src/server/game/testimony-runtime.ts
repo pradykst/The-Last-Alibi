@@ -1,4 +1,3 @@
-import { resolveRuntimeMode } from '@alibi/runtime/server';
 import type { RuntimeEnvironment } from '@alibi/runtime/server';
 
 import { GameServiceError } from './errors';
@@ -10,18 +9,16 @@ export function runTestimonyOperation<T>(
   },
   environment: RuntimeEnvironment = process.env,
 ): T | Promise<T> {
-  let mode: 'fixture' | 'live';
-  try {
-    mode = resolveRuntimeMode(environment);
-  } catch {
+  const mode = environment['ALIBI_ZERO_G_MODE']?.trim() ?? 'disabled';
+  if (mode !== 'disabled' && mode !== 'live') {
     throw new GameServiceError(
       503,
       'RUNTIME_CONFIGURATION_ERROR',
-      'The game runtime is not configured safely.',
+      'The 0G testimony runtime is not configured safely.',
     );
   }
 
-  if (mode === 'fixture') {
+  if (mode === 'disabled') {
     return adapters.fixture();
   }
   if (adapters.live === undefined) {

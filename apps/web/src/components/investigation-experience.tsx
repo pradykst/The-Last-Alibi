@@ -757,9 +757,9 @@ export function RoomScene({
             <div className="testimony-boundary" role="note">
               <EvidenceGlyph kind="testimony" />
               <p>
-                <strong>Unverified scripted testimony</strong>
-                Fixture dialogue may misdirect. It never changes candidate state and is not live 0G
-                inference.
+                <strong>Non-canonical suspect testimony</strong>
+                Verified 0G dialogue and scripted practice dialogue may both misdirect. Neither
+                changes candidate state.
               </p>
             </div>
 
@@ -778,7 +778,10 @@ export function RoomScene({
                       {entry.answer}
                     </p>
                     <small>
-                      <span aria-hidden="true">“</span> Unverified testimony · fixture response
+                      <span aria-hidden="true">“</span>{' '}
+                      {entry.externalResponseId.startsWith('zero-g-verified_')
+                        ? 'Verified 0G inference · non-canonical testimony'
+                        : 'Unverified testimony · fixture response'}
                     </small>
                   </article>
                 ))
@@ -786,7 +789,7 @@ export function RoomScene({
               {pendingAction === 'testimony' ? (
                 <div className="dialogue-pending" role="status">
                   <span aria-hidden="true" />
-                  Waiting for scripted fixture response…
+                  Waiting for suspect response…
                 </div>
               ) : null}
             </div>

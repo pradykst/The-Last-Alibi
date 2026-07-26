@@ -180,6 +180,42 @@ export class FixtureGameService {
     });
   }
 
+  public recordVerifiedZeroGTestimony(
+    sessionId: string,
+    request: TestimonyRequest,
+    verified: { answer: string; responseId: string },
+  ): TestimonyResponse {
+    const session = this.#requireActiveSession(sessionId);
+    const scripted = findScriptedTestimony(request.suspectId, request.questionId);
+    if (scripted === undefined) {
+      throw GameServiceError.denial('MALFORMED_REQUEST');
+    }
+
+    const now = this.#now();
+    const responseReceipt = createHash('sha256')
+      .update(verified.responseId)
+      .digest('hex')
+      .slice(0, 24);
+    const entry = {
+      id: `testimony_${bytesToHex(this.#random.bytes(12))}`,
+      suspectId: scripted.suspectId,
+      questionId: scripted.id,
+      question: scripted.question,
+      answer: verified.answer,
+      evidenceClass: 'unverified-testimony' as const,
+      externalResponseId: `zero-g-verified_${responseReceipt}`,
+      createdAt: now.toISOString(),
+    };
+    session.testimonyEntries.push(entry);
+    this.#touch(session, now);
+
+    return testimonyResponseSchema.parse({
+      ok: true,
+      session: this.#toPublicSession(session),
+      entry,
+    });
+  }
+
   public requestWarrant(sessionId: string, request: WarrantRequest): WarrantResponse {
     const session = this.#requireSession(sessionId);
     const predicate = findRegisteredPredicate(request.predicateId);

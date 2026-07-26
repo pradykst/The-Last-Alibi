@@ -408,7 +408,7 @@ function GameShellContent({
           body: JSON.stringify({ suspectId, questionId }),
         }),
       (response) => setSession(response.session),
-      'Requesting scripted fixture testimony.',
+      'Requesting suspect testimony.',
       'Unverified testimony added. Candidate count unchanged.',
     );
   };

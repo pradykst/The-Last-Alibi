@@ -50,6 +50,9 @@ importers:
       '@alibi/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
+      '@alibi/zero-g':
+        specifier: workspace:*
+        version: link:../../packages/zero-g
       katex:
         specifier: 0.18.1
         version: 0.18.1
