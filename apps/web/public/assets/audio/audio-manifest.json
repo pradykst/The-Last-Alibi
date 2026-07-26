@@ -1,0 +1,163 @@
+[
+  {
+    "id": "title-loop",
+    "src": "/assets/audio/music/title-loop.mp3",
+    "category": "music",
+    "loop": true,
+    "volume": 0.28
+  },
+  {
+    "id": "investigation-loop",
+    "src": "/assets/audio/music/investigation-loop.mp3",
+    "category": "music",
+    "loop": true,
+    "volume": 0.28
+  },
+  {
+    "id": "grand-gallery-loop",
+    "src": "/assets/audio/ambience/grand-gallery-loop.mp3",
+    "category": "ambience",
+    "loop": true,
+    "volume": 0.22
+  },
+  {
+    "id": "restoration-lab-loop",
+    "src": "/assets/audio/ambience/restoration-lab-loop.mp3",
+    "category": "ambience",
+    "loop": true,
+    "volume": 0.22
+  },
+  {
+    "id": "archive-vault-loop",
+    "src": "/assets/audio/ambience/archive-vault-loop.mp3",
+    "category": "ambience",
+    "loop": true,
+    "volume": 0.22
+  },
+  {
+    "id": "rooftop-conservatory-loop",
+    "src": "/assets/audio/ambience/rooftop-conservatory-loop.mp3",
+    "category": "ambience",
+    "loop": true,
+    "volume": 0.22
+  },
+  {
+    "id": "select",
+    "src": "/assets/audio/ui/select.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "back",
+    "src": "/assets/audio/ui/back.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "evidence-added",
+    "src": "/assets/audio/ui/evidence-added.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "notebook-open",
+    "src": "/assets/audio/ui/notebook-open.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "warrant-request",
+    "src": "/assets/audio/ui/warrant-request.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "proof-pending",
+    "src": "/assets/audio/ui/proof-pending.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "proof-verified",
+    "src": "/assets/audio/ui/proof-verified.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "proof-failed",
+    "src": "/assets/audio/ui/proof-failed.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "access-approved",
+    "src": "/assets/audio/ui/access-approved.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "access-denied",
+    "src": "/assets/audio/ui/access-denied.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "accusation-confirm",
+    "src": "/assets/audio/ui/accusation-confirm.wav",
+    "category": "ui",
+    "loop": false,
+    "volume": 0.7
+  },
+  {
+    "id": "game-opening",
+    "src": "/assets/audio/transitions/game-opening.wav",
+    "category": "transition",
+    "loop": false,
+    "volume": 0.65
+  },
+  {
+    "id": "blackout",
+    "src": "/assets/audio/transitions/blackout.wav",
+    "category": "transition",
+    "loop": false,
+    "volume": 0.65
+  },
+  {
+    "id": "room-enter",
+    "src": "/assets/audio/transitions/room-enter.wav",
+    "category": "transition",
+    "loop": false,
+    "volume": 0.65
+  },
+  {
+    "id": "verdict-reveal",
+    "src": "/assets/audio/transitions/verdict-reveal.wav",
+    "category": "transition",
+    "loop": false,
+    "volume": 0.65
+  },
+  {
+    "id": "verdict-yes",
+    "src": "/assets/audio/verdict/verdict-yes.wav",
+    "category": "verdict",
+    "loop": false,
+    "volume": 0.75
+  },
+  {
+    "id": "verdict-no",
+    "src": "/assets/audio/verdict/verdict-no.wav",
+    "category": "verdict",
+    "loop": false,
+    "volume": 0.75
+  }
+]

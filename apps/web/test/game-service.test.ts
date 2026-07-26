@@ -36,7 +36,9 @@ function createService(
 ): FixtureGameService {
   const fixedNow = new Date('2026-07-25T01:00:00.000Z');
   return new FixtureGameService({
-    store: new FixtureSessionStore({ now: () => fixedNow.getTime() }),
+    store: new FixtureSessionStore({
+      now: () => fixedNow.getTime(),
+    }),
     random: deterministicRandom(hiddenCaseIndex),
     now: () => fixedNow,
     evaluatePredicate,

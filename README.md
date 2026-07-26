@@ -79,6 +79,7 @@ in-memory storage and reset whenever the web process restarts.
 Quality and build commands:
 
 ```powershell
+pnpm assets:build
 pnpm lint
 pnpm format:check
 pnpm typecheck
@@ -87,17 +88,22 @@ pnpm check
 pnpm build
 ```
 
-See [Development](docs/DEVELOPMENT.md) and [Environment policy](docs/ENVIRONMENT.md) for the
-full local workflow and runtime rules.
+See [Development](docs/DEVELOPMENT.md), [Environment policy](docs/ENVIRONMENT.md), and
+[B3 approved asset integration](docs/B3_ASSET_INTEGRATION.md) for the full local workflow,
+runtime rules, asset pipeline, and presentation boundaries.
 
 ## Current status
 
-Checkpoint B2 delivers the first playable local investigation:
+Checkpoint B3 turns the playable local investigation into an approved-art, cinematic browser
+game while preserving the B2 state and security boundaries:
 
 - a deterministic 64-case engine and validated `The Last Exhibit` level manifest;
+- a skippable opening, case briefing, four-room museum map, and layered investigation scenes;
 - four explorable rooms, public observations, and scripted fixture testimony;
 - five safety-checked registered binary disclosures and a terminal binary accusation;
-- bounded server-only fixture sessions and a responsive, accessible browser shell;
+- an evidence notebook, Warrant Desk, terminal accusation, and distinct YES/NO sequences;
+- bounded server-only fixture sessions and a responsive, accessible cinematic game shell;
+- a deterministic approved-asset pipeline and derived ETHGlobal/social compositions;
 - the preserved D1 architecture package and pinned sui-pilot development tooling.
 
 Fixture testimony is not 0G inference. Fixture disclosures are not Sui or Groth16 verification,

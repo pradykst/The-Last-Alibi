@@ -11,9 +11,10 @@
     "test": "vitest run --pool=threads"
   },
   "dependencies": {
-    "@alibi/protocol": "workspace:*",
     "@alibi/game-engine": "workspace:*",
+    "@alibi/protocol": "workspace:*",
     "@alibi/runtime": "workspace:*",
+    "katex": "0.18.1",
     "next": "16.2.11",
     "react": "19.2.8",
     "react-dom": "19.2.8",
