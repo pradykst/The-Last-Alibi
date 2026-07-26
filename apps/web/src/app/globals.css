@@ -27,6 +27,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Match the 67% desktop presentation used for the recording without shrinking mobile UI. */
+@media (min-width: 1024px) {
+  html {
+    zoom: 67%;
+  }
+}
+
 body {
   min-width: 0;
   margin: 0;
