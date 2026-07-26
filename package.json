@@ -13,6 +13,7 @@
     "assets:process": "node scripts/process-game-assets.mjs",
     "assets:marketing": "node scripts/compose-marketing-assets.mjs",
     "assets:build": "pnpm assets:process && pnpm assets:marketing",
+    "audio:validate": "node scripts/validate-audio-assets.mjs",
     "lint": "pnpm -r --aggregate-output lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -9,6 +9,7 @@ import {
   AccusationBuilder,
   MuseumMap,
   Notebook,
+  Settings,
   RoomScene,
   TechnicalDetails,
   VerdictExperience,
@@ -115,10 +116,11 @@ describe('B3 opening state', () => {
     expect(renderOpening({ motionPreference: 'reduce' })).toContain('data-motion="reduced"');
   });
 
-  it('keeps settings and technical details secondary to the primary menu action', () => {
+  it('keeps settings and the full How It Works route secondary to the primary menu action', () => {
     const markup = renderOpening();
     expect(markup.indexOf('Begin Investigation')).toBeLessThan(markup.indexOf('Settings'));
-    expect(markup.indexOf('Settings')).toBeLessThan(markup.indexOf('Technical Details'));
+    expect(markup.indexOf('Settings')).toBeLessThan(markup.indexOf('How It Works'));
+    expect(markup).toContain('href="/how-it-works"');
   });
 
   it('offers Continue only after an active fixture session was validated', () => {
@@ -183,6 +185,23 @@ describe('B3 investigation semantics', () => {
     expect((markup.match(/class="map-room"/g) ?? []).length).toBe(4);
     expect((markup.match(/class="map-scene-hotspot"/g) ?? []).length).toBe(4);
     expect(markup).toContain('/assets/map/museum-map-base.png');
+  });
+
+  it('renders accessible persistent audio controls in the existing settings surface', () => {
+    const markup = renderToStaticMarkup(
+      <Settings
+        motionPreference="system"
+        onMotionPreferenceChange={() => undefined}
+        onClose={() => undefined}
+      />,
+    );
+
+    expect(markup).toContain('Mute all audio');
+    expect(markup).toContain('Master');
+    expect(markup).toContain('Music');
+    expect(markup).toContain('Ambience');
+    expect(markup).toContain('Sound effects');
+    expect(markup).not.toContain('Audio slot empty');
   });
 
   it.each(['room_gallery', 'room_restoration', 'room_archive', 'room_conservatory'] as const)(

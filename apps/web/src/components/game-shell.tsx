@@ -22,6 +22,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { z } from 'zod';
 
+import { AudioProvider, useGameAudio } from '../audio/audio-provider';
 import type { PendingAction } from './game-shell-helpers';
 import OpeningExperience from './opening-experience';
 import InvestigationExperience, { VerdictExperience } from './investigation-experience';
@@ -201,12 +202,13 @@ type SavedFixtureSession = {
   content: PublicGameContent;
 };
 
-export default function GameShell({
+function GameShellContent({
   runtimeLabel,
   runtimeAvailable,
   runtimeMode = runtimeLabel === 'Fixture' ? 'fixture' : null,
 }: GameShellProps) {
   const [session, setSession] = useState<PublicGameSession | null>(null);
+  const audio = useGameAudio();
   const [content, setContent] = useState<PublicGameContent | null>(null);
   const [resumableSession, setResumableSession] = useState<{
     session: PublicGameSession;
@@ -303,6 +305,7 @@ export default function GameShell({
       setCreationStage('confirmed');
       setAnnouncement('Investigation opened with 64 candidate cases.');
       await new Promise<void>((resolve) => window.setTimeout(resolve, 650));
+      audio.beginInvestigation();
       setSession(response.session);
       setContent(response.content);
     } catch (requestError: unknown) {
@@ -357,7 +360,10 @@ export default function GameShell({
           method: 'POST',
           body: JSON.stringify({ roomId }),
         }),
-      (response) => setSession(response.session),
+      (response) => {
+        setSession(response.session);
+        audio.enterRoom(roomId, `${session.sessionId}:${roomId}:${response.session.updatedAt}`);
+      },
       'Entering the selected room.',
       'Room explored. Candidate count unchanged.',
     );
@@ -367,6 +373,7 @@ export default function GameShell({
     if (session === null) {
       return;
     }
+    const alreadyCollected = session.collectedObservationIds.some((id) => id === observationId);
     void runSessionAction(
       'observe',
       () =>
@@ -374,7 +381,15 @@ export default function GameShell({
           method: 'POST',
           body: JSON.stringify({ roomId: selectedRoomId, observationId }),
         }),
-      (response) => setSession(response.session),
+      (response) => {
+        setSession(response.session);
+        if (
+          !alreadyCollected &&
+          response.session.collectedObservationIds.some((id) => id === observationId)
+        ) {
+          audio.evidenceAdded(`${session.sessionId}:${observationId}`);
+        }
+      },
       'Recording a public observation.',
       'Public observation recorded. Candidate count unchanged.',
     );
@@ -384,6 +399,7 @@ export default function GameShell({
     if (session === null) {
       return;
     }
+    audio.select(`${session.sessionId}:testimony:${questionId}`);
     void runSessionAction(
       'testimony',
       () =>
@@ -401,6 +417,10 @@ export default function GameShell({
     if (session === null) {
       return;
     }
+    const operationKey = `${session.sessionId}:${predicateId}:${session.usedDisclosureCount}`;
+    audio.warrantSubmitted(operationKey);
+    audio.proofPending(operationKey);
+
     void runSessionAction(
       'warrant',
       () =>
@@ -408,7 +428,10 @@ export default function GameShell({
           method: 'POST',
           body: JSON.stringify({ predicateId }),
         }),
-      (response) => setSession(response.session),
+      (response) => {
+        setSession(response.session);
+        audio.proofVerified(operationKey);
+      },
       'Evaluating registered disclosure safety.',
       'Fixture certified simulation accepted. Candidate count updated.',
     );
@@ -428,6 +451,7 @@ export default function GameShell({
       return;
     }
 
+    audio.accusationConfirmed(`${session.sessionId}:terminal-attempt`);
     void runSessionAction<AccusationResponse>(
       'accusation',
       () =>
@@ -449,6 +473,7 @@ export default function GameShell({
   };
 
   const restart = () => {
+    audio.restartToMenu();
     window.localStorage.removeItem(SAVED_SESSION_KEY);
     setSession(null);
     setContent(null);
@@ -492,6 +517,7 @@ export default function GameShell({
         onBegin={begin}
         onContinue={() => {
           if (resumableSession === null) return;
+          audio.beginInvestigation();
           setSession(resumableSession.session);
           setContent(resumableSession.content);
           setSelectedRoomId(
@@ -532,5 +558,13 @@ export default function GameShell({
       onDismissError={() => setError(null)}
       onRestart={restart}
     />
+  );
+}
+
+export default function GameShell(props: GameShellProps) {
+  return (
+    <AudioProvider>
+      <GameShellContent {...props} />
+    </AudioProvider>
   );
 }

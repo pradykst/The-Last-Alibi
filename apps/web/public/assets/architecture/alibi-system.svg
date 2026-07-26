@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">The Last Alibi canonical architecture</title>
+  <desc id="desc">Top-down trust architecture showing player and ranked-agent entry paths, non-authoritative application services, canonical Sui Move state and native Groth16 verification, encrypted Walrus storage, Seal policy-controlled decryption, and a final YES or NO result released only after confirmed Sui execution.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#526076"/>
+    </marker>
+    <marker id="arrow-proof" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#287b68"/>
+    </marker>
+    <style>
+      .bg{fill:#ffffff}.cluster{fill:#fbfcfe;stroke:#c8d1df;stroke-width:2}.cluster-title{font:600 17px 'Segoe UI',Arial,sans-serif;fill:#344055;letter-spacing:.4px}
+      .node{stroke-width:2;rx:10}.public{fill:#f5f7fa;stroke:#8a97aa}.private{fill:#fff3df;stroke:#b47720}.encrypted{fill:#f3edff;stroke:#7357a8}.proof{fill:#e8f7f3;stroke:#287b68}.canonical{fill:#eaf1ff;stroke:#3f67a1}.guard{fill:#fff0f0;stroke:#a74949}
+      .label{font:600 17px 'Segoe UI',Arial,sans-serif;fill:#172033;text-anchor:middle}.sub{font:400 14px 'Segoe UI',Arial,sans-serif;fill:#435066;text-anchor:middle}.tiny{font:400 13px 'Segoe UI',Arial,sans-serif;fill:#435066;text-anchor:middle}
+      .edge{fill:none;stroke:#526076;stroke-width:2;marker-end:url(#arrow)}.proof-edge{fill:none;stroke:#287b68;stroke-width:2.3;marker-end:url(#arrow-proof)}.dash{fill:none;stroke:#526076;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#arrow)}
+      .edge-label{font:500 13px 'Segoe UI',Arial,sans-serif;fill:#344055;text-anchor:middle}.title{font:700 28px 'Segoe UI',Arial,sans-serif;fill:#172033}.subtitle{font:400 15px 'Segoe UI',Arial,sans-serif;fill:#526076}.legend{font:500 13px 'Segoe UI',Arial,sans-serif;fill:#344055}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="60" y="42">The Last Alibi — canonical authority architecture</text>
+  <text class="subtitle" x="60" y="66">AI may speak; only proof-bound, confirmed Sui transitions may change truth.</text>
+
+  <rect class="cluster" x="55" y="88" width="1490" height="112" rx="14"/>
+  <text class="cluster-title" x="78" y="116">ENTRY PATHS</text>
+  <rect class="node public" x="115" y="132" width="250" height="48"/>
+  <text class="label" x="240" y="162">Player</text>
+  <rect class="node public" x="1030" y="124" width="260" height="64"/>
+  <text class="label" x="1160" y="151">Ranked Detective Agent</text>
+  <text class="sub" x="1160" y="173">attempt request</text>
+  <rect class="node public" x="1320" y="124" width="190" height="64"/>
+  <text class="label" x="1415" y="150">World AgentKit</text>
+  <text class="sub" x="1415" y="172">human-backed permit only</text>
+  <path class="edge" d="M1290 156H1320"/>
+
+  <rect class="cluster" x="55" y="222" width="1490" height="214" rx="14"/>
+  <text class="cluster-title" x="78" y="250">APPLICATION + ORCHESTRATION — NEVER TRUTH AUTHORITY</text>
+  <rect class="node public" x="95" y="278" width="290" height="94"/>
+  <text class="label" x="240" y="309">Game web application</text>
+  <text class="sub" x="240" y="335">presentation + local interaction</text>
+  <text class="sub" x="240" y="356">renders confirmed state only</text>
+  <rect class="node public" x="480" y="278" width="340" height="94"/>
+  <text class="label" x="650" y="309">Game API / relayer</text>
+  <text class="sub" x="650" y="335">idempotency • proof jobs • submission</text>
+  <text class="sub" x="650" y="356">finality waiting • permit handling</text>
+  <rect class="node private" x="915" y="278" width="270" height="94"/>
+  <text class="label" x="1050" y="309">Private ZK prover</text>
+  <text class="sub" x="1050" y="335">private witness processing</text>
+  <text class="sub" x="1050" y="356">proof generation only</text>
+  <rect class="node public" x="1270" y="278" width="235" height="94"/>
+  <text class="label" x="1387" y="308">0G suspect inference</text>
+  <text class="sub" x="1387" y="334">bounded public context</text>
+  <text class="sub" x="1387" y="355">never the hidden case</text>
+  <path class="edge" d="M240 180V278"/>
+  <path class="edge" d="M385 325H480"/>
+  <text class="edge-label" x="432" y="312">requests</text>
+  <path class="edge" d="M820 308H915"/>
+  <text class="edge-label" x="868" y="295">private witness</text>
+  <path class="proof-edge" d="M915 348H820"/>
+  <text class="edge-label" x="868" y="368">bound proof</text>
+  <path class="edge" d="M820 292C1000 230 1150 230 1270 292"/>
+  <text class="edge-label" x="1060" y="245">bounded character + public/non-canonical context</text>
+  <path class="dash" d="M1270 354C1115 420 940 414 820 356"/>
+  <text class="edge-label" x="1220" y="402">informal testimony cannot change candidate mask</text>
+  <path class="edge" d="M1415 188V210H760V278"/>
+  <text class="edge-label" x="1110" y="207">scarce ranked authorization</text>
+
+  <rect class="cluster" x="55" y="463" width="990" height="300" rx="14"/>
+  <text class="cluster-title" x="78" y="491">SUI — CANONICAL POLICY + STATE</text>
+  <rect class="node canonical" x="95" y="520" width="410" height="104"/>
+  <text class="label" x="300" y="552">Sui Move canonical state</text>
+  <text class="sub" x="300" y="578">commitments • masks • disclosure • replay</text>
+  <text class="sub" x="300" y="600">ranked permits • terminal accusation</text>
+  <rect class="node proof" x="645" y="520" width="350" height="104"/>
+  <text class="label" x="820" y="552">Native Sui Groth16</text>
+  <text class="sub" x="820" y="578">expected verifier identity</text>
+  <text class="sub" x="820" y="600">bound public inputs → valid / invalid</text>
+  <path class="proof-edge" d="M505 556H645"/>
+  <path class="proof-edge" d="M645 590H505"/>
+  <text class="edge-label" x="575" y="544">verify</text>
+  <text class="edge-label" x="575" y="610">result</text>
+  <rect class="node canonical" x="90" y="672" width="166" height="52"/><text class="label" x="173" y="704">LevelConfig</text>
+  <rect class="node canonical" x="274" y="672" width="166" height="52"/><text class="label" x="357" y="704">GameSession</text>
+  <rect class="node canonical" x="458" y="672" width="166" height="52"/><text class="label" x="541" y="704">PendingQuery</text>
+  <rect class="node canonical" x="642" y="672" width="166" height="52"/><text class="label" x="725" y="704">RankedPermit</text>
+  <rect class="node canonical" x="826" y="672" width="166" height="52"/><text class="label" x="909" y="704">VerdictRecord</text>
+  <path class="edge" d="M650 372V448H300V520"/>
+  <text class="edge-label" x="480" y="474">authorized transition + proof + nonce</text>
+  <path class="edge" d="M285 520V444H585V372"/>
+  <text class="edge-label" x="438" y="426">confirmed effects / finalized checkpoint</text>
+
+  <rect class="cluster" x="1070" y="463" width="475" height="300" rx="14"/>
+  <text class="cluster-title" x="1093" y="491">ENCRYPTED PERSISTENCE + RELEASE</text>
+  <rect class="node encrypted" x="1110" y="520" width="180" height="90"/>
+  <text class="label" x="1200" y="550">Walrus</text>
+  <text class="sub" x="1200" y="575">ciphertext only</text>
+  <text class="sub" x="1200" y="595">public blob reference</text>
+  <rect class="node encrypted" x="1325" y="520" width="180" height="90"/>
+  <text class="label" x="1415" y="550">Seal</text>
+  <text class="sub" x="1415" y="575">Sui-defined policy</text>
+  <text class="sub" x="1415" y="595">allow / deny decryption</text>
+  <rect class="node public" x="1190" y="663" width="240" height="66"/>
+  <text class="label" x="1310" y="690">Player-visible result</text>
+  <text class="sub" x="1310" y="713">YES or NO only</text>
+  <path class="edge" d="M820 372V420H1200V520"/>
+  <text class="edge-label" x="1010" y="432">encrypted capsule bytes</text>
+  <path class="edge" d="M1325 565H1290"/>
+  <path class="edge" d="M1415 520V450H505V532"/>
+  <text class="edge-label" x="1300" y="470">evaluate Sui-defined policy</text>
+  <path class="edge" d="M1200 610V646H1310V663"/>
+  <path class="edge" d="M1415 610V646H1310"/>
+
+  <rect class="node guard" x="55" y="786" width="560" height="62"/>
+  <text class="label" x="335" y="812">FAIL CLOSED</text>
+  <text class="sub" x="335" y="834">No certified answer before confirmed Sui execution / finality.</text>
+  <text class="cluster-title" x="675" y="805">INFORMATION CLASSES</text>
+  <rect class="node public" x="675" y="819" width="130" height="38"/><text class="legend" x="715" y="843">Public</text>
+  <rect class="node private" x="820" y="819" width="130" height="38"/><text class="legend" x="853" y="843">Private</text>
+  <rect class="node encrypted" x="965" y="819" width="145" height="38"/><text class="legend" x="995" y="843">Encrypted</text>
+  <rect class="node proof" x="1125" y="819" width="150" height="38"/><text class="legend" x="1154" y="843">Proof-bound</text>
+  <rect class="node canonical" x="1290" y="819" width="255" height="38"/><text class="legend" x="1322" y="843">Canonical onchain state</text>
+</svg>

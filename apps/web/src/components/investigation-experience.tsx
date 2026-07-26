@@ -11,6 +11,8 @@ import type {
 } from '@alibi/protocol';
 import { useEffect, useId, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
+import { AudioSettingsControls } from '../audio/audio-settings-controls';
+import { useGameAudio } from '../audio/audio-provider';
 
 import {
   accusationAssets,
@@ -285,13 +287,7 @@ export function Settings({
           </span>
         </label>
       </fieldset>
-      <div className="settings-audio-empty" role="note">
-        <span aria-hidden="true">♪</span>
-        <p>
-          <strong>Audio slot empty</strong>
-          No approved audio assets are present, so this build stays silent.
-        </p>
-      </div>
+      <AudioSettingsControls />
     </Modal>
   );
 }
@@ -586,6 +582,7 @@ export function RoomScene({
   const transcript = session.testimonyEntries.filter((entry) => entry.suspectId === suspect.id);
   const [selectedQuestionId, setSelectedQuestionId] = useState(questions[0]?.id ?? '');
   const selectedQuestionAlreadyAsked = isDuplicateTestimonyQuestion(transcript, selectedQuestionId);
+  const audio = useGameAudio();
   const [interviewOpen, setInterviewOpen] = useState(false);
   const disabled = pendingAction !== null;
   const assetRoom = roomAssets[roomAssetIdByProtocolId[room.id]];
@@ -684,7 +681,10 @@ export function RoomScene({
           className="suspect-focus"
           type="button"
           aria-expanded={interviewOpen}
-          onClick={() => setInterviewOpen((current) => !current)}
+          onClick={() => {
+            audio.select();
+            setInterviewOpen((current) => !current);
+          }}
         >
           <span className="suspect-portrait" aria-hidden="true">
             <img src={assetCharacter.portrait} width="1024" height="1024" alt="" loading="lazy" />
@@ -751,7 +751,10 @@ export function RoomScene({
                   id={`question-${suspect.id}`}
                   value={selectedQuestionId}
                   disabled={disabled}
-                  onChange={(event) => setSelectedQuestionId(event.target.value)}
+                  onChange={(event) => {
+                    audio.select();
+                    setSelectedQuestionId(event.target.value);
+                  }}
                 >
                   {questions.map((question) => {
                     const alreadyAsked = transcript.some(
@@ -795,6 +798,7 @@ export function WarrantDesk({
   const [dimension, setDimension] = useState<'suspect' | 'room' | 'weapon' | 'time'>('suspect');
   const predicates = session.predicateStatuses.filter((entry) => entry.dimension === dimension);
   const latest = session.certifiedDisclosures.at(-1);
+  const audio = useGameAudio();
   const remaining = session.maximumDisclosureCount - session.usedDisclosureCount;
 
   return (
@@ -834,7 +838,10 @@ export function WarrantDesk({
             type="button"
             role="tab"
             aria-selected={dimension === entry}
-            onClick={() => setDimension(entry)}
+            onClick={() => {
+              audio.select();
+              setDimension(entry);
+            }}
           >
             {entry === 'time' ? 'Time window' : entry}
           </button>
@@ -980,6 +987,7 @@ export function AccusationBuilder({
   | 'onConfirmTerminalChange'
   | 'onSubmitAccusation'
 > & { onReturn: () => void }) {
+  const audio = useGameAudio();
   const [reviewOpen, setReviewOpen] = useState(false);
   const complete = isAccusationComplete(hypothesis);
   const labels = {
@@ -1029,7 +1037,10 @@ export function AccusationBuilder({
                     name="suspect"
                     value={suspect.id}
                     checked={hypothesis.suspectId === suspect.id}
-                    onChange={() => onHypothesisChange('suspectId', suspect.id)}
+                    onChange={() => {
+                      audio.select();
+                      onHypothesisChange('suspectId', suspect.id);
+                    }}
                   />
                   <span>
                     <img
@@ -1061,7 +1072,10 @@ export function AccusationBuilder({
                     name="room"
                     value={room.id}
                     checked={hypothesis.roomId === room.id}
-                    onChange={() => onHypothesisChange('roomId', room.id)}
+                    onChange={() => {
+                      audio.select();
+                      onHypothesisChange('roomId', room.id);
+                    }}
                   />
                   <span>
                     <img
@@ -1093,7 +1107,10 @@ export function AccusationBuilder({
                       name="weapon"
                       value={weapon.id}
                       checked={hypothesis.weaponId === weapon.id}
-                      onChange={() => onHypothesisChange('weaponId', weapon.id)}
+                      onChange={() => {
+                        audio.select();
+                        onHypothesisChange('weaponId', weapon.id);
+                      }}
                     />
                     <span>
                       <img
@@ -1124,7 +1141,10 @@ export function AccusationBuilder({
                       name="time"
                       value={timeWindow.id}
                       checked={hypothesis.timeWindowId === timeWindow.id}
-                      onChange={() => onHypothesisChange('timeWindowId', timeWindow.id)}
+                      onChange={() => {
+                        audio.select();
+                        onHypothesisChange('timeWindowId', timeWindow.id);
+                      }}
                     />
                     <span>
                       <img
@@ -1177,7 +1197,10 @@ export function AccusationBuilder({
             className="review-accusation"
             type="button"
             disabled={!complete || pendingAction !== null}
-            onClick={() => setReviewOpen(true)}
+            onClick={() => {
+              audio.select();
+              setReviewOpen(true);
+            }}
           >
             Review final accusation
             <span aria-hidden="true">→</span>
@@ -1191,7 +1214,10 @@ export function AccusationBuilder({
           title="This ends the investigation"
           className="accusation-confirm-modal"
           onClose={() => {
-            if (pendingAction !== 'accusation') setReviewOpen(false);
+            if (pendingAction !== 'accusation') {
+              audio.back();
+              setReviewOpen(false);
+            }
           }}
         >
           <p className="confirmation-sentence">
@@ -1302,10 +1328,12 @@ export function VerdictExperience({
 }) {
   const [technicalOpen, setTechnicalOpen] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const audio = useGameAudio();
 
   useEffect(() => {
     headingRef.current?.focus();
-  }, []);
+    audio.verdict(result, session.sessionId);
+  }, [audio, result, session.sessionId]);
 
   return (
     <main className="verdict-screen" data-result={result}>
@@ -1400,6 +1428,8 @@ export default function InvestigationExperience({
   const [view, setView] = useState<GameView>('map');
   const [drawer, setDrawer] = useState<Drawer>(null);
   const [systemReducedMotion, setSystemReducedMotion] = useState(false);
+  const audio = useGameAudio();
+  const notebookOpenCount = useRef(0);
   const reduceMotion = motionPreference === 'reduce' || systemReducedMotion;
 
   useEffect(() => {
@@ -1410,22 +1440,49 @@ export default function InvestigationExperience({
     return () => media.removeEventListener('change', update);
   }, []);
 
+  const leaveRoomAmbience = () => {
+    if (view === 'room') audio.returnToMap();
+  };
+
+  const returnToMap = () => {
+    leaveRoomAmbience();
+    audio.back();
+    setDrawer(null);
+    setView('map');
+  };
+
   const enterRoom = (roomId: RoomId) => {
+    audio.select();
     onSelectRoom(roomId);
     setView('room');
   };
 
   const openWarrants = () => {
+    leaveRoomAmbience();
+    audio.select();
     setDrawer(null);
     setView('warrants');
   };
 
   const openAccusation = () => {
+    leaveRoomAmbience();
+    audio.select();
     setDrawer(null);
     setView('accusation');
   };
 
+  const openNotebook = () => {
+    notebookOpenCount.current += 1;
+    audio.notebookOpened(`${session.sessionId}:${notebookOpenCount.current}`);
+    setDrawer('notebook');
+  };
+
   const currentRoom = content.manifest.rooms.find((room) => room.id === selectedRoomId)!;
+  const closeDrawer = () => {
+    audio.back();
+    setDrawer(null);
+  };
+
   const disabled = pendingAction !== null;
 
   return (
@@ -1443,7 +1500,7 @@ export default function InvestigationExperience({
           className="case-insignia"
           type="button"
           aria-label="Open museum map"
-          onClick={() => setView('map')}
+          onClick={returnToMap}
         >
           <span aria-hidden="true">
             <img src={brandAssets.logoMark} width="1024" height="1024" alt="" />
@@ -1491,7 +1548,7 @@ export default function InvestigationExperience({
             className="square-control notebook-toggle"
             type="button"
             aria-label="Open detective notebook"
-            onClick={() => setDrawer('notebook')}
+            onClick={openNotebook}
           >
             <img src={evidenceAssets['player-hypothesis']} width="1024" height="1024" alt="" />
           </button>
@@ -1499,7 +1556,10 @@ export default function InvestigationExperience({
             className="square-control"
             type="button"
             aria-label="Open settings"
-            onClick={() => setDrawer('settings')}
+            onClick={() => {
+              audio.select();
+              setDrawer('settings');
+            }}
           >
             <span aria-hidden="true">⚙</span>
           </button>
@@ -1507,7 +1567,10 @@ export default function InvestigationExperience({
             className="square-control"
             type="button"
             aria-label="Open technical details"
-            onClick={() => setDrawer('technical')}
+            onClick={() => {
+              audio.select();
+              setDrawer('technical');
+            }}
           >
             <img src={interfaceAssets.technicalDrawer} width="1024" height="1024" alt="" />
           </button>
@@ -1519,7 +1582,7 @@ export default function InvestigationExperience({
           className="rail-map"
           type="button"
           aria-current={view === 'map' ? 'page' : undefined}
-          onClick={() => setView('map')}
+          onClick={returnToMap}
         >
           <span aria-hidden="true">⌂</span>
           <strong>Map</strong>
@@ -1571,7 +1634,7 @@ export default function InvestigationExperience({
             pendingAction={pendingAction}
             onCollectObservation={onCollectObservation}
             onRequestTestimony={onRequestTestimony}
-            onBackToMap={() => setView('map')}
+            onBackToMap={returnToMap}
           />
         ) : null}
         {view === 'warrants' ? (
@@ -1579,7 +1642,7 @@ export default function InvestigationExperience({
             session={session}
             pendingAction={pendingAction}
             onRequestWarrant={onRequestWarrant}
-            onReturn={() => setView('map')}
+            onReturn={returnToMap}
           />
         ) : null}
         {view === 'accusation' ? (
@@ -1592,7 +1655,7 @@ export default function InvestigationExperience({
             onHypothesisChange={onHypothesisChange}
             onConfirmTerminalChange={onConfirmTerminalChange}
             onSubmitAccusation={onSubmitAccusation}
-            onReturn={() => setView('map')}
+            onReturn={returnToMap}
           />
         ) : null}
       </div>
@@ -1636,23 +1699,19 @@ export default function InvestigationExperience({
           session={session}
           content={content}
           hypothesis={hypothesis}
-          onClose={() => setDrawer(null)}
+          onClose={closeDrawer}
           onWarrants={openWarrants}
           onAccusation={openAccusation}
         />
       ) : null}
       {drawer === 'technical' ? (
-        <TechnicalDetails
-          session={session}
-          runtimeLabel={runtimeLabel}
-          onClose={() => setDrawer(null)}
-        />
+        <TechnicalDetails session={session} runtimeLabel={runtimeLabel} onClose={closeDrawer} />
       ) : null}
       {drawer === 'settings' ? (
         <Settings
           motionPreference={motionPreference}
           onMotionPreferenceChange={onMotionPreferenceChange}
-          onClose={() => setDrawer(null)}
+          onClose={closeDrawer}
         />
       ) : null}
 

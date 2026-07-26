@@ -8,6 +8,7 @@ import './asset-integration.css';
 import './ui-polish.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env['NEXT_PUBLIC_SITE_URL'] ?? 'http://localhost:3000'),
   title: 'The Last Alibi',
   description: 'Investigate The Last Exhibit in a deterministic 64-case detective game.',
   icons: {
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body>{children}</body>
     </html>
   );

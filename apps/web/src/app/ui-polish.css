@@ -934,3 +934,399 @@
     width: 62%;
   }
 }
+
+/* Final readability pass: preserve the cinematic layout while keeping every game control legible. */
+.menu-actions > a {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  align-items: center;
+  min-height: 6rem;
+  padding-inline: 1.65rem;
+  border-bottom: 1px solid rgb(220 185 126 / 12%);
+  text-align: left;
+  font-size: 1rem;
+  letter-spacing: 0.035em;
+  text-decoration: none;
+  color: var(--cream-dim);
+  background: transparent;
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    padding 160ms ease;
+}
+
+.menu-actions > a:hover,
+.menu-actions > a:focus-visible {
+  padding-left: 2.05rem;
+  color: #fff6e7;
+  background: linear-gradient(90deg, rgb(113 38 51 / 74%), transparent);
+}
+
+.menu-actions > a span {
+  font: 700 0.68rem/1 monospace;
+  letter-spacing: 0.12em;
+  color: var(--brass);
+}
+
+.opening-modal,
+.game-modal {
+  width: min(52rem, calc(100vw - 2rem));
+  padding: clamp(1.5rem, 2.4vw, 2.2rem);
+}
+
+.opening-modal .modal-heading h2,
+.game-modal-header h2 {
+  font-size: clamp(2rem, 3vw, 2.65rem);
+}
+
+.settings-group legend,
+.game-settings legend {
+  font-size: 1.3rem;
+}
+
+.settings-group > p,
+.settings-group label span,
+.game-settings label span,
+.settings-audio-empty p,
+.audio-unavailable p {
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.settings-group label,
+.game-settings label {
+  min-height: 5.25rem;
+  padding: 1rem 1.15rem;
+}
+
+.settings-group label strong,
+.game-settings label strong,
+.settings-audio-empty strong,
+.audio-unavailable strong {
+  font-size: 0.96rem;
+}
+
+.settings-audio-empty,
+.audio-unavailable {
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  min-height: 5.25rem;
+  padding: 1rem 1.15rem;
+}
+
+.settings-audio-empty > span,
+.audio-unavailable > span {
+  min-height: 3.1rem;
+  font-size: 1.35rem;
+}
+
+.game-eyebrow,
+.case-insignia small,
+.hud-location small,
+.hud-metrics dt {
+  font-size: 0.72rem;
+}
+
+.hud-metrics dd {
+  font-size: 0.98rem;
+}
+
+.square-control {
+  width: 3.35rem;
+  min-width: 3.35rem;
+}
+
+.square-control > img {
+  width: 2.35rem;
+  height: 2.35rem;
+}
+
+.room-rail button {
+  min-height: 6.25rem;
+  padding: 0.65rem 0.4rem;
+}
+
+.room-rail button > span {
+  width: 2.7rem;
+  font-size: 0.9rem;
+}
+
+.room-rail img {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.room-rail button strong {
+  max-width: 6rem;
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.room-rail button small {
+  font-size: 0.61rem;
+}
+
+.room-heading > .back-to-map {
+  position: fixed;
+  z-index: 35;
+  top: 0.75rem;
+  left: 1rem;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgb(221 184 122 / 30%);
+  font-size: 0.82rem;
+  color: var(--game-cream);
+  background: rgb(12 10 12 / 94%);
+  box-shadow: 0 0.7rem 1.8rem rgb(0 0 0 / 34%);
+  backdrop-filter: blur(8px);
+}
+
+.notebook-heading .game-eyebrow {
+  font-size: 0.67rem;
+}
+
+.notebook-meter span,
+.note-section header small {
+  font-size: 0.65rem;
+}
+
+.evidence-glyph {
+  width: 2.8rem;
+  height: 2.8rem;
+}
+
+.note-section > header {
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 0.85rem;
+}
+
+.note-section h3 {
+  font-size: 1.08rem;
+}
+
+.note-section ul {
+  margin-left: 3.85rem;
+}
+
+.note-section li strong {
+  font-size: 0.9rem;
+}
+
+.note-section li span,
+.empty-note {
+  font-size: 0.76rem;
+  line-height: 1.48;
+}
+
+.notebook-actions button {
+  min-height: 4.25rem;
+  font-size: 0.82rem;
+}
+
+.desk-emblem {
+  right: 11rem;
+  width: 6.5rem;
+  height: 6.5rem;
+}
+
+.file-state {
+  gap: 0.65rem;
+  font-size: 0.69rem;
+}
+
+.file-state > img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.file-index {
+  font-size: 0.64rem;
+}
+
+.file-copy h2 {
+  font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+}
+
+.branch-preview span {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.67rem;
+}
+
+.warrant-file > button,
+.dossier-tabs button {
+  min-height: 3.25rem;
+  font-size: 0.8rem;
+}
+
+.warrant-result,
+.warrant-empty {
+  font-size: 0.86rem;
+}
+
+.warrant-empty > span img,
+.warrant-result .wax-seal {
+  width: 4.9rem;
+  height: 4.9rem;
+}
+
+.technical-drawer-mark {
+  width: 6rem;
+  height: 6rem;
+}
+
+.receipt-list dt {
+  font-size: 0.69rem;
+}
+
+.receipt-list dd,
+.receipt-note {
+  font-size: 0.82rem;
+}
+
+@media (min-width: 1121px) {
+  .cinematic-game {
+    grid-template:
+      'hud hud hud' 5rem
+      'rail stage notebook' minmax(0, 1fr)
+      'rail context notebook' 5rem /
+      6.75rem minmax(34rem, 1fr) minmax(23.5rem, 25.5rem);
+  }
+}
+
+@media (max-width: 1120px) and (min-width: 781px) {
+  .cinematic-game {
+    grid-template:
+      'hud hud' 5rem
+      'rail stage' minmax(0, 1fr)
+      'rail context' 5rem /
+      6.25rem minmax(0, 1fr);
+  }
+
+  .room-heading > .back-to-map {
+    top: 0.75rem;
+    left: 1rem;
+  }
+}
+
+@media (max-width: 780px) {
+  .menu-actions > a {
+    grid-template-columns: 3rem 1fr;
+    min-height: 4.8rem;
+    padding-inline: 1.2rem;
+  }
+
+  .room-heading > .back-to-map {
+    top: 0.65rem;
+    left: 0.65rem;
+    min-height: 2.8rem;
+    font-size: 0.78rem;
+  }
+
+  .game-modal,
+  .opening-modal {
+    width: min(100%, calc(100vw - 1rem));
+    padding: 1.25rem;
+  }
+
+  .room-rail img {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+/* Completed audio pack: keep controls legible without changing the established dossier layout. */
+.audio-unavailable[hidden],
+.settings-audio-empty[hidden] {
+  display: none;
+}
+
+.audio-settings-controls {
+  min-inline-size: 0;
+  margin: 1rem 0 0;
+  padding: 1rem;
+  border: 1px solid rgba(199, 154, 82, 0.42);
+  background: rgba(8, 7, 9, 0.32);
+}
+
+.audio-settings-controls legend {
+  padding-inline: 0.35rem;
+  color: var(--cream);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.12rem;
+}
+
+.audio-master-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(199, 154, 82, 0.24);
+}
+
+.audio-master-row > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.audio-master-row strong,
+.audio-levels strong {
+  color: var(--cream);
+  font-size: 0.88rem;
+}
+
+.audio-master-row span,
+.audio-levels output {
+  color: var(--muted-cream);
+  font-size: 0.76rem;
+}
+
+.audio-master-row button {
+  min-width: 4.5rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--brass);
+  background: var(--burgundy);
+  color: var(--cream);
+  font: inherit;
+  font-weight: 700;
+}
+
+.audio-levels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.1rem;
+  padding-top: 1rem;
+}
+
+.audio-levels label {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.audio-levels label > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.audio-levels input[type='range'] {
+  width: 100%;
+  min-height: 2rem;
+  accent-color: var(--burgundy);
+  cursor: pointer;
+}
+
+/* The replacement gallery foreground has transparent headroom; anchor its painted edge to the floor. */
+.room-screen[data-room='room_gallery'] .room-foreground-layer {
+  transform: translateY(10.4%);
+}
+
+@media (max-width: 600px) {
+  .audio-levels {
+    grid-template-columns: 1fr;
+  }
+
+  .audio-master-row {
+    align-items: flex-start;
+  }
+}

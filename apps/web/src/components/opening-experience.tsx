@@ -3,6 +3,9 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+import Link from 'next/link';
+import { AudioSettingsControls } from '../audio/audio-settings-controls';
+import { useGameAudio } from '../audio/audio-provider';
 
 import { brandAssets, interfaceAssets, proofAssets, screenAssets } from '../assets/game-assets';
 import { GUARANTEES } from '../lib/page-content';
@@ -27,7 +30,7 @@ type OpeningExperienceProps = {
   onContinue: () => void;
 };
 
-type MenuScreen = 'menu' | 'mode' | 'briefing' | 'settings' | 'technical' | 'creating';
+type MenuScreen = 'menu' | 'mode' | 'briefing' | 'settings' | 'creating';
 
 function CloseButton({ onClick, label = 'Close' }: { onClick: () => void; label?: string }) {
   return (
@@ -93,6 +96,7 @@ export default function OpeningExperience({
     creationStage === 'failed' ? 'creating' : 'menu',
   );
   const [systemReducedMotion, setSystemReducedMotion] = useState(false);
+  const audio = useGameAudio();
   const reduceMotion = motionPreference === 'reduce' || systemReducedMotion;
 
   useEffect(() => {
@@ -127,11 +131,15 @@ export default function OpeningExperience({
   }, [reduceMotion]);
 
   const beginPractice = async () => {
+    audio.select('prepare-case');
     setScreen('creating');
     await onBegin();
   };
 
-  const closeOverlay = () => setScreen('menu');
+  const closeOverlay = () => {
+    audio.back();
+    setScreen('menu');
+  };
 
   return (
     <main
@@ -240,7 +248,10 @@ export default function OpeningExperience({
             className="menu-primary"
             type="button"
             disabled={introPhase !== 'ready'}
-            onClick={() => setScreen('mode')}
+            onClick={() => {
+              audio.startOpening();
+              setScreen('mode');
+            }}
           >
             <span aria-hidden="true">01</span>
             Begin Investigation
@@ -255,10 +266,10 @@ export default function OpeningExperience({
             <span aria-hidden="true">{resumable ? '03' : '02'}</span>
             Settings
           </button>
-          <button className="menu-technical" type="button" onClick={() => setScreen('technical')}>
+          <Link className="menu-technical" href="/how-it-works">
             <span aria-hidden="true">{resumable ? '04' : '03'}</span>
-            Technical Details
-          </button>
+            How It Works
+          </Link>
           {resumeChecking ? (
             <p className="resume-check">Checking for a saved investigation…</p>
           ) : null}
@@ -288,7 +299,10 @@ export default function OpeningExperience({
               className="mode-card mode-practice"
               type="button"
               disabled={!runtimeAvailable || modeAvailability.practice !== 'available'}
-              onClick={() => setScreen('briefing')}
+              onClick={() => {
+                audio.beginCaseIntroduction();
+                setScreen('briefing');
+              }}
             >
               <span className="mode-number" aria-hidden="true">
                 I
@@ -336,7 +350,14 @@ export default function OpeningExperience({
 
       {introPhase === 'ready' && screen === 'briefing' ? (
         <section className="opening-panel briefing-panel" aria-labelledby="briefing-title">
-          <button className="back-button" type="button" onClick={() => setScreen('mode')}>
+          <button
+            className="back-button"
+            type="button"
+            onClick={() => {
+              audio.back();
+              setScreen('mode');
+            }}
+          >
             <span aria-hidden="true">←</span> Mode selection
           </button>
           <div className="briefing-layout">
@@ -506,52 +527,7 @@ export default function OpeningExperience({
               </span>
             </label>
           </fieldset>
-          <div className="audio-unavailable" role="note">
-            <span aria-hidden="true">♪</span>
-            <p>
-              <strong>Audio unavailable</strong>
-              No approved music or sound-effect assets are present in this build.
-            </p>
-          </div>
-        </OpeningDialog>
-      ) : null}
-
-      {introPhase === 'ready' && screen === 'technical' ? (
-        <OpeningDialog
-          title="Technical details"
-          eyebrow="Secondary information"
-          onClose={closeOverlay}
-        >
-          <img
-            className="technical-drawer-mark"
-            src={interfaceAssets.technicalDrawer}
-            width="1024"
-            height="1024"
-            alt=""
-            loading="lazy"
-          />
-          <dl className="technical-list">
-            <div>
-              <dt>Runtime</dt>
-              <dd>{runtimeLabel}</dd>
-            </div>
-            <div>
-              <dt>Practice behavior</dt>
-              <dd>{runtimeMode === 'fixture' ? 'Available · fixture-backed' : 'Unavailable'}</dd>
-            </div>
-            <div>
-              <dt>Ranked behavior</dt>
-              <dd>Unavailable · live integrations not present</dd>
-            </div>
-            <div>
-              <dt>Commitment policy</dt>
-              <dd>Local fixture commitment only</dd>
-            </div>
-          </dl>
-          <p className="technical-disclaimer">
-            This build does not fabricate transaction hashes, proof receipts, provider addresses,
-            partner response IDs, explorer links, or onchain confirmation.
-          </p>
+          <AudioSettingsControls />
         </OpeningDialog>
       ) : null}
     </main>

@@ -1436,16 +1436,16 @@
       "hasAlpha": true,
       "visibleAlphaBounds": {
         "left": 0,
-        "top": 559,
+        "top": 526,
         "right": 1535,
-        "bottom": 936,
+        "bottom": 853,
         "width": 1536,
-        "height": 378,
+        "height": 328,
         "centerX": 767.5,
-        "baseline": 936
+        "baseline": 853
       },
-      "visiblePixelRatio": 0.13679377237955728,
-      "sha256": "0095e1349a22f93771f1b123204940de77f625a30ff2dba32f11a5d484b96811",
+      "visiblePixelRatio": 0.1265239715576172,
+      "sha256": "7c7e9c2c69635e14b8dfa64f9852fa0152aec3915f316ae42be1ac6dc4649358",
       "directRuntimeEligible": false
     },
     {
@@ -4307,29 +4307,29 @@
         "threshold": 8,
         "visibleBounds": {
           "left": 0,
-          "top": 599,
+          "top": 557,
           "right": 1919,
-          "bottom": 1064,
+          "bottom": 968,
           "width": 1920,
-          "height": 466,
+          "height": 412,
           "centerX": 959.5,
-          "baseline": 1064
+          "baseline": 968
         },
         "nonzeroBounds": {
           "left": 0,
-          "top": 0,
+          "top": 2,
           "right": 1919,
           "bottom": 1079,
           "width": 1920,
-          "height": 1080,
+          "height": 1078,
           "centerX": 959.5,
           "baseline": 1079
         },
-        "visiblePixelRatio": 0.1626639660493827,
-        "nonzeroPixelRatio": 0.2054586226851852,
-        "transparentPixelRatio": 0.7945413773148148
+        "visiblePixelRatio": 0.15084056712962962,
+        "nonzeroPixelRatio": 0.15567177854938272,
+        "transparentPixelRatio": 0.8443282214506173
       },
-      "sha256": "2f4db0b2da7a0a37c439d7c72944b1bdb613d503a90c97e9479cf040eaef30ef"
+      "sha256": "d36275f7c4d168ed2366bd3adea38f82da42b7c2812b2f5352866df533c7677f"
     },
     {
       "path": "apps/web/public/assets/rooms/grand-gallery/thumbnail.png",

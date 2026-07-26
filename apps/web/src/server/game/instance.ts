@@ -1,3 +1,10 @@
 import { FixtureGameService } from './service';
 
-export const fixtureGameService = new FixtureGameService();
+type FixtureGameGlobal = typeof globalThis & {
+  __lastAlibiFixtureGameService?: FixtureGameService;
+};
+
+const fixtureGameGlobal = globalThis as FixtureGameGlobal;
+
+export const fixtureGameService = (fixtureGameGlobal.__lastAlibiFixtureGameService ??=
+  new FixtureGameService());
