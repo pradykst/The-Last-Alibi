@@ -38,7 +38,7 @@ Editable architecture and trust material:
 | 0G                 | Planned verified suspect-agent inference                                                                              | Never receives the hidden case and cannot eliminate candidates  |
 | Walrus             | Planned encrypted artifact persistence                                                                                | Stores ciphertext; does not authorize access or establish truth |
 | Seal               | Planned decryption under Sui-defined policy                                                                           | Does not prove plaintext truthfulness                           |
-| World AgentKit     | Human-backed authorization boundary for one level-bound Ranked Agent attempt                                          | Never exposes human identity or determines the game outcome      |
+| World AgentKit     | Human-backed authorization boundary for one level-bound Ranked Agent attempt                                          | Never exposes human identity or determines the game outcome     |
 | Game API / relayer | Orchestration, idempotency, proof jobs, finality waiting, permit handling                                             | Cannot choose the case or verdict                               |
 | Web application    | Presentation and local interaction                                                                                    | Cannot establish case truth or proof validity                   |
 

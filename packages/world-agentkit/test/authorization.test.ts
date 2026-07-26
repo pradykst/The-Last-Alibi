@@ -11,6 +11,7 @@ import {
   FileRankedAuthorizationStore,
   InMemoryRankedAuthorizationStore,
   RankedAgentkitAuthorizer,
+  loadRankedAgentkitConfig,
   type RankedAgentkitConfig,
 } from '../src';
 
@@ -190,5 +191,29 @@ describe('World AgentKit ranked authorization', () => {
     const persisted = await readFile(storePath, 'utf8');
     expect(persisted).not.toContain('human-persistence-marker');
     expect(persisted).not.toContain('persistentnonce');
+  });
+
+  it('rejects placeholder and credential-bearing live URLs', () => {
+    const environment = {
+      ALIBI_AGENTKIT_RESOURCE_URI: RESOURCE,
+      ALIBI_AGENTKIT_LEVEL_ID: LEVEL,
+      ALIBI_AGENTKIT_NETWORK: 'eip155:480',
+      ALIBI_AGENTKIT_MAX_AGE_MS: '120000',
+      ALIBI_AGENTKIT_ENTITLEMENT_SECRET: SECRET,
+      ALIBI_AGENTKIT_STORE_PATH: '.alibi/test-agentkit.json',
+    };
+
+    expect(() =>
+      loadRankedAgentkitConfig({
+        ...environment,
+        ALIBI_AGENTKIT_RESOURCE_URI: 'https://api.example.com/ranked',
+      }),
+    ).toThrow('missing or invalid');
+    expect(() =>
+      loadRankedAgentkitConfig({
+        ...environment,
+        ALIBI_AGENTKIT_WORLD_RPC_URL: 'https://user:password@worldchain.example.test',
+      }),
+    ).toThrow('missing or invalid');
   });
 });

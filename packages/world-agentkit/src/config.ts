@@ -5,14 +5,19 @@ const urlSchema = z
   .url()
   .refine((value) => {
     const url = new URL(value);
+    const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
     return (
-      url.protocol === 'https:' || url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+      (url.protocol === 'https:' || local) &&
+      url.username === '' &&
+      url.password === '' &&
+      url.hostname !== 'example.com' &&
+      !url.hostname.endsWith('.example.com')
     );
   }, 'Protected resource URI must use HTTPS outside localhost');
 
 const optionalUrlSchema = z.preprocess(
   (value) => (value === '' ? undefined : value),
-  z.string().url().optional(),
+  urlSchema.optional(),
 );
 
 export const rankedAgentkitConfigSchema = z

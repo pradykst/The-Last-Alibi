@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @alibi/web dev",
+    "start": "pnpm --filter @alibi/web start",
     "assets:process": "node scripts/process-game-assets.mjs",
     "assets:marketing": "node scripts/compose-marketing-assets.mjs",
     "assets:build": "pnpm assets:process && pnpm assets:marketing",

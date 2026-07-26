@@ -62,6 +62,14 @@ describe('0G server configuration', () => {
     expectConfigurationError({ ...LIVE_ENVIRONMENT, ZERO_G_SERVICE_TYPE: 'text-to-image' });
   });
 
+  it('rejects placeholder and credential-bearing RPC URLs', () => {
+    expectConfigurationError({ ...LIVE_ENVIRONMENT, ZERO_G_RPC_URL: 'https://api.example.com' });
+    expectConfigurationError({
+      ...LIVE_ENVIRONMENT,
+      ZERO_G_RPC_URL: 'https://user:password@evmrpc-testnet.0g.ai',
+    });
+  });
+
   it('requires response verification explicitly in live mode', () => {
     expectConfigurationError({
       ...LIVE_ENVIRONMENT,

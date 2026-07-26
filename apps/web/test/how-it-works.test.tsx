@@ -72,6 +72,8 @@ describe('How It Works presentation and documentation', () => {
     expect(markup).toContain('Sui canonical Move state');
     expect(markup).toContain('0G verified inference');
     expect(markup).toContain('Unavailable');
+    expect(markup).toContain('Integrated, not deployed');
+    expect(markup).toContain('Integrated, not active');
     expect(markup).not.toContain('Live testnet verified');
     expect(markup).not.toContain('0x123');
   });

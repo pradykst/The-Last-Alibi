@@ -96,13 +96,13 @@ const CAPABILITIES = [
   ],
   [
     'Sui canonical Move state',
-    'Unavailable',
-    'No Move package, deployed package ID, or onchain session exists on this branch.',
+    'Integrated, not deployed',
+    'The Move package and typed adapter are present; deployed IDs, a transaction signer, and live web orchestration are not configured.',
   ],
   [
     'Groth16 verdict proof',
-    'Unavailable',
-    'No integrated circuit, verifier, or production trusted setup exists on this branch.',
+    'Integrated, not active',
+    'The circuit and native verifier sources are present; the production setup, prover runtime, and live web path are not active.',
   ],
   [
     '0G verified inference',

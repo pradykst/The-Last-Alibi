@@ -14,7 +14,16 @@ const liveEnvironmentSchema = z
     ZERO_G_RPC_URL: z
       .string()
       .url()
-      .refine((value) => value.startsWith('https://')),
+      .refine((value) => {
+        const url = new URL(value);
+        return (
+          url.protocol === 'https:' &&
+          url.username === '' &&
+          url.password === '' &&
+          url.hostname !== 'example.com' &&
+          !url.hostname.endsWith('.example.com')
+        );
+      }),
     ZERO_G_PROVIDER_ADDRESS: z.string().refine(isAddress),
     ZERO_G_MODEL: z.string().trim().min(1).max(160),
     ZERO_G_SERVICE_TYPE: z.literal('chatbot'),

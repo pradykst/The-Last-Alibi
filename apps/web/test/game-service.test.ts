@@ -1,3 +1,7 @@
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import {
   accusationResponseSchema,
   createSessionResponseSchema,
@@ -280,6 +284,44 @@ describe('store and runtime boundaries', () => {
     const latest = createSession(firstService);
     now = 101;
     expectDenial(() => firstService.getSession(latest.sessionId), 'UNKNOWN_SESSION');
+  });
+
+  it('restores active fixture sessions from an explicitly configured absolute path', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'alibi-fixture-store-'));
+    const persistencePath = join(directory, 'sessions.json');
+    try {
+      const now = new Date('2026-07-26T12:00:00.000Z');
+      const firstService = new FixtureGameService({
+        store: new FixtureSessionStore({ persistencePath, now: () => now.getTime() }),
+        random: deterministicRandom(0),
+        now: () => now,
+      });
+      const created = createSession(firstService);
+      firstService.explore(created.sessionId, {
+        roomId: 'room_gallery',
+        observationId: 'observation_gallery_clock',
+      });
+
+      const restoredService = new FixtureGameService({
+        store: new FixtureSessionStore({ persistencePath, now: () => now.getTime() }),
+        random: deterministicRandom(1),
+        now: () => now,
+      });
+      const restored = restoredService.getSession(created.sessionId).session;
+
+      expect(restored.state).toBe('active');
+      expect(restored.exploredRoomIds).toContain('room_gallery');
+      expect(restored.collectedObservationIds).toContain('observation_gallery_clock');
+      expect(restored.caseCommitment).toEqual(created.caseCommitment);
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects ambiguous relative fixture persistence paths', () => {
+    expect(() => new FixtureSessionStore({ persistencePath: '.alibi/sessions.json' })).toThrow(
+      'must be absolute',
+    );
   });
 
   it('does not invoke fixture game logic in live mode', () => {
