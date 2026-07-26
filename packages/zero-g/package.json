@@ -1,0 +1,33 @@
+{
+  "name": "@alibi/zero-g",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.1 <23"
+  },
+  "exports": {
+    "./server": {
+      "types": "./src/server.ts",
+      "default": "./src/server.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "lint": "eslint src test --max-warnings=0",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run --pool=threads",
+    "smoke:live": "tsx src/live-smoke.ts"
+  },
+  "dependencies": {
+    "@0gfoundation/0g-compute-ts-sdk": "0.8.4",
+    "ethers": "6.15.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/circomlibjs": "0.1.6",
+    "@types/crypto-js": "4.2.2",
+    "tsx": "4.23.1"
+  }
+}

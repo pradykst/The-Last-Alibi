@@ -30,6 +30,11 @@ yarn-error.log*
 .env*
 !.env.example
 
+# Local 0G provider verification and smoke artifacts
+artifacts/zero-g/
+zero-g-attestation-reports/
+zero-g-live-evidence*.json
+
 # vercel
 .vercel
 
