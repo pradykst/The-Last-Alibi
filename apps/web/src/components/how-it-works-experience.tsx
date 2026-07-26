@@ -326,11 +326,12 @@ function Presentation({ onClose }: { onClose: () => void }) {
             ) : null}
             {index === 3 ? (
               <>
-                <StatusBadge>Designed</StatusBadge>
+                <StatusBadge>Testnet proven; web unwired</StatusBadge>
                 <Formula>{String.raw`v=\mathbf{1}\!\left[(s,r,w,t)=(\hat{s},\hat{r},\hat{w},\hat{t})\right]`}</Formula>
                 <Formula>{String.raw`\operatorname{Verify}(vk,\pi,x)=1`}</Formula>
                 <small>
-                  Conceptual commitment notation. The live proof path is not active in this build.
+                  Genuine Groth16 circuits and native Sui verification exist; this public Practice
+                  session does not invoke them.
                 </small>
               </>
             ) : null}
@@ -416,14 +417,14 @@ function ArchitectureLightbox({ onClose }: { onClose: () => void }) {
     <div className="architecture-lightbox" role="presentation">
       <section ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId}>
         <header>
-          <h2 id={titleId}>Intended live architecture</h2>
+          <h2 id={titleId}>Authority &amp; execution architecture</h2>
           <button type="button" onClick={onClose}>
             Close
           </button>
         </header>
         <img
-          src="/assets/architecture/alibi-system.svg"
-          alt="The Last Alibi intended live architecture connecting the player and game UI to API orchestration, Sui canonical state, a zero-knowledge prover, 0G inference, Walrus storage, Seal access control, and World AgentKit ranked permits."
+          src="/assets/architecture/authority-execution.png"
+          alt="The Last Alibi authority and execution architecture, separating the implemented Practice game from the designed verifiable protocol with Sui, Groth16 proofs, 0G, Walrus, Seal, and World AgentKit."
         />
       </section>
     </div>
@@ -744,11 +745,11 @@ export default function HowItWorksExperience() {
           </div>
         </div>
         <p className="limitation-callout">
-          <StatusBadge>Unavailable</StatusBadge>
-          <strong>Development limitation:</strong> the live Groth16 path and production
-          trusted-setup policy are not integrated on this branch. Commitment notation here is
-          conceptual; no unconfirmed Poseidon encoding, field layout, or domain separator is
-          published.
+          <StatusBadge>Testnet proven</StatusBadge>
+          <strong>Deployment boundary:</strong> genuine query and verdict circuits, the application
+          prover, and native Sui verification are implemented. Query acceptance and replay rejection
+          are evidenced on testnet, but the public Practice session does not invoke this path. The
+          current parameters are hackathon/testnet-only and non-production.
         </p>
       </section>
 
@@ -763,18 +764,18 @@ export default function HowItWorksExperience() {
           className="architecture-preview"
           type="button"
           onClick={() => setArchitectureOpen(true)}
-          aria-label="Expand intended live architecture diagram"
+          aria-label="Expand authority and execution architecture diagram"
         >
           <img
-            src="/assets/architecture/alibi-system.svg"
-            alt="Intended live architecture for The Last Alibi, showing the player, game UI, orchestration, Sui, zero knowledge, 0G, Walrus, Seal, and World AgentKit trust boundaries."
+            src="/assets/architecture/authority-execution.png"
+            alt="The Last Alibi authority and execution architecture, separating implemented Practice gameplay from the designed verifiable protocol and its partner trust boundaries."
           />
           <span>Expand architecture ↗</span>
         </button>
         <p className="architecture-caption">
-          <StatusBadge>Designed</StatusBadge> This repository diagram describes the intended live
-          architecture and fail-closed boundaries. It is not evidence that partner services are
-          deployed in this branch.
+          <StatusBadge>Mixed status</StatusBadge> Solid green paths are active in Practice. Dashed
+          paths show browser composition still to complete. The Sui package and native Groth16
+          acceptance are separately live and inspectable on testnet.
         </p>
         <div className="table-scroll">
           <table>
@@ -1035,13 +1036,12 @@ export default function HowItWorksExperience() {
           <ul>
             <li>Practice is fixture-backed and produces no live partner receipt.</li>
             <li>The MVP contains one complete 64-case mystery.</li>
-            <li>Production trusted setup and external deployments are not complete.</li>
+            <li>Production trusted setup and full browser partner composition are not complete.</li>
             <li>Case commitment does not by itself prove unbiased randomness.</li>
             <li>Ranked mode remains unavailable.</li>
             <li>
-              This checkout is missing the repository’s pinned sui-pilot documentation prerequisite,
-              so ecosystem API validation is degraded until <code>scripts/setup-sui-pilot.ps1</code>{' '}
-              is run.
+              Sui Pilot is pinned for documentation-grounded development; it is tooling, not part of
+              the deployed application.
             </li>
           </ul>
         </div>

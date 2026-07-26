@@ -59,9 +59,9 @@ describe('How It Works presentation and documentation', () => {
   it('renders formulas as KaTeX and the approved architecture as an expandable control', () => {
     const markup = renderToStaticMarkup(<HowItWorksExperience />);
     expect(markup).toContain('class="katex-display"');
-    expect(markup).toContain('/assets/architecture/alibi-system.svg');
+    expect(markup).toContain('/assets/architecture/authority-execution.png');
     expect(markup).toContain('Expand architecture');
-    expect(markup).toContain('aria-label="Expand intended live architecture diagram"');
+    expect(markup).toContain('aria-label="Expand authority and execution architecture diagram"');
   });
 
   it('states fixture and live capability boundaries without fabricated partner success', () => {
