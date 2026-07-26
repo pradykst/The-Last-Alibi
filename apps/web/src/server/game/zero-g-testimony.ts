@@ -79,10 +79,8 @@ export async function requestLiveZeroGTestimony(
       observations,
       history,
       question: scripted.question,
-      approvedLeadIds: session.collectedObservationIds,
-      approvedPredicates: session.predicateStatuses
-        .filter((entry) => entry.availability === 'available')
-        .map((entry) => ({ id: entry.predicateId, question: entry.question })),
+      approvedLeadIds: [],
+      approvedPredicates: [],
     });
 
     return fixtureGameService.recordVerifiedZeroGTestimony(sessionId, request, {
